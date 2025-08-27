@@ -117,6 +117,8 @@ export default function ResetPasswordForm() {
         setError(data.error || "Erro ao enviar email de reset");
       } else {
         toast.success("Email enviado!");
+        // Mostrar notificação de sucesso
+        setSuccess(true);
       }
     } catch (error) {
       setError("Erro ao enviar email. Tente novamente.");
@@ -142,48 +144,80 @@ export default function ResetPasswordForm() {
             </p>
           </div>
 
-          <form className="mt-8 space-y-6" onSubmit={handleRequestReset}>
-            {error && (
-              <div className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
-                {error}
-              </div>
-            )}
-
-            <div>
-              <label htmlFor="email" className="sr-only">
-                Email
-              </label>
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                required
-                placeholder="Digite seu email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="border-gray-600 bg-[var(--card-product)] text-white placeholder-gray-400"
+          {success ? (
+            <div className="space-y-6">
+              <Alert
+                type="success"
+                title="Email enviado com sucesso!"
+                message="Verifique sua caixa de entrada e clique no link para redefinir sua senha. Se não encontrar o email, verifique também a pasta de spam."
               />
+              <div className="space-y-4 text-center">
+                <p className="text-sm text-gray-400">
+                  Não recebeu o email? Verifique se o endereço está correto.
+                </p>
+                <Button
+                  onClick={() => {
+                    setSuccess(false);
+                    setEmail("");
+                    setError("");
+                  }}
+                  className="w-full bg-[var(--text-price)] text-white hover:bg-[var(--text-price-secondary)]"
+                >
+                  Tentar novamente
+                </Button>
+                <Link
+                  href={`/auth/signin`}
+                  className="flex items-center justify-center text-sm text-[var(--text-price)] hover:text-[var(--text-price-secondary)]"
+                >
+                  <ArrowLeft className="mr-2 h-4 w-4" />
+                  Voltar para o login
+                </Link>
+              </div>
             </div>
+          ) : (
+            <form className="mt-8 space-y-6" onSubmit={handleRequestReset}>
+              {error && (
+                <div className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+                  {error}
+                </div>
+              )}
 
-            <Button
-              type="submit"
-              disabled={isLoading}
-              className="w-full bg-[var(--text-price)] text-white hover:bg-[var(--text-price-secondary)] disabled:opacity-50"
-            >
-              {isLoading ? "Enviando..." : "Enviar link de reset"}
-            </Button>
+              <div>
+                <label htmlFor="email" className="sr-only">
+                  Email
+                </label>
+                <Input
+                  id="email"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  required
+                  placeholder="Digite seu email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="border-gray-600 bg-[var(--card-product)] text-white placeholder-gray-400"
+                />
+              </div>
 
-            <div className="text-center">
-              <Link
-                href={`/auth/signin`}
-                className="flex items-center justify-center text-sm text-[var(--text-price)] hover:text-[var(--text-price-secondary)]"
+              <Button
+                type="submit"
+                disabled={isLoading}
+                className="w-full bg-[var(--text-price)] text-white hover:bg-[var(--text-price-secondary)] disabled:opacity-50"
               >
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Voltar para o login
-              </Link>
-            </div>
-          </form>
+                {isLoading ? "Enviando..." : "Enviar link de reset"}
+              </Button>
+
+              <div className="text-center">
+                <Link
+                  href={`/auth/signin`}
+                  className="flex items-center justify-center text-sm text-[var(--text-price)] hover:text-[var(--text-price-secondary)]"
+                >
+                  <ArrowLeft className="mr-2 h-4 w-4" />
+                  Voltar para o login
+                </Link>
+              </div>
+            </form>
+          )}
         </div>
 
         <NotificationContainer />

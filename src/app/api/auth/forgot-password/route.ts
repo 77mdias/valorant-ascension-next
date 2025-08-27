@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/prisma";
-import nodemailer from "nodemailer";
-import crypto from "crypto";
+import { sendResetPasswordEmail, generateResetToken } from "@/lib/email";
 
 export async function POST(request: NextRequest) {
   try {
@@ -16,7 +15,7 @@ export async function POST(request: NextRequest) {
 
     // Verificar se o usuário existe
     const user = await db.user.findUnique({
-      where: { email },
+      where: { email: email.toLowerCase() },
     });
 
     if (!user) {
@@ -31,56 +30,28 @@ export async function POST(request: NextRequest) {
     }
 
     // Gerar token único
-    const resetToken = crypto.randomBytes(32).toString("hex");
+    const resetToken = generateResetToken();
     const resetTokenExpiry = new Date(Date.now() + 60 * 60 * 1000); // 1 hora
 
     // Salvar token no banco
     await db.user.update({
-      where: { email },
+      where: { email: email.toLowerCase() },
       data: {
         resetPasswordToken: resetToken,
         resetPasswordExpires: resetTokenExpiry,
       },
     });
 
-    // Construir URL de reset - extrair slug do callbackUrl se existir
-    let resetUrl = `${process.env.NEXTAUTH_URL}/auth/reset-password?token=${resetToken}`;
+    // Enviar email de reset
+    const emailResult = await sendResetPasswordEmail(email, resetToken);
 
-    // Configurar transporter de email
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASSWORD,
-      },
-      tls: {
-        rejectUnauthorized: false,
-      },
-    });
-
-    // Enviar email
-    const emailContent = `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2 style="color: #333;">Redefinir sua senha</h2>
-        <p>Olá ${user.nickname || "Usuário"},</p>
-        <p>Você solicitou a redefinição da sua senha. Clique no link abaixo para criar uma nova senha:</p>
-        <p style="margin: 20px 0;">
-          <a href="${resetUrl}" style="background-color: #007bff; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block;">
-            Redefinir senha
-          </a>
-        </p>
-        <p>Este link expira em 1 hora.</p>
-        <p>Se você não solicitou esta redefinição, ignore este email.</p>
-        <p>Obrigado,<br>Equipe da My Store</p>
-      </div>
-    `;
-
-    await transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to: email,
-      subject: "Redefinir senha - My Store",
-      html: emailContent,
-    });
+    if (!emailResult.success) {
+      console.error("Erro ao enviar email de reset:", emailResult.error);
+      return NextResponse.json(
+        { error: "Erro ao enviar email de redefinição" },
+        { status: 500 },
+      );
+    }
 
     return NextResponse.json(
       {
