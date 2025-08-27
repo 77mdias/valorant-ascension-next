@@ -6,15 +6,12 @@ import Instructors from "@/components/Instructors";
 
 const Home = () => {
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
-      <main>
-        <Hero />
-        <Benefits />
-        <Courses />
-        <Instructors />
-      </main>
-    </div>
+    <>
+      <Hero />
+      <Benefits />
+      <Courses />
+      <Instructors />
+    </>
   );
 };
 

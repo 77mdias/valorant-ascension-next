@@ -6,6 +6,19 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+/* Classe para páginas com header fixo */
+.page-with-fixed-header {
+  padding-top: 4rem; /* Altura do header fixo */
+}
+
+@layer components {
+  .glass-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+  }
+}
+
 @layer base {
   :root {
     /* Core Brand Colors */
@@ -107,7 +120,7 @@ body {
   }
 
   body {
-    @apply bg-background text-foreground font-inter antialiased;
+    @apply bg-background font-inter text-foreground antialiased;
     background: var(--gradient-hero);
   }
 

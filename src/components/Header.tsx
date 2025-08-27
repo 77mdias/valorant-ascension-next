@@ -5,6 +5,8 @@ import { useState } from "react";
 import { Button } from "./ui/button";
 import { Menu, X } from "lucide-react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
+import Link from "next/link";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -13,14 +15,18 @@ const Header = () => {
     <header className="glass-card fixed left-0 right-0 top-0 z-50 border-b border-border/50">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         {/* Logo */}
-        <div className="flex items-center space-x-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-secondary">
-            <span className="text-sm font-bold text-white">VA</span>
-          </div>
-          <span className="font-poppins text-xl font-bold">
-            Valorant Academy BR
+        <Link href="/" className="flex items-center space-x-2">
+          <Image
+            src="/Valorant-Academy.png"
+            alt="Valorant Academy BR"
+            width={32}
+            height={32}
+          />
+          <span className="font-poppins text-xl font-bold italic">
+            Ascension Ne
+            <span className="font-extrabold italic text-pink-600">XT</span>
           </span>
-        </div>
+        </Link>
 
         {/* Desktop Navigation */}
         <nav className="hidden items-center space-x-8 md:flex">
@@ -37,10 +43,10 @@ const Header = () => {
             Instrutores
           </a>
           <a
-            href="#ranking"
+            href="/mmr"
             className="text-foreground/80 transition-colors hover:text-primary"
           >
-            Ranking
+            MMR
           </a>
           <a
             href="#comunidade"
