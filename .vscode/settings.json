@@ -1,4 +1,10 @@
 {
+  // Configurações de espaçamento do Explorer
+  "workbench.tree.indent": 20,
+  "workbench.tree.renderIndentGuides": "always",
+  "workbench.tree.expandMode": "singleClick",
+  // Espaçamento vertical entre itens
+  "workbench.tree.itemHeight": 28,
   "tailwindCSS.includeLanguages": {
     "typescript": "javascript",
     "typescriptreact": "javascript"

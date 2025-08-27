@@ -34,6 +34,7 @@ model user {
   isActive                 Boolean             @default(false)
   createdAt                DateTime            @default(now())
   updatedAt                DateTime            @updatedAt
+  sessions                 Session[]
   accounts                 account[]
   classMembers             classMembers[]
   classes                  classes[]
@@ -42,6 +43,16 @@ model user {
   lessonProgress           lessonProgress[]
   lessons                  lessons[]
   userAchievements         userAchievements[]
+}
+
+model Session {
+  id           String   @id @default(uuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         user     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
 }
 
 model lessonCategory {
