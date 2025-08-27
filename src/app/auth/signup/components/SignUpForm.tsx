@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { signIn } from "next-auth/react";
-import { useRouter, useSearchParams, useParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,7 +14,6 @@ export default function SignUpForm() {
     email: "",
     password: "",
     confirmPassword: "",
-    cpf: "",
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -22,11 +21,6 @@ export default function SignUpForm() {
   const [error, setError] = useState("");
 
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const params = useParams();
-  const slug = params.slug as string;
-  const callbackUrl =
-    searchParams.get("callbackUrl") || (slug ? `/${slug}` : "/");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -105,8 +99,6 @@ export default function SignUpForm() {
           name: formData.name,
           email: formData.email,
           password: formData.password,
-          cpf: formData.cpf,
-          callbackUrl: callbackUrl,
         }),
       });
 
@@ -123,27 +115,8 @@ export default function SignUpForm() {
       // Mostrar mensagem de sucesso e redirecionar para verificação
       setError(""); // Limpar qualquer erro anterior
 
-      // Extrair slug do callbackUrl
-      const callbackUrlParam = searchParams.get("callbackUrl");
-      let targetSlug = null;
-
-      if (callbackUrlParam) {
-        const pathSegments = callbackUrlParam.split("/").filter(Boolean);
-        if (pathSegments.length > 0) {
-          targetSlug = pathSegments[0]; // Ex: "nextstore" de "/nextstore"
-        }
-      }
-
-      // Se não conseguir extrair slug do callbackUrl, usar o slug dos params
-      const finalSlug = targetSlug || slug;
-
-      if (finalSlug) {
-        const verifyUrl = `/${finalSlug}/auth/verify-email?email=${encodeURIComponent(formData.email)}`;
-        router.push(verifyUrl);
-      } else {
-        // Se não tiver slug, algo está errado - redirecionar para home
-        router.push("/");
-      }
+      const verifyUrl = `/auth/verify-email?email=${encodeURIComponent(formData.email)}`;
+      router.push(verifyUrl);
     } catch (error: any) {
       setError(error.message);
     } finally {
@@ -151,13 +124,8 @@ export default function SignUpForm() {
     }
   };
 
-  const handleCpfChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.replace(/\D/g, "");
-    setFormData((prev) => ({ ...prev, cpf: value }));
-  };
-
   const handleOAuthSignIn = (provider: string) => {
-    signIn(provider, { callbackUrl });
+    signIn(provider);
   };
 
   return (
@@ -168,7 +136,7 @@ export default function SignUpForm() {
           <p className="mt-2 text-sm text-gray-400">
             Ou{" "}
             <Link
-              href={`/auth/signin${callbackUrl !== "/" ? `?callbackUrl=${encodeURIComponent(callbackUrl)}` : ""}`}
+              href={`/auth/signin`}
               className="font-medium text-[var(--text-price)] hover:text-[var(--text-price-secondary)]"
             >
               faça login em sua conta existente
@@ -214,23 +182,6 @@ export default function SignUpForm() {
                 placeholder="Email"
                 value={formData.email}
                 onChange={handleChange}
-                className="border-gray-600 bg-[var(--card-product)] text-white placeholder-gray-400"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="cpf" className="sr-only">
-                CPF
-              </label>
-              <Input
-                id="cpf"
-                name="cpf"
-                type="text"
-                autoComplete="cpf"
-                required
-                placeholder="CPF"
-                value={formData.cpf}
-                onChange={handleCpfChange}
                 className="border-gray-600 bg-[var(--card-product)] text-white placeholder-gray-400"
               />
             </div>
