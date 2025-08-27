@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { signIn } from "next-auth/react";
-import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { Eye, EyeOff } from "lucide-react";
@@ -17,13 +17,9 @@ export default function SignInForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [oauthError, setOauthError] = useState<string | null>(null);
-  const params = useParams();
   const searchParams = useSearchParams();
-  const slug = params.slug as string;
   const router = useRouter();
-  const { showNotification, NotificationContainer } = useNotification();
-  const callbackUrl =
-    searchParams.get("callbackUrl") || (slug ? `/${slug}` : "/");
+  const { NotificationContainer } = useNotification();
 
   // Verificar se há erro na URL e mostrar alerta
   useEffect(() => {
@@ -63,7 +59,7 @@ export default function SignInForm() {
           setError("Email ou senha inválidos");
         }
       } else {
-        router.push(callbackUrl);
+        router.push("/");
       }
     } catch (error) {
       setError("Erro ao fazer login. Tente novamente.");
@@ -86,7 +82,7 @@ export default function SignInForm() {
           <p className="mt-2 text-sm text-gray-400">
             Ou{" "}
             <Link
-              href={`/auth/signup${callbackUrl !== "/" ? `?callbackUrl=${encodeURIComponent(callbackUrl)}` : ""}`}
+              href={`/auth/signup`}
               className="font-medium text-[var(--text-price)] hover:text-[var(--text-price-secondary)]"
             >
               crie uma nova conta
@@ -182,7 +178,7 @@ export default function SignInForm() {
 
           <div className="flex items-center justify-between">
             <Link
-              href={`/auth/reset-password${callbackUrl !== "/" ? `?callbackUrl=${encodeURIComponent(callbackUrl)}` : ""}`}
+              href={`/auth/reset-password`}
               className="text-sm text-[var(--text-price)] hover:text-[var(--text-price-secondary)]"
             >
               Esqueceu sua senha?
