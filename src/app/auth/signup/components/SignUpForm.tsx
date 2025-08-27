@@ -154,7 +154,7 @@ export default function SignUpForm() {
           <div className="space-y-4">
             <div>
               <label htmlFor="name" className="sr-only">
-                Nome completo
+                Nickname
               </label>
               <Input
                 id="name"
@@ -162,7 +162,7 @@ export default function SignUpForm() {
                 type="text"
                 autoComplete="name"
                 required
-                placeholder="Nome completo"
+                placeholder="Nickname"
                 value={formData.name}
                 onChange={handleChange}
                 className="border-gray-600 bg-[var(--card-product)] text-white placeholder-gray-400"
