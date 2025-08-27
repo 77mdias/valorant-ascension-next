@@ -57,7 +57,7 @@ export async function GET(request: NextRequest) {
 // Rota para reenviar email de verificação
 export async function POST(request: NextRequest) {
   try {
-    const { email, callbackUrl } = await request.json();
+    const { email } = await request.json();
 
     if (!email) {
       return NextResponse.json(
@@ -104,11 +104,7 @@ export async function POST(request: NextRequest) {
     });
 
     // Enviar novo email
-    const emailResult = await sendVerificationEmail(
-      email,
-      verificationToken,
-      callbackUrl,
-    );
+    const emailResult = await sendVerificationEmail(email, verificationToken);
 
     if (!emailResult.success) {
       return NextResponse.json(

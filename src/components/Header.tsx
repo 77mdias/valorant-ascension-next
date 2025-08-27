@@ -4,16 +4,17 @@
 import { useState } from "react";
 import { Button } from "./ui/button";
 import { Menu, X } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
+  const router = useRouter();
   return (
-    <header className="glass-card border-border/50 fixed top-0 right-0 left-0 z-50 border-b">
+    <header className="glass-card fixed left-0 right-0 top-0 z-50 border-b border-border/50">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         {/* Logo */}
         <div className="flex items-center space-x-2">
-          <div className="from-primary to-secondary flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-secondary">
             <span className="text-sm font-bold text-white">VA</span>
           </div>
           <span className="font-poppins text-xl font-bold">
@@ -25,31 +26,31 @@ const Header = () => {
         <nav className="hidden items-center space-x-8 md:flex">
           <a
             href="#cursos"
-            className="text-foreground/80 hover:text-primary transition-colors"
+            className="text-foreground/80 transition-colors hover:text-primary"
           >
             Cursos
           </a>
           <a
             href="#instrutores"
-            className="text-foreground/80 hover:text-primary transition-colors"
+            className="text-foreground/80 transition-colors hover:text-primary"
           >
             Instrutores
           </a>
           <a
             href="#ranking"
-            className="text-foreground/80 hover:text-primary transition-colors"
+            className="text-foreground/80 transition-colors hover:text-primary"
           >
             Ranking
           </a>
           <a
             href="#comunidade"
-            className="text-foreground/80 hover:text-primary transition-colors"
+            className="text-foreground/80 transition-colors hover:text-primary"
           >
             Comunidade
           </a>
           <a
             href="#precos"
-            className="text-foreground/80 hover:text-primary transition-colors"
+            className="text-foreground/80 transition-colors hover:text-primary"
           >
             Preços
           </a>
@@ -57,7 +58,10 @@ const Header = () => {
 
         {/* CTA Button */}
         <div className="hidden md:block">
-          <Button className="btn-gradient rounded-full px-6 py-2 font-medium">
+          <Button
+            className="btn-gradient rounded-full px-6 py-2 font-medium"
+            onClick={() => router.push("/auth/signin")}
+          >
             Começar Agora
           </Button>
         </div>
@@ -74,39 +78,39 @@ const Header = () => {
 
       {/* Mobile Menu */}
       {isMenuOpen && (
-        <div className="glass-card border-border/50 border-t md:hidden">
+        <div className="glass-card border-t border-border/50 md:hidden">
           <nav className="flex flex-col space-y-4 p-4">
             <a
               href="#cursos"
-              className="text-foreground/80 hover:text-primary py-2 transition-colors"
+              className="py-2 text-foreground/80 transition-colors hover:text-primary"
               onClick={() => setIsMenuOpen(false)}
             >
               Cursos
             </a>
             <a
               href="#instrutores"
-              className="text-foreground/80 hover:text-primary py-2 transition-colors"
+              className="py-2 text-foreground/80 transition-colors hover:text-primary"
               onClick={() => setIsMenuOpen(false)}
             >
               Instrutores
             </a>
             <a
               href="#ranking"
-              className="text-foreground/80 hover:text-primary py-2 transition-colors"
+              className="py-2 text-foreground/80 transition-colors hover:text-primary"
               onClick={() => setIsMenuOpen(false)}
             >
               Ranking
             </a>
             <a
               href="#comunidade"
-              className="text-foreground/80 hover:text-primary py-2 transition-colors"
+              className="py-2 text-foreground/80 transition-colors hover:text-primary"
               onClick={() => setIsMenuOpen(false)}
             >
               Comunidade
             </a>
             <a
               href="#precos"
-              className="text-foreground/80 hover:text-primary py-2 transition-colors"
+              className="py-2 text-foreground/80 transition-colors hover:text-primary"
               onClick={() => setIsMenuOpen(false)}
             >
               Preços

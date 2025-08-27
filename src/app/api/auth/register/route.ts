@@ -46,9 +46,9 @@ function validatePassword(password: string): {
 
 export async function POST(request: NextRequest) {
   try {
-    const { name, email, password, cpf, callbackUrl } = await request.json();
+    const { name, email, password } = await request.json();
 
-    if (!name || !email || !password || !cpf) {
+    if (!name || !email || !password) {
       return NextResponse.json(
         { message: "Nome, email, senha e CPF são obrigatórios" },
         { status: 400 },
@@ -81,20 +81,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Verificar se o CPF já existe
-    const existingCpf = await db.user.findUnique({
-      where: {
-        cpf,
-      },
-    });
-
-    if (existingCpf) {
-      return NextResponse.json(
-        { message: "Usuário já existe com este CPF" },
-        { status: 400 },
-      );
-    }
-
     // Hash da senha
     const hashedPassword = await bcrypt.hash(password, 12);
 
@@ -105,10 +91,10 @@ export async function POST(request: NextRequest) {
     // Criar o usuário
     const user = await db.user.create({
       data: {
-        name,
+        nickname: name, // Usar nickname em vez de name
         email: email.toLowerCase(),
         password: hashedPassword,
-        cpf,
+        branchId: "default", // Adicionar branchId obrigatório
         role: UserRole.CUSTOMER,
         isActive: false, // Usuário inativo até verificar email
         emailVerificationToken: verificationToken,
@@ -116,7 +102,7 @@ export async function POST(request: NextRequest) {
       },
       select: {
         id: true,
-        name: true,
+        nickname: true, // Usar nickname em vez de name
         email: true,
         role: true,
         createdAt: true,
@@ -124,11 +110,7 @@ export async function POST(request: NextRequest) {
     });
 
     // Enviar email de verificação
-    const emailResult = await sendVerificationEmail(
-      email,
-      verificationToken,
-      callbackUrl,
-    );
+    const emailResult = await sendVerificationEmail(email, verificationToken);
 
     if (!emailResult.success) {
       // Se falhar ao enviar email, deletar o usuário criado
