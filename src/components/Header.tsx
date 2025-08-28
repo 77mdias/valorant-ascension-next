@@ -90,41 +90,41 @@ const Header = () => {
       {isMenuOpen && (
         <div className="glass-card border-t border-border/50 md:hidden">
           <nav className="flex flex-col space-y-4 p-4">
-            <a
-              href="#cursos"
+            <Link
+              href="/cursos"
               className="py-2 text-foreground/80 transition-colors hover:text-primary"
               onClick={() => setIsMenuOpen(false)}
             >
               Cursos
-            </a>
-            <a
-              href="#instrutores"
+            </Link>
+            <Link
+              href="/instrutores"
               className="py-2 text-foreground/80 transition-colors hover:text-primary"
               onClick={() => setIsMenuOpen(false)}
             >
               Instrutores
-            </a>
-            <a
+            </Link>
+            <Link
               href="/mmr"
               className="py-2 text-foreground/80 transition-colors hover:text-primary"
               onClick={() => setIsMenuOpen(false)}
             >
               MMR
-            </a>
-            <a
-              href="#comunidade"
+            </Link>
+            <Link
+              href="/comunidade"
               className="py-2 text-foreground/80 transition-colors hover:text-primary"
               onClick={() => setIsMenuOpen(false)}
             >
               Comunidade
-            </a>
-            <a
-              href="#precos"
+            </Link>
+            <Link
+              href="/precos"
               className="py-2 text-foreground/80 transition-colors hover:text-primary"
               onClick={() => setIsMenuOpen(false)}
             >
               Preços
-            </a>
+            </Link>
             <Button className="btn-gradient mt-4 rounded-full px-6 py-2 font-medium">
               Começar Agora
             </Button>

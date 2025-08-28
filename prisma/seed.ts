@@ -55,6 +55,112 @@ async function main() {
     }
   }
 
+  // VERIFICANDO E CRIANDO CATEGORIAS DE AULAS
+  const categories = [
+    { name: "Valorant Básico" },
+    { name: "Agentes" },
+    { name: "Mapas" },
+    { name: "Estratégia" },
+    { name: "Mecânicas" },
+  ];
+
+  const categoryIds: { [key: string]: string } = {};
+
+  for (const category of categories) {
+    const existingCategory = await prisma.lessonCategory.findFirst({
+      where: { name: category.name },
+    });
+
+    if (!existingCategory) {
+      const newCategory = await prisma.lessonCategory.create({
+        data: category,
+      });
+      categoryIds[category.name] = newCategory.id;
+      console.log(`Categoria criada: ${category.name}`);
+    } else {
+      categoryIds[category.name] = existingCategory.id;
+      console.log(`Categoria já existe: ${category.name}`);
+    }
+  }
+
+  // VERIFICANDO E CRIANDO USUÁRIO ADMIN
+  let adminUser = await prisma.user.findFirst({
+    where: { email: "admin@valorant-ascension.com" },
+  });
+
+  if (!adminUser) {
+    adminUser = await prisma.user.create({
+      data: {
+        branchId: "main",
+        nickname: "Admin",
+        email: "admin@valorant-ascension.com",
+        role: "ADMIN",
+        isActive: true,
+        password: "hashed_password_placeholder", // Em produção, use hash real
+      },
+    });
+    console.log("Usuário admin criado");
+  } else {
+    console.log("Usuário admin já existe");
+  }
+
+  // VERIFICANDO E CRIANDO AULAS
+  const lessons = [
+    {
+      title: "Introdução ao Valorant",
+      description: "Visão geral do jogo, objetivos e mecânicas básicas",
+      categoryId: categoryIds["Valorant Básico"],
+      videoUrl: "https://example.com/placeholder-video.mp4",
+      thumbnailUrl: "https://example.com/placeholder-thumb.jpg",
+    },
+    {
+      title: "Agentes: Funções e Habilidades",
+      description:
+        "Guia completo sobre os 4 tipos de agentes e suas habilidades",
+      categoryId: categoryIds["Agentes"],
+      videoUrl: null, // Sem vídeo inicialmente
+      thumbnailUrl: null,
+    },
+    {
+      title: "Mapas: Callouts e Estratégias",
+      categoryId: categoryIds["Mapas"],
+      videoUrl: "https://example.com/placeholder-video.mp4",
+      thumbnailUrl: "https://example.com/placeholder-thumb.jpg",
+    },
+    {
+      title: "Economia do Jogo",
+      description:
+        "Como gerenciar créditos, compras de equipamentos e economia por rodada",
+      categoryId: categoryIds["Estratégia"],
+      videoUrl: null,
+      thumbnailUrl: null,
+    },
+    {
+      title: "Aim e Controle de Recuo",
+      categoryId: categoryIds["Mecânicas"],
+      videoUrl: "https://example.com/placeholder-video.mp4",
+      thumbnailUrl: "https://example.com/placeholder-thumb.jpg",
+    },
+  ];
+
+  for (const lesson of lessons) {
+    const existingLesson = await prisma.lessons.findFirst({
+      where: { title: lesson.title },
+    });
+
+    if (!existingLesson) {
+      await prisma.lessons.create({
+        data: {
+          ...lesson,
+          createdById: adminUser!.id,
+        },
+      });
+      console.log(`Aula criada: ${lesson.title}`);
+    } else {
+      console.log(`Aula já existe: ${lesson.title}`);
+    }
+  }
+
   // VERIFICANDO E CRIANDO MAPAS DO VALORANT
   const maps = [
     // Mapa 1: Bind
