@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useSearchParams, useRouter, useParams } from "next/navigation";
+import { useEffect, useState, Suspense } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -10,25 +10,19 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { CheckCircle, Mail, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
-export default function ThankYouPage() {
+function ThankYouContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const params = useParams();
   const [isResending, setIsResending] = useState(false);
   const [email, setEmail] = useState("");
   const [hasResent, setHasResent] = useState(false);
 
   const emailParam = searchParams.get("email");
   const verified = searchParams.get("verified") === "true";
-  const slug = params.slug as string;
-
-  // Criar callbackUrl baseado no slug atual
-  const callbackUrl = slug ? `/${slug}` : null;
 
   // Preencher email se fornecido na URL
   useEffect(() => {
@@ -50,7 +44,7 @@ export default function ThankYouPage() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, callbackUrl }),
+        body: JSON.stringify({ email }),
       });
 
       const data = await response.json();
@@ -69,9 +63,7 @@ export default function ThankYouPage() {
   };
 
   const goToLogin = () => {
-    const currentPath = `/${slug}`;
-    const loginUrl = `/auth/signin?callbackUrl=${encodeURIComponent(currentPath)}`;
-    router.push(loginUrl);
+    router.push("/auth/signin");
   };
 
   return (
@@ -168,7 +160,7 @@ export default function ThankYouPage() {
           {/* Link para voltar */}
           <div className="text-center">
             <Link
-              href={slug ? `/${slug}` : "/"}
+              href="/"
               className="inline-flex items-center gap-2 text-sm text-gray-400 transition-colors hover:text-white"
             >
               <ArrowLeft className="h-4 w-4" />
@@ -178,5 +170,28 @@ export default function ThankYouPage() {
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+export default function ThankYouPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex justify-center bg-[var(--all-black)] px-4 py-8">
+          <Card className="w-full max-w-md border-gray-600 bg-[var(--card-product)]">
+            <CardHeader className="text-center">
+              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-500/10">
+                <CheckCircle className="h-8 w-8 text-green-400" />
+              </div>
+              <CardTitle className="text-center text-2xl text-white">
+                Carregando...
+              </CardTitle>
+            </CardHeader>
+          </Card>
+        </div>
+      }
+    >
+      <ThankYouContent />
+    </Suspense>
   );
 }

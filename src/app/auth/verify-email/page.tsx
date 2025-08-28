@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useSearchParams, useRouter, useParams } from "next/navigation";
+import { useEffect, useState, Suspense } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -13,10 +13,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 
-export default function VerifyEmailPage() {
+function VerifyEmailContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const params = useParams();
   const [isVerifying, setIsVerifying] = useState(false);
   const [isResending, setIsResending] = useState(false);
   const [email, setEmail] = useState("");
@@ -26,10 +25,6 @@ export default function VerifyEmailPage() {
 
   const token = searchParams.get("token");
   const emailParam = searchParams.get("email");
-  const slug = params.slug as string;
-
-  // Criar callbackUrl baseado no slug atual
-  const callbackUrl = slug ? `/${slug}` : null;
 
   // Preencher email se fornecido na URL
   useEffect(() => {
@@ -57,9 +52,7 @@ export default function VerifyEmailPage() {
         toast.success("Email verificado com sucesso!");
         setTimeout(() => {
           // Redirecionar para página de agradecimento
-          const thankYouUrl = slug
-            ? `/${slug}/auth/thank-you?verified=true&email=${encodeURIComponent(email)}`
-            : `/auth/thank-you?verified=true&email=${encodeURIComponent(email)}`;
+          const thankYouUrl = `/auth/thank-you?verified=true&email=${encodeURIComponent(email)}`;
           router.push(thankYouUrl);
         }, 3000);
       } else {
@@ -87,7 +80,7 @@ export default function VerifyEmailPage() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, callbackUrl }),
+        body: JSON.stringify({ email }),
       });
 
       const data = await response.json();
@@ -105,9 +98,7 @@ export default function VerifyEmailPage() {
   };
 
   const goToLogin = () => {
-    const currentPath = `/${slug}`;
-    const loginUrl = `/auth/signin?callbackUrl=${encodeURIComponent(currentPath)}`;
-    router.push(loginUrl);
+    router.push("/auth/signin");
   };
 
   if (isVerifying) {
@@ -146,9 +137,7 @@ export default function VerifyEmailPage() {
           <CardContent className="text-center">
             <Button
               onClick={() => {
-                const thankYouUrl = slug
-                  ? `/${slug}/auth/thank-you?verified=true&email=${encodeURIComponent(email)}`
-                  : `/auth/thank-you?verified=true&email=${encodeURIComponent(email)}`;
+                const thankYouUrl = `/auth/thank-you?verified=true&email=${encodeURIComponent(email)}`;
                 router.push(thankYouUrl);
               }}
               className="bg-[var(--button-primary)] text-white hover:bg-[var(--text-price-secondary)]"
@@ -242,5 +231,13 @@ export default function VerifyEmailPage() {
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+export default function VerifyEmailPage() {
+  return (
+    <Suspense fallback={<div>Carregando...</div>}>
+      <VerifyEmailContent />
+    </Suspense>
   );
 }
