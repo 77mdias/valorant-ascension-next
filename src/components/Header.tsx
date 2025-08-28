@@ -8,9 +8,16 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 
+import MenuNavigation from "./MenuNavigation";
+
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const router = useRouter();
+
+  const handleMenuToggle = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
   return (
     <header className="glass-card fixed left-0 right-0 top-0 z-50 border-b border-border/50">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
@@ -23,8 +30,10 @@ const Header = () => {
             height={32}
           />
           <span className="font-poppins text-xl font-bold italic">
-            Ascension Ne
-            <span className="font-extrabold italic text-pink-600">XT</span>
+            Ne
+            <span className="font-poppins text-xl font-extrabold italic text-pink-600">
+              XT
+            </span>
           </span>
         </Link>
 
@@ -62,24 +71,19 @@ const Header = () => {
           </a>
         </nav>
 
-        {/* CTA Button */}
-        <div className="hidden md:block">
-          <Button
-            className="btn-gradient rounded-full px-6 py-2 font-medium"
-            onClick={() => router.push("/auth/signin")}
-          >
-            Começar Agora
-          </Button>
-        </div>
+        <div className="flex items-center space-x-4">
+          {/* MENU DE LOGIN/PERFIL DESKTOP */}
+          <MenuNavigation />
 
-        {/* Mobile Menu Button */}
-        <button
-          className="p-2 md:hidden"
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-          aria-label="Toggle menu"
-        >
-          {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
+          {/* Botão de Menu Mobile */}
+          <button
+            className="p-2 md:hidden"
+            onClick={handleMenuToggle}
+            aria-label="Toggle menu"
+          >
+            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile Menu */}

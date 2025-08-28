@@ -3,16 +3,25 @@
 import { useSession } from "next-auth/react";
 import { UserRole } from "@prisma/client";
 
+interface UserWithRole {
+  id: string;
+  email: string;
+  name?: string;
+  role: UserRole;
+}
+
 export function useAuth() {
   const { data: session, status } = useSession();
 
+  const user = session?.user as UserWithRole | undefined;
+
   return {
-    user: session?.user,
+    user,
     isLoading: status === "loading",
-    isAuthenticated: !!session?.user,
-    isAdmin: (session?.user as any).role === UserRole.ADMIN,
-    isSeller: (session?.user as any).role === UserRole.PROFESSIONAL,
-    isCustomer: (session?.user as any).role === UserRole.CUSTOMER,
+    isAuthenticated: !!user,
+    isAdmin: user?.role === UserRole.ADMIN,
+    isSeller: user?.role === UserRole.PROFESSIONAL,
+    isCustomer: user?.role === UserRole.CUSTOMER,
     session,
     status,
   };
