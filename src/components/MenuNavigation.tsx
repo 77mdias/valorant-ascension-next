@@ -123,24 +123,24 @@ const MenuNavigation = () => {
           <NavigationMenuTrigger className="flex items-center">
             <Menu size={24} className="text-foreground/80" />
           </NavigationMenuTrigger>
-          <NavigationMenuContent className="flex p-8">
+          <NavigationMenuContent className="flex">
             <ul className="grid w-[200px] list-none gap-4">
-              <li className="flex flex-col gap-2">
+              <li className="flex flex-col py-3">
                 <NavigationMenuLink
                   asChild
-                  className="text-foreground/80 transition-colors hover:text-primary"
+                  className="p-3 px-5 text-foreground/80 transition-colors hover:bg-[#E7517B] hover:text-white"
                 >
                   <Link href="/auth/signin">Entrar</Link>
                 </NavigationMenuLink>
                 <NavigationMenuLink
                   asChild
-                  className="text-foreground/80 transition-colors hover:text-primary"
+                  className="p-3 px-5 text-foreground/80 transition-colors hover:bg-[#E7517B] hover:text-white"
                 >
                   <Link href="/auth/signup">Cadastrar</Link>
                 </NavigationMenuLink>
                 <NavigationMenuLink
                   asChild
-                  className="text-foreground/80 transition-colors hover:text-primary"
+                  className="p-3 px-5 text-foreground/80 transition-colors hover:bg-[#E7517B] hover:text-white"
                 >
                   <Link href="#">Suporte</Link>
                 </NavigationMenuLink>
@@ -153,27 +153,27 @@ const MenuNavigation = () => {
       {/* Mobile - Ícone de Usuário */}
       <NavigationMenu className="md:hidden">
         <NavigationMenuItem className="list-none">
-          <NavigationMenuTrigger className="flex items-center justify-center rounded-full bg-gradient-to-r from-[#E7517B] to-[#9146FF] transition-all duration-300 hover:from-[#D13F6A] hover:to-[#7A3DD8]">
+          <NavigationMenuTrigger className="flex items-center justify-center rounded-full transition-all duration-300 hover:from-[#D13F6A] hover:to-[#7A3DD8]">
             <User size={16} className="text-white" />
           </NavigationMenuTrigger>
-          <NavigationMenuContent className="flex p-8">
+          <NavigationMenuContent className="flex">
             <ul className="grid w-[200px] list-none gap-4">
-              <li className="flex flex-col gap-2">
+              <li className="flex flex-col py-3">
                 <NavigationMenuLink
                   asChild
-                  className="text-foreground/80 transition-colors hover:text-primary"
+                  className="p-3 px-5 text-foreground/80 transition-colors hover:bg-[#E7517B] hover:text-white"
                 >
                   <Link href="/auth/signin">Entrar</Link>
                 </NavigationMenuLink>
                 <NavigationMenuLink
                   asChild
-                  className="text-foreground/80 transition-colors hover:text-primary"
+                  className="p-3 px-5 text-foreground/80 transition-colors hover:bg-[#E7517B] hover:text-white"
                 >
                   <Link href="/auth/signup">Cadastrar</Link>
                 </NavigationMenuLink>
                 <NavigationMenuLink
                   asChild
-                  className="text-foreground/80 transition-colors hover:text-primary"
+                  className="p-3 px-5 text-foreground/80 transition-colors hover:bg-[#E7517B] hover:text-white"
                 >
                   <Link href="#">Suporte</Link>
                 </NavigationMenuLink>
