@@ -105,11 +105,11 @@ const Header = () => {
               Instrutores
             </a>
             <a
-              href="#ranking"
+              href="/mmr"
               className="py-2 text-foreground/80 transition-colors hover:text-primary"
               onClick={() => setIsMenuOpen(false)}
             >
-              Ranking
+              MMR
             </a>
             <a
               href="#comunidade"
