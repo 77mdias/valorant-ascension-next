@@ -891,6 +891,11 @@
 
   .playerCell {
     min-width: 200px;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
 
     @media (max-width: 768px) {
       min-width: 120px;
@@ -935,11 +940,27 @@
     text-overflow: ellipsis;
     white-space: nowrap;
     max-width: 100px;
+    position: relative;
 
     @media (max-width: 768px) {
       font-size: 0.75rem;
       max-width: 80px;
     }
+
+    &::after {
+      content: "🔗";
+      position: absolute;
+      right: -20px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.7rem;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+  }
+
+  .playerCell:hover .playerName::after {
+    opacity: 1;
   }
 
   .playerRank {

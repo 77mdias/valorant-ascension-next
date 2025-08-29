@@ -240,6 +240,13 @@ export default function MatchDetailsPage() {
     return new Date(dateString).toLocaleString("pt-BR");
   };
 
+  const handlePlayerClick = (playerName: string, playerTag: string) => {
+    const encodedName = encodeURIComponent(playerName);
+    const encodedTag = encodeURIComponent(playerTag);
+    // Redireciona para a página de MMR com os parâmetros pré-preenchidos
+    window.location.href = `/mmr?name=${encodedName}&tag=${encodedTag}&region=${region}`;
+  };
+
   // Função para calcular estatísticas adicionais do jogador
   const calculatePlayerStats = (player: MatchDetails["players"][0]) => {
     const kd =
@@ -560,7 +567,13 @@ export default function MatchDetailsPage() {
                               : styles.blueTeam
                           }
                         >
-                          <td className={styles.playerCell}>
+                          <td
+                            className={styles.playerCell}
+                            onClick={() =>
+                              handlePlayerClick(player.name, player.tag)
+                            }
+                            style={{ cursor: "pointer" }}
+                          >
                             <div className={styles.playerInfo}>
                               <img
                                 src={`https://media.valorant-api.com/agents/${player.agent?.id}/displayicon.png`}
@@ -642,7 +655,13 @@ export default function MatchDetailsPage() {
                           const stats = calculatePlayerStats(player);
                           return (
                             <tr key={player.puuid} className={styles.redTeam}>
-                              <td className={styles.playerCell}>
+                              <td
+                                className={styles.playerCell}
+                                onClick={() =>
+                                  handlePlayerClick(player.name, player.tag)
+                                }
+                                style={{ cursor: "pointer" }}
+                              >
                                 <div className={styles.playerInfo}>
                                   <img
                                     src={`https://media.valorant-api.com/agents/${player.agent?.id}/displayicon.png`}
@@ -719,7 +738,13 @@ export default function MatchDetailsPage() {
                           const stats = calculatePlayerStats(player);
                           return (
                             <tr key={player.puuid} className={styles.blueTeam}>
-                              <td className={styles.playerCell}>
+                              <td
+                                className={styles.playerCell}
+                                onClick={() =>
+                                  handlePlayerClick(player.name, player.tag)
+                                }
+                                style={{ cursor: "pointer" }}
+                              >
                                 <div className={styles.playerInfo}>
                                   <img
                                     src={`https://media.valorant-api.com/agents/${player.agent?.id}/displayicon.png`}

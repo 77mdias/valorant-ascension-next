@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   HenrikDevAPI,
   processPlayerData,
@@ -46,6 +46,83 @@ export default function PlayerSearch() {
   const [activeTab, setActiveTab] = useState<"overview" | "matches" | "stats">(
     "overview",
   );
+
+  // Função para executar busca diretamente com parâmetros
+  const performSearch = async (
+    name: string,
+    tag: string,
+    searchRegion: string,
+  ) => {
+    setLoading(true);
+    setError("");
+    setPlayerData(null);
+    setMatches([]);
+
+    try {
+      console.log(
+        "🔍 Buscando jogador automaticamente:",
+        name,
+        tag,
+        "na região:",
+        searchRegion,
+      );
+
+      // Buscar dados do jogador e MMR
+      const [playerResponse, mmrResponse] = await Promise.all([
+        HenrikDevAPI.getPlayer(name, tag, searchRegion),
+        HenrikDevAPI.getMMR(name, tag, searchRegion),
+      ]);
+
+      // Processar dados do jogador
+      const processedPlayer = processPlayerData(playerResponse, mmrResponse);
+      setPlayerData(processedPlayer);
+
+      // Buscar partidas recentes
+      const matchesResponse = await HenrikDevAPI.getMatches(
+        name,
+        tag,
+        searchRegion,
+        "competitive",
+        5,
+      );
+
+      const processedMatches = matchesResponse
+        .map((match: HenrikDevMatch) => processMatchData(match, name))
+        .filter(Boolean) as MatchData[];
+
+      setMatches(processedMatches);
+    } catch (err: unknown) {
+      console.error("❌ Erro na busca automática:", err);
+      setError(err instanceof Error ? err.message : "Erro ao buscar jogador");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Ler parâmetros da URL ao carregar a página
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const nameParam = urlParams.get("name");
+    const tagParam = urlParams.get("tag");
+    const regionParam = urlParams.get("region");
+
+    if (nameParam && tagParam) {
+      // Preencher o input com o nome e tag da URL
+      setSearchInput(`${nameParam}#${tagParam}`);
+
+      // Atualizar a região se fornecida
+      if (regionParam) {
+        setRegion(regionParam);
+      }
+
+      // Executar a busca automaticamente após um pequeno delay
+      const timer = setTimeout(() => {
+        performSearch(nameParam, tagParam, regionParam || region);
+      }, 500);
+
+      return () => clearTimeout(timer);
+    }
+  }, []); // Executar apenas uma vez ao montar o componente
 
   const handleSearch = async () => {
     if (!searchInput.trim()) return;
