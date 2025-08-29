@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Users, Trophy, Clock, Award } from "lucide-react";
+import styles from "@/scss/components/CourseCard.module.scss";
 
 const StatsSection = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -56,7 +57,9 @@ const StatsSection = () => {
               style={{ transitionDelay: `${index * 100}ms` }}
             >
               {/* Icon Container */}
-              <div className="hover:shadow-neon group inline-flex h-16 w-16 items-center justify-center rounded-lg border border-border bg-card transition-all duration-300 hover:border-primary/50">
+              <div
+                className={`${styles.hoverShadowNeon} group inline-flex h-16 w-16 items-center justify-center rounded-lg border border-border bg-card transition-all duration-300 hover:border-primary/50`}
+              >
                 <div className={stat.color}>{stat.icon}</div>
               </div>
 

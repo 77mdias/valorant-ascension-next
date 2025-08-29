@@ -21,6 +21,8 @@ import heroBg from "../../../public/hero-bg.jpg";
 import Image from "next/image";
 import StatsSection from "@/components/StatsSection";
 import TestimonialCarousel from "@/components/TestimonialCarousel";
+import CoursePageLoading from "@/components/CoursePageLoading";
+import ProjectInfoCompact from "@/components/ProjectInfoCompact";
 
 const Courses = async () => {
   const lessons = await db.lessonCategory.findMany({
@@ -130,10 +132,12 @@ const Courses = async () => {
         <div className="bg-gradient-accent absolute inset-0 opacity-10"></div>
         <div className="container relative mx-auto px-4">
           <div className="to-accent-orange/20 mx-auto max-w-3xl space-y-8 rounded-2xl border border-primary/20 bg-gradient-to-r from-primary/20 via-secondary/20 p-12 text-center">
-            <Trophy className="text-accent-orange mx-auto h-16 w-16" />
+            <Trophy className={`${styles.accentOrange} mx-auto h-16 w-16`} />
             <h2 className="text-3xl font-bold md:text-5xl">
               Pronto para{" "}
-              <span className="bg-gradient-accent bg-clip-text text-transparent">
+              <span
+                className={`${styles.bgGradientAccent} bg-clip-text text-transparent`}
+              >
                 Dominar o Valorant?
               </span>
             </h2>
@@ -143,13 +147,16 @@ const Courses = async () => {
             </p>
             <Button
               size="lg"
-              className="bg-gradient-accent hover:shadow-neon-lg px-12 py-6 text-lg text-primary-foreground transition-all duration-300"
+              className={`${styles.bgGradientAccent} ${styles.buttonAccent} px-12 py-6 text-lg text-primary-foreground`}
             >
               Começar Agora
             </Button>
           </div>
         </div>
       </section>
+
+      {/* Project Info */}
+      <ProjectInfoCompact />
     </div>
   );
 };

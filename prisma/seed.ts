@@ -67,15 +67,19 @@ async function main() {
   const categoryIds: { [key: string]: string } = {};
 
   for (const category of categories) {
+    const slug = category.name.toLowerCase().replace(/ /g, "-");
+
     const existingCategory = await prisma.lessonCategory.findFirst({
-      where: { name: category.name },
+      where: {
+        OR: [{ name: category.name }, { slug: slug }],
+      },
     });
 
     if (!existingCategory) {
       const newCategory = await prisma.lessonCategory.create({
         data: {
           ...category,
-          slug: category.name.toLowerCase().replace(/ /g, "-"),
+          slug: slug,
         },
       });
       categoryIds[category.name] = newCategory.id;
@@ -111,6 +115,8 @@ async function main() {
   const lessons = [
     {
       title: "Introdução ao Valorant",
+      number: 1,
+      duration: 10,
       description: "Visão geral do jogo, objetivos e mecânicas básicas",
       categoryId: categoryIds["Valorant Básico"],
       videoUrl: "https://example.com/placeholder-video.mp4",
@@ -118,6 +124,8 @@ async function main() {
     },
     {
       title: "Agentes: Funções e Habilidades",
+      number: 2,
+      duration: 17,
       description:
         "Guia completo sobre os 4 tipos de agentes e suas habilidades",
       categoryId: categoryIds["Agentes"],
@@ -126,12 +134,16 @@ async function main() {
     },
     {
       title: "Mapas: Callouts e Estratégias",
+      number: 3,
+      duration: 15,
       categoryId: categoryIds["Mapas"],
       videoUrl: "https://example.com/placeholder-video.mp4",
       thumbnailUrl: "https://example.com/placeholder-thumb.jpg",
     },
     {
       title: "Economia do Jogo",
+      number: 4,
+      duration: 24,
       description:
         "Como gerenciar créditos, compras de equipamentos e economia por rodada",
       categoryId: categoryIds["Estratégia"],
@@ -140,6 +152,8 @@ async function main() {
     },
     {
       title: "Aim e Controle de Recuo",
+      number: 5,
+      duration: 16,
       categoryId: categoryIds["Mecânicas"],
       videoUrl: "https://example.com/placeholder-video.mp4",
       thumbnailUrl: "https://example.com/placeholder-thumb.jpg",

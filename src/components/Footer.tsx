@@ -6,17 +6,22 @@ import {
   Youtube,
   MessageCircle,
 } from "lucide-react";
+import styles from "@/scss/components/CourseCard.module.scss";
 
 const Footer = () => {
   const socialLinks = [
     {
       icon: <MessageCircle className="h-5 w-5" />,
-      href: "#",
+      href: "",
       label: "Discord",
     },
-    { icon: <Youtube className="h-5 w-5" />, href: "#", label: "YouTube" },
+    { icon: <Youtube className="h-5 w-5" />, href: "", label: "YouTube" },
     { icon: <Twitter className="h-5 w-5" />, href: "#", label: "Twitch" },
-    { icon: <Instagram className="h-5 w-5" />, href: "#", label: "Twitter" },
+    {
+      icon: <Instagram className="h-5 w-5" />,
+      href: "https://www.instagram.com/77mdias/",
+      label: "Twitter",
+    },
   ];
 
   const quickLinks = [
@@ -33,7 +38,9 @@ const Footer = () => {
           {/* Brand */}
           <div className="space-y-4">
             <Link href="/" className="inline-block">
-              <span className="bg-gradient-primary bg-clip-text text-2xl font-bold text-transparent">
+              <span
+                className={`${styles.bgGradient} bg-clip-text text-2xl font-bold text-transparent`}
+              >
                 NeXT
               </span>
             </Link>

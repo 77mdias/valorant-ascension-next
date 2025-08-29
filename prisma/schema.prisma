@@ -69,10 +69,14 @@ model lessons {
   id           String              @id @default(uuid())
   title        String
   description  String?
+  number       Int?
   categoryId   String
   videoUrl     String?
   thumbnailUrl String?
   isLive       Boolean             @default(false)
+  isLocked     Boolean             @default(false)
+  isCompleted  Boolean             @default(false)
+  duration     Int?
   scheduledAt  DateTime?
   createdAt    DateTime            @default(now())
   updatedAt    DateTime            @updatedAt
@@ -272,7 +276,7 @@ model mapTutorials {
 enum LessonLevel {
   INICIANTE
   INTERMEDIARIO
-  AVANCADO @map("AVANÇADO")    // Nome interno vs nome no banco
+  AVANCADO      @map("AVANÇADO") // Nome interno vs nome no banco
   IMORTAL
 }
 

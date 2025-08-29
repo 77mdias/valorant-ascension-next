@@ -80,3 +80,22 @@
 .shadowNeon {
   box-shadow: var(--shadow-neon);
 }
+
+.hoverShadowNeon {
+  &:hover {
+    box-shadow: var(--shadow-neon);
+  }
+}
+
+.accentOrange {
+  color: hsl(var(--accent-orange));
+  fill: hsl(var(--accent-orange));
+}
+
+.buttonAccent {
+  transition: all 0.6s ease;
+  &:hover {
+    background-image: var(--gradient-secondary);
+    box-shadow: var(--shadow-neon-lg);
+  }
+}

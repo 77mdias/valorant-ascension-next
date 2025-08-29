@@ -9,6 +9,7 @@ import { Icon, Target } from "lucide-react";
 import { Brain, Flame, Users, Map, Shield, Zap } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import TruncatedText from "./TruncatedText";
 
 interface CourseCardProps {
   title: string;
@@ -48,11 +49,6 @@ const CourseCard = ({
     AVANCADO: `${styles.bgGradientAccent}`,
     IMORTAL: `${styles.bgGradientPrimary}`,
   };
-
-  if (!description) {
-    const description = "Não há descrição para este curso";
-    return;
-  }
 
   //TODO: TRANSLATE PARA PASCALCASE
   const levelText = {
@@ -99,9 +95,11 @@ const CourseCard = ({
         </div>
 
         {/* CONTEÚDO CENTRAL */}
-        <p className="text-sm leading-relaxed text-muted-foreground">
-          {description}
-        </p>
+        <TruncatedText
+          text={description || "Não há descrição para este curso"}
+          maxLength={120}
+          className="text-sm leading-relaxed text-muted-foreground"
+        />
 
         {/* CONTEÚDO INFERIOR BOTÃO SAIBA MAIS*/}
         <Link href={`/cursos/${categorySlug}`}>

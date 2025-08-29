@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import styles from "@/scss/components/CourseCard.module.scss";
 
 const TestimonialCarousel = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -64,7 +65,9 @@ const TestimonialCarousel = () => {
         <div className="mb-12 text-center">
           <h2 className="mb-4 text-3xl font-bold md:text-4xl">
             O que nossos{" "}
-            <span className="bg-gradient-primary bg-clip-text text-transparent">
+            <span
+              className={`${styles.bgGradient} bg-clip-text text-transparent`}
+            >
               Alunos
             </span>{" "}
             falam
@@ -106,7 +109,9 @@ const TestimonialCarousel = () => {
                     {/* Avatar */}
                     <Avatar className="mx-auto h-20 w-20 border-2 border-primary/20">
                       <AvatarImage src="" />
-                      <AvatarFallback className="bg-gradient-primary text-lg font-bold text-primary-foreground">
+                      <AvatarFallback
+                        className={`${styles.bgGradient} text-lg font-bold text-primary-foreground`}
+                      >
                         {testimonial.avatar}
                       </AvatarFallback>
                     </Avatar>
@@ -116,7 +121,7 @@ const TestimonialCarousel = () => {
                       {[...Array(testimonial.rating)].map((_, i) => (
                         <Star
                           key={i}
-                          className="fill-accent-orange text-accent-orange h-5 w-5"
+                          className={`${styles.accentOrange} h-5 w-5`}
                         />
                       ))}
                     </div>

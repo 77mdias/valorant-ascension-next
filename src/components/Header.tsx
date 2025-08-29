@@ -9,6 +9,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import MenuNavigation from "./MenuNavigation";
+import styles from "@/scss/components/CourseCard.module.scss";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -41,33 +42,48 @@ const Header = () => {
         <nav className="hidden items-center space-x-8 md:flex">
           <a
             href="/cursos"
-            className="text-foreground/80 transition-colors hover:text-primary"
+            className="group relative text-foreground/80 transition-colors duration-200 hover:text-primary"
           >
             Cursos
+            <span
+              className={`${styles.bgGradient} absolute -bottom-1 left-0 h-0.5 w-0 transition-all duration-300 group-hover:w-full`}
+            ></span>
           </a>
           <a
             href="#instrutores"
-            className="text-foreground/80 transition-colors hover:text-primary"
+            className="group relative text-foreground/80 transition-colors duration-200 hover:text-primary"
           >
             Instrutores
+            <span
+              className={`${styles.bgGradient} absolute -bottom-1 left-0 h-0.5 w-0 transition-all duration-300 group-hover:w-full`}
+            ></span>
           </a>
           <a
             href="/mmr"
-            className="text-foreground/80 transition-colors hover:text-primary"
+            className="group relative text-foreground/80 transition-colors duration-200 hover:text-primary"
           >
             MMR
+            <span
+              className={`${styles.bgGradient} absolute -bottom-1 left-0 h-0.5 w-0 transition-all duration-300 group-hover:w-full`}
+            ></span>
           </a>
           <a
             href="#comunidade"
-            className="text-foreground/80 transition-colors hover:text-primary"
+            className="group relative text-foreground/80 transition-colors duration-200 hover:text-primary"
           >
             Comunidade
+            <span
+              className={`${styles.bgGradient} absolute -bottom-1 left-0 h-0.5 w-0 transition-all duration-300 group-hover:w-full`}
+            ></span>
           </a>
           <a
             href="#precos"
-            className="text-foreground/80 transition-colors hover:text-primary"
+            className="group relative text-foreground/80 transition-colors duration-200 hover:text-primary"
           >
             Preços
+            <span
+              className={`${styles.bgGradient} absolute -bottom-1 left-0 h-0.5 w-0 transition-all duration-300 group-hover:w-full`}
+            ></span>
           </a>
         </nav>
 
