@@ -64,6 +64,7 @@ export interface HenrikDevMatch {
       season_id: string;
       platform: string;
       matchid: string;
+      match_id?: string; // API v3 pode usar match_id
       premier_info: {
         tournament_id: string;
         matchup_id: string;
@@ -718,9 +719,6 @@ export class HenrikDevAPI {
       const data = await response.json();
 
       if (!data.matches) {
-        console.warn(
-          "⚠️ Dados de partidas não encontrados, retornando array vazio",
-        );
         return [];
       }
 
@@ -774,32 +772,48 @@ export function processPlayerData(
   };
 }
 
-export function processMatchData(match: HenrikDevMatch, playerName: string) {
-  const player = match.data.players.all_players.find(
-    (p) => p.name === playerName,
+export function processMatchData(match: any, playerName: string) {
+  // API v3 retorna uma estrutura mais simples
+  // Verificar se temos os dados necessários
+  if (!match || !match.metadata) {
+    console.log("❌ Dados da partida inválidos:", match);
+    return null;
+  }
+
+  // Na API v3, os dados do jogador podem estar em uma estrutura diferente
+  // Vamos procurar o jogador nos dados disponíveis
+  const player = match.players?.all_players?.find(
+    (p: any) => p.name.toLowerCase().trim() === playerName.toLowerCase().trim(),
   );
-  if (!player) return null;
+
+  if (!player) {
+    console.log("❌ Jogador não encontrado na partida:", playerName);
+    return null;
+  }
 
   return {
-    id: match.data.metadata.matchid,
-    map: match.data.metadata.map,
-    mode: match.data.metadata.mode,
+    id: match.metadata.matchid || match.metadata.match_id,
+    map: match.metadata.map,
+    mode: match.metadata.mode,
     agent: player.character,
-    result:
-      player.team === "Red"
-        ? match.data.teams.red.has_won
-          ? "win"
-          : "loss"
-        : match.data.teams.blue.has_won
-          ? "win"
-          : "loss",
-    score: `${match.data.teams.red.rounds_won}-${match.data.teams.blue.rounds_won}`,
-    kills: player.stats.kills,
-    deaths: player.stats.deaths,
-    assists: player.stats.assists,
-    headshots: player.stats.headshots,
-    damage: player.damage_made,
-    date: new Date(match.data.metadata.game_start * 1000),
-    duration: Math.round(match.data.metadata.game_length / 60),
+    result: match.teams?.red?.has_won
+      ? player.team === "Red"
+        ? "win"
+        : "loss"
+      : player.team === "Blue"
+        ? "win"
+        : "loss",
+    score: match.teams
+      ? `${match.teams.red?.rounds_won || 0}-${match.teams.blue?.rounds_won || 0}`
+      : "0-0",
+    kills: player.stats?.kills || 0,
+    deaths: player.stats?.deaths || 0,
+    assists: player.stats?.assists || 0,
+    headshots: player.stats?.headshots || 0,
+    damage: player.damage_made || 0,
+    date: new Date(
+      (match.metadata.game_start || match.metadata.game_start_patched) * 1000,
+    ),
+    duration: Math.round((match.metadata.game_length || 0) / 60),
   };
 }

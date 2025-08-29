@@ -82,6 +82,7 @@ export default function PlayerSearch() {
         "competitive",
         5,
       );
+
       const processedMatches = matchesResponse
         .map((match: HenrikDevMatch) => processMatchData(match, name))
         .filter(Boolean) as MatchData[];
@@ -103,6 +104,17 @@ export default function PlayerSearch() {
         return styles.loss;
       default:
         return styles.draw;
+    }
+  };
+
+  const getResultEmoji = (result: string) => {
+    switch (result) {
+      case "win":
+        return "✅";
+      case "loss":
+        return "❌";
+      default:
+        return "🤝";
     }
   };
 
@@ -264,46 +276,136 @@ export default function PlayerSearch() {
             {activeTab === "matches" && (
               <div className={styles.matches}>
                 {matches.length === 0 ? (
-                  <p>Nenhuma partida competitiva encontrada recentemente.</p>
-                ) : (
-                  <div className={styles.matchesList}>
-                    {matches.map((match) => (
-                      <div
-                        key={match.id}
-                        className={`${styles.matchCard} ${getResultColor(match.result)}`}
-                      >
-                        <div className={styles.matchHeader}>
-                          <span className={styles.map}>{match.map}</span>
-                          <span className={styles.agent}>{match.agent}</span>
-                          <span className={styles.result}>
-                            {match.result.toUpperCase()}
-                          </span>
-                        </div>
-                        <div className={styles.matchStats}>
-                          <div className={styles.score}>
-                            <span>Score: {match.score}</span>
-                            <span>Duração: {match.duration}min</span>
-                          </div>
-                          <div className={styles.kda}>
-                            <span>K: {match.kills}</span>
-                            <span>D: {match.deaths}</span>
-                            <span>A: {match.assists}</span>
-                            <span>HS: {match.headshots}</span>
-                          </div>
-                          <div className={styles.damage}>
-                            <span>Dano: {match.damage.toLocaleString()}</span>
-                          </div>
-                        </div>
-                        <div className={styles.matchDate}>
-                          {match.date.toLocaleDateString("pt-BR")} às{" "}
-                          {match.date.toLocaleTimeString("pt-BR", {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          })}
-                        </div>
-                      </div>
-                    ))}
+                  <div className={styles.noMatches}>
+                    <p>
+                      🎮 Nenhuma partida competitiva encontrada recentemente.
+                    </p>
+                    <p className={styles.noMatchesSub}>
+                      O jogador pode não ter jogado partidas competitivas nas
+                      últimas 5 partidas.
+                    </p>
                   </div>
+                ) : (
+                  <>
+                    <div className={styles.matchesHeader}>
+                      <h3>📊 Últimas {matches.length} Partidas</h3>
+                      <div className={styles.matchesSummary}>
+                        <span className={styles.winCount}>
+                          ✅ Vitórias:{" "}
+                          {matches.filter((m) => m.result === "win").length}
+                        </span>
+                        <span className={styles.lossCount}>
+                          ❌ Derrotas:{" "}
+                          {matches.filter((m) => m.result === "loss").length}
+                        </span>
+                      </div>
+                    </div>
+                    <div className={styles.matchesList}>
+                      {matches.map((match, index) => (
+                        <div
+                          key={match.id}
+                          className={`${styles.matchCard} ${getResultColor(match.result)}`}
+                          onClick={() => {
+                            // Navegar para a página de detalhes da partida
+                            window.open(
+                              `/match/${match.id}?region=${region}`,
+                              "_self",
+                            );
+                          }}
+                          style={{ cursor: "pointer" }}
+                        >
+                          <div className={styles.matchHeader}>
+                            <div className={styles.matchInfo}>
+                              <span className={styles.map}>{match.map}</span>
+                              <span className={styles.agent}>
+                                {match.agent}
+                              </span>
+                              <span className={styles.matchNumber}>
+                                #{index + 1}
+                              </span>
+                            </div>
+                            <div className={styles.matchResult}>
+                              <span
+                                className={`${styles.result} ${getResultColor(match.result)}`}
+                              >
+                                {match.result === "win"
+                                  ? "✅ VITÓRIA"
+                                  : "❌ DERROTA"}
+                              </span>
+                              <span className={styles.score}>
+                                {match.score}
+                              </span>
+                            </div>
+                          </div>
+                          <div className={styles.matchStats}>
+                            <div className={styles.kdaSection}>
+                              <div className={styles.kda}>
+                                <span className={styles.kdaLabel}>KDA:</span>
+                                <span className={styles.kdaValue}>
+                                  {match.kills}/{match.deaths}/{match.assists}
+                                </span>
+                                <span className={styles.kdaRatio}>
+                                  (
+                                  {(
+                                    (match.kills + match.assists) /
+                                    Math.max(match.deaths, 1)
+                                  ).toFixed(2)}
+                                  )
+                                </span>
+                              </div>
+                              <div className={styles.headshots}>
+                                <span className={styles.headshotsLabel}>
+                                  HS:
+                                </span>
+                                <span className={styles.headshotsValue}>
+                                  {match.headshots}
+                                </span>
+                                <span className={styles.headshotsPercent}>
+                                  (
+                                  {(
+                                    (match.headshots /
+                                      Math.max(match.kills, 1)) *
+                                    100
+                                  ).toFixed(0)}
+                                  %)
+                                </span>
+                              </div>
+                            </div>
+                            <div className={styles.damageSection}>
+                              <div className={styles.damage}>
+                                <span className={styles.damageLabel}>
+                                  Dano:
+                                </span>
+                                <span className={styles.damageValue}>
+                                  {match.damage.toLocaleString()}
+                                </span>
+                              </div>
+                              <div className={styles.duration}>
+                                <span className={styles.durationLabel}>
+                                  Duração:
+                                </span>
+                                <span className={styles.durationValue}>
+                                  {match.duration}min
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                          <div className={styles.matchFooter}>
+                            <div className={styles.matchDate}>
+                              {match.date.toLocaleDateString("pt-BR")} às{" "}
+                              {match.date.toLocaleTimeString("pt-BR", {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })}
+                            </div>
+                            <div className={styles.matchId}>
+                              ID: {match.id.substring(0, 8)}...
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </>
                 )}
               </div>
             )}
