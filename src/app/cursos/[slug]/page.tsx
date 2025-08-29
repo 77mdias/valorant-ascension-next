@@ -1,6 +1,4 @@
-"use server";
-
-// src/app/cursos/[categoryName]/page.tsx
+// src/app/cursos/[slug]/page.tsx
 import { db } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 
