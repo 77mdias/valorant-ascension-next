@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.scss";
 import Header from "@/components/Header";
 import { Providers } from "@/providers/SessionProvider";
+import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
   title: "Valorant Ascension Next",
@@ -21,6 +22,7 @@ export default function RootLayout({
           <div className="flex min-h-screen flex-col content-center bg-background">
             <Header />
             <main className="page-with-fixed-header">{children}</main>
+            <Footer />
           </div>
         </Providers>
       </body>

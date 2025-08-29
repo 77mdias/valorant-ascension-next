@@ -34,7 +34,6 @@ model user {
   isActive                 Boolean             @default(false)
   createdAt                DateTime            @default(now())
   updatedAt                DateTime            @updatedAt
-  sessions                 Session[]
   accounts                 account[]
   classMembers             classMembers[]
   classes                  classes[]
@@ -42,6 +41,7 @@ model user {
   lessonEnrollments        lessonEnrollments[]
   lessonProgress           lessonProgress[]
   lessons                  lessons[]
+  sessions                 Session[]
   userAchievements         userAchievements[]
 }
 
@@ -56,9 +56,13 @@ model Session {
 }
 
 model lessonCategory {
-  id      String    @id @default(uuid())
-  name    String
-  lessons lessons[]
+  id          String      @id @default(uuid())
+  name        String
+  description String?
+  slug        String      @unique @default("default-slug")
+  icon        String?
+  level       LessonLevel @default(INICIANTE)
+  lessons     lessons[]
 }
 
 model lessons {
@@ -263,6 +267,13 @@ model mapTutorials {
   url   String
   type  TutorialType @default(VIDEO)
   map   maps         @relation(fields: [mapId], references: [id])
+}
+
+enum LessonLevel {
+  INICIANTE
+  INTERMEDIARIO
+  AVANCADO @map("AVANÇADO")    // Nome interno vs nome no banco
+  IMORTAL
 }
 
 enum UserRole {

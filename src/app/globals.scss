@@ -2,6 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
 body {
   font-family: Arial, Helvetica, sans-serif;
 }
@@ -21,97 +28,88 @@ body {
 
 @layer base {
   :root {
-    /* Core Brand Colors */
-    --background: 225 21% 6%; /* #0F1419 */
-    --foreground: 0 0% 100%; /* #FFFFFF */
+    /* Dark gaming theme - always dark mode */
+    --background: 240 10% 3%;
+    --foreground: 0 0% 95%;
 
-    --card: 225 14% 12%; /* #1B1F24 */
-    --card-foreground: 0 0% 100%;
+    --card: 240 10% 8%;
+    --card-foreground: 0 0% 95%;
+    --card-hover: hsl(240 10% 12%);
 
-    --popover: 225 14% 12%;
-    --popover-foreground: 0 0% 100%;
+    --popover: 240 10% 8%;
+    --popover-foreground: 0 0% 95%;
 
-    /* Valorant Red Primary */
-    --primary: 355 94% 65%; /* #FF4655 */
+    /* Neon Pink/Magenta */
+    --primary: 335 100% 52%;
     --primary-foreground: 0 0% 100%;
+    --primary-glow: 335 100% 62%;
 
-    /* Twitch Purple Secondary */
-    --secondary: 260 100% 65%; /* #9146FF */
+    /* Purple */
+    --secondary: 270 60% 55%;
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 225 9% 21%; /* #2A2F36 */
-    --muted-foreground: 0 0% 70%; /* #B3B3B3 */
+    --muted: 240 10% 15%;
+    --muted-foreground: 240 5% 65%;
 
-    /* Crunchyroll Orange Accent */
-    --accent: 24 100% 55%; /* #FF7A1A */
+    /* Purple accent */
+    --accent: 270 60% 55%;
     --accent-foreground: 0 0% 100%;
+    --accent-orange: 25 95% 60%;
+    --accent-cyan: 187 92% 47%;
 
-    /* Ciano Accent */
-    --ciano: 190 100% 50%; /* #00D9FF */
-    --ciano-foreground: 225 21% 6%;
-
-    /* Golden Accent */
-    --golden: 48 100% 62%; /* #FFD23F */
-    --golden-foreground: 225 21% 6%;
-
-    --destructive: 355 94% 65%;
+    --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 225 9% 21%;
-    --input: 225 9% 21%;
-    --ring: 355 94% 65%;
+    --border: 240 10% 20%;
+    --input: 240 10% 20%;
+    --ring: 335 100% 52%;
 
     --radius: 0.75rem;
 
     /* Gradients */
-    --gradient-hero: linear-gradient(
-      135deg,
-      hsl(225, 21%, 6%) 0%,
-      hsl(225, 14%, 12%) 100%
-    );
-    --gradient-card: linear-gradient(
-      145deg,
-      hsl(225, 14%, 12%) 0%,
-      hsl(225, 9%, 21%) 100%
-    );
     --gradient-primary: linear-gradient(
       135deg,
-      hsl(355, 94%, 65%) 0%,
-      hsl(260, 100%, 65%) 100%
+      hsl(335 100% 52%),
+      hsl(270 60% 55%)
+    );
+    --gradient-secondary: linear-gradient(
+      135deg,
+      hsl(270 60% 55%),
+      hsl(187 92% 47%)
     );
     --gradient-accent: linear-gradient(
       135deg,
-      hsl(260, 100%, 65%) 0%,
-      hsl(24, 100%, 55%) 100%
+      hsl(25 95% 60%),
+      hsl(335 100% 52%)
     );
+    --gradient-radial: radial-gradient(
+      circle at 50% 50%,
+      hsl(335 100% 52% / 0.2),
+      transparent 70%
+    );
+    --gradient-hero: linear-gradient(
+      180deg,
+      hsl(240 10% 3% / 0) 0%,
+      hsl(240 10% 3%) 100%
+    );
+    --gradient-card: linear-gradient(135deg, hsl(240 10% 8%), hsl(240 10% 12%));
 
     /* Shadows */
-    --shadow-card: 0 8px 24px rgba(0, 0, 0, 0.25);
-    --shadow-card-hover: 0 12px 32px rgba(0, 0, 0, 0.35);
-    --shadow-glow: 0 0 40px rgba(255, 70, 85, 0.2);
+    --shadow-neon: 0 0 20px hsl(335 100% 52% / 0.5);
+    --shadow-neon-lg: 0 0 40px hsl(335 100% 52% / 0.6);
+    --shadow-glow: 0 0 60px hsl(335 100% 52% / 0.3);
+    --shadow-card: 0 4px 20px hsl(240 10% 3% / 0.5);
 
-    /* Glassmorphism */
-    --glass-bg: hsla(225, 14%, 12%, 0.8);
-    --glass-border: hsla(0, 0%, 100%, 0.1);
-
-    --sidebar-background: 0 0% 98%;
-
-    --sidebar-foreground: 240 5.3% 26.1%;
-
-    --sidebar-primary: 240 5.9% 10%;
-
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    /* Sidebar */
+    --sidebar-background: 240 10% 5%;
+    --sidebar-foreground: 0 0% 95%;
+    --sidebar-primary: 335 100% 52%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 10% 15%;
+    --sidebar-accent-foreground: 0 0% 95%;
+    --sidebar-border: 240 10% 20%;
+    --sidebar-ring: 335 100% 52%;
   }
-
-  /* Keep dark mode consistent with our dark theme */
 }
 
 @layer base {

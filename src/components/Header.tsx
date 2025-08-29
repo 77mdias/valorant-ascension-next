@@ -40,7 +40,7 @@ const Header = () => {
         {/* Desktop Navigation */}
         <nav className="hidden items-center space-x-8 md:flex">
           <a
-            href="#cursos"
+            href="/cursos"
             className="text-foreground/80 transition-colors hover:text-primary"
           >
             Cursos

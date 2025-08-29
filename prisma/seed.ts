@@ -73,7 +73,10 @@ async function main() {
 
     if (!existingCategory) {
       const newCategory = await prisma.lessonCategory.create({
-        data: category,
+        data: {
+          ...category,
+          slug: category.name.toLowerCase().replace(/ /g, "-"),
+        },
       });
       categoryIds[category.name] = newCategory.id;
       console.log(`Categoria criada: ${category.name}`);
