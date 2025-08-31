@@ -129,6 +129,7 @@ export async function POST(req: NextRequest) {
               currentPeriodEnd: new Date(
                 subscription.current_period_end * 1000,
               ),
+              cancelAtPeriodEnd: subscription.cancel_at_period_end || false,
             },
             update: {
               status: subscription.status,
@@ -139,6 +140,7 @@ export async function POST(req: NextRequest) {
               currentPeriodEnd: new Date(
                 subscription.current_period_end * 1000,
               ),
+              cancelAtPeriodEnd: subscription.cancel_at_period_end || false,
             },
           });
 
@@ -171,6 +173,7 @@ export async function POST(req: NextRequest) {
               currentPeriodEnd: new Date(
                 subscription.current_period_end * 1000,
               ),
+              cancelAtPeriodEnd: true,
             },
           });
 
