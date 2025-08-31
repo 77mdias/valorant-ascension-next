@@ -77,10 +77,19 @@ export async function POST(req: NextRequest) {
     }
 
     // Verificar e formatar URL base
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL;
+    // Aceitamos tanto NEXT_PUBLIC_APP_URL quanto NEXT_PUBLIC_BASE_URL (fallback)
+    const baseUrl =
+      process.env.NEXT_PUBLIC_APP_URL || process.env.NEXT_PUBLIC_BASE_URL;
+
     if (!baseUrl) {
+      console.error(
+        "❌ Variável de ambiente faltando: defina NEXT_PUBLIC_APP_URL ou NEXT_PUBLIC_BASE_URL no deploy",
+      );
       return NextResponse.json(
-        { error: "Configuração do servidor incompleta" },
+        {
+          error:
+            "Configuração do servidor incompleta. Variáveis NEXT_PUBLIC_APP_URL/NEXT_PUBLIC_BASE_URL ausentes.",
+        },
         { status: 500 },
       );
     }
@@ -88,6 +97,7 @@ export async function POST(req: NextRequest) {
     const formattedBaseUrl = baseUrl.startsWith("http")
       ? baseUrl
       : `https://${baseUrl}`;
+    console.log("🔎 Base URL usada para checkout:", formattedBaseUrl);
 
     // Criar sessão de checkout
     console.log("🔄 Criando sessão de checkout...");
