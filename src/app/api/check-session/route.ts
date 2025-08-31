@@ -4,7 +4,11 @@ import { z } from "zod";
 import Stripe from "stripe";
 
 import { authOptions } from "@/lib/auth";
-import { retrieveSession, retrieveSubscription } from "@/lib/stripe";
+import {
+  retrieveSession,
+  retrieveSubscription,
+  updateSubscription,
+} from "@/lib/stripe";
 import { db } from "@/lib/prisma";
 
 // Schema para validação
@@ -143,6 +147,29 @@ export async function GET(req: NextRequest) {
         },
         { status: 200 },
       );
+    }
+
+    // Fallback: se detectarmos metadata de upgrade e previousSubscriptionId, garantir DB marcado
+    if (
+      checkoutSession.metadata?.isUpgrade === "true" &&
+      checkoutSession.metadata?.previousSubscriptionId
+    ) {
+      const prevId = checkoutSession.metadata.previousSubscriptionId;
+      try {
+        await updateSubscription(prevId, { cancel_at_period_end: true });
+        await db.subscription.updateMany({
+          where: { stripeSubscriptionId: prevId },
+          data: { cancelAtPeriodEnd: true },
+        });
+        console.log(
+          "🔁 Fallback: assinatura anterior marcada como cancelAtPeriodEnd=true",
+          {
+            previousSubscriptionId: prevId,
+          },
+        );
+      } catch (e) {
+        console.warn("⚠️ Fallback falhou ao marcar assinatura anterior:", e);
+      }
     }
 
     // Retorna os detalhes relevantes

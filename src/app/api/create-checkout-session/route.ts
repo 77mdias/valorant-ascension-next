@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
 import { authOptions } from "@/lib/auth";
-import { createCheckoutSession } from "@/lib/stripe";
+import { createCheckoutSession, updateSubscription } from "@/lib/stripe";
 import { db } from "@/lib/prisma";
 import { PLANOS, getPlanTypeFromPriceId } from "@/config/stripe-config";
 
@@ -72,8 +72,26 @@ export async function POST(req: NextRequest) {
         userId: session.user.id,
       });
 
-      // Para upgrade/downgrade, cancelamos a assinatura atual primeiro
-      // O Stripe vai criar uma nova assinatura e cancelar a antiga automaticamente
+      // Para upgrade/downgrade, marcamos a assinatura atual para terminar no fim do período
+      try {
+        await updateSubscription(existingSubscription.stripeSubscriptionId, {
+          cancel_at_period_end: true,
+        });
+
+        await db.subscription.update({
+          where: { id: existingSubscription.id },
+          data: { cancelAtPeriodEnd: true },
+        });
+
+        console.log("✅ Assinatura atual marcada com cancelAtPeriodEnd=true", {
+          previousSubscriptionId: existingSubscription.stripeSubscriptionId,
+        });
+      } catch (err) {
+        console.warn(
+          "⚠️ Falha ao marcar assinatura anterior para cancelamento ao fim do período. Prosseguindo com o checkout.",
+          err,
+        );
+      }
     }
 
     // Verificar e formatar URL base
