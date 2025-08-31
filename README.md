@@ -1,8 +1,21 @@
 <div align="center">
   <h1>🎯 Valorant Ascension</h1>
   <p>Plataforma de treinamento com assinaturas (Stripe) — Next.js + Prisma + Auth.js</p>
-  <br/>
-  <a href="#índice">Ir para o Índice ↓</a>
+  
+  <p>
+    <img alt="Next.js" src="https://img.shields.io/badge/Next.js-15.5.2-000000?logo=nextdotjs&logoColor=white" />
+    <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-5.x-3178C6?logo=typescript&logoColor=white" />
+    <img alt="Prisma" src="https://img.shields.io/badge/Prisma-6.15.0-2D3748?logo=prisma&logoColor=white" />
+    <img alt="PostgreSQL" src="https://img.shields.io/badge/PostgreSQL-Database-4169E1?logo=postgresql&logoColor=white" />
+    <img alt="TailwindCSS" src="https://img.shields.io/badge/TailwindCSS-3.4.17-06B6D4?logo=tailwindcss&logoColor=white" />
+  </p>
+
+  <p>
+    <em>🚀 Sistema completo de aulas e assinaturas, responsivo e otimizado para mobile.</em>
+  </p>
+
+<a href="#índice">Ir para o Índice ↓</a>
+
 </div>
 
 Aplicação full‑stack construída com Next.js (App Router) para oferecer conteúdo de treinamento de Valorant com planos de assinatura. O projeto inclui autenticação, gerenciamento de assinaturas via Stripe, sincronização de status por webhook/polling, e um conjunto completo de modelos (aulas, agentes, mapas, conquistas) com seed e validações.
