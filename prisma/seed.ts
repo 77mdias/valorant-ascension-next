@@ -486,27 +486,68 @@ async function main() {
     // ========================================
     console.log("\n📚 Criando aulas...");
 
-    const adminUserId =
+    // Garantir que temos um usuário admin válido
+    let adminUserId =
       createdUsers["ana@academy.com"] || createdUsers["admin@valorant.com"];
 
     if (!adminUserId) {
       console.log("⚠️  Criando usuário admin para as aulas...");
-      const adminUser = await prisma.user.create({
-        data: {
-          email: "admin@valorant.com",
-          nickname: "Admin",
-          role: UserRole.ADMIN,
-          password:
-            "$2b$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWGw.xkY6gHfz8yqJlNvBmXpRtUoIaSdFgHjK",
-          isActive: true,
-          branchId: "branch-1",
-        },
-      });
-      createdUsers["admin@valorant.com"] = adminUser.id;
+      try {
+        const adminUser = await prisma.user.create({
+          data: {
+            email: "admin@valorant.com",
+            nickname: "Admin",
+            role: UserRole.ADMIN,
+            password:
+              "$2b$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWGw.xkY6gHfz8yqJlNvBmXpRtUoIaSdFgHjK",
+            isActive: true,
+            branchId: "branch-1",
+          },
+        });
+        adminUserId = adminUser.id;
+        createdUsers["admin@valorant.com"] = adminUser.id;
+        console.log(`✅ Usuário admin criado com ID: ${adminUserId}`);
+      } catch (error) {
+        console.error("❌ Erro ao criar usuário admin:", error);
+        throw new Error("Não foi possível criar usuário admin para as aulas");
+      }
+    } else {
+      console.log(`✅ Usuário admin encontrado com ID: ${adminUserId}`);
     }
 
+    // Verificar se todas as categorias foram criadas
+    console.log("\n🔍 Verificando categorias disponíveis:");
+    for (const [slug, id] of Object.entries(createdCategories)) {
+      console.log(`- ${slug}: ${id}`);
+    }
+
+    // Validar se todas as categorias necessárias existem
+    const categoriasNecessarias = [
+      "taticas-avancadas",
+      "mapas-e-rotas",
+      "agentes-e-habilidades",
+      "dribles-e-combate",
+      "estrategia-de-time",
+    ];
+
+    const categoriasFaltando = categoriasNecessarias.filter(
+      (slug) => !createdCategories[slug],
+    );
+
+    if (categoriasFaltando.length > 0) {
+      console.error(`❌ Categorias faltando: ${categoriasFaltando.join(", ")}`);
+      throw new Error(
+        `Não foi possível criar aulas. Categorias faltando: ${categoriasFaltando.join(", ")}`,
+      );
+    }
+
+    console.log("✅ Todas as categorias necessárias estão disponíveis");
+
+    // Sistema de aulas com 4 aulas para cada categoria (2 básicas + 2 avançadas)
     const lessonsData = [
-      // Táticas Avançadas
+      // ========================================
+      // TÁTICAS AVANÇADAS (4 aulas)
+      // ========================================
       {
         title: "Posicionamento em Spike",
         description:
@@ -536,7 +577,38 @@ async function main() {
         isLocked: false,
         number: 2,
       },
-      // Mapas e Rotas
+      {
+        title: "Rotação de Equipe",
+        description: "Como fazer rotações eficientes entre sites",
+        categoryId: createdCategories["taticas-avancadas"],
+        videoUrl: "https://youtu.be/valorant-team-rotation",
+        thumbnailUrl: "https://example.com/thumbs/team-rotation.jpg",
+        isLive: false,
+        scheduledAt: null,
+        createdById: createdUsers["admin@valorant.com"],
+        duration: 200,
+        isCompleted: false,
+        isLocked: false,
+        number: 3,
+      },
+      {
+        title: "Controle de Mid",
+        description: "Estratégias para dominar o meio do mapa",
+        categoryId: createdCategories["taticas-avancadas"],
+        videoUrl: "https://youtu.be/valorant-mid-control",
+        thumbnailUrl: "https://example.com/thumbs/mid-control.jpg",
+        isLive: false,
+        scheduledAt: null,
+        createdById: createdUsers["admin@valorant.com"],
+        duration: 220,
+        isCompleted: false,
+        isLocked: false,
+        number: 4,
+      },
+
+      // ========================================
+      // MAPAS E ROTAS (4 aulas)
+      // ========================================
       {
         title: "Rotas Seguras em Bind",
         description: "Rotas seguras para chegar à site B sem ser visto",
@@ -565,7 +637,38 @@ async function main() {
         isLocked: false,
         number: 2,
       },
-      // Agentes e Habilidades
+      {
+        title: "Ataque em Haven com 3 Sites",
+        description: "Como coordenar ataques em mapas com múltiplas sites",
+        categoryId: createdCategories["mapas-e-rotas"],
+        videoUrl: "https://youtu.be/valorant-haven-attack",
+        thumbnailUrl: "https://example.com/thumbs/haven-attack.jpg",
+        isLive: false,
+        scheduledAt: null,
+        createdById: createdUsers["admin@valorant.com"],
+        duration: 170,
+        isCompleted: false,
+        isLocked: false,
+        number: 3,
+      },
+      {
+        title: "Rotas de Flanco em Ascent",
+        description: "Como usar rotas laterais para surpreender o inimigo",
+        categoryId: createdCategories["mapas-e-rotas"],
+        videoUrl: "https://youtu.be/valorant-ascent-flank",
+        thumbnailUrl: "https://example.com/thumbs/ascent-flank.jpg",
+        isLive: false,
+        scheduledAt: null,
+        createdById: createdUsers["admin@valorant.com"],
+        duration: 160,
+        isCompleted: false,
+        isLocked: false,
+        number: 4,
+      },
+
+      // ========================================
+      // AGENTES E HABILIDADES (4 aulas)
+      // ========================================
       {
         title: "Ouvido do Jett",
         description:
@@ -595,7 +698,38 @@ async function main() {
         isLocked: false,
         number: 2,
       },
-      // Dribles e Combate
+      {
+        title: "Habilidades do Phoenix",
+        description: "Como combinar flash e fogo para dominar",
+        categoryId: createdCategories["agentes-e-habilidades"],
+        videoUrl: "https://youtu.be/valorant-phoenix-skills",
+        thumbnailUrl: "https://example.com/thumbs/phoenix-skills.jpg",
+        isLive: false,
+        scheduledAt: null,
+        createdById: createdUsers["admin@valorant.com"],
+        duration: 180,
+        isCompleted: false,
+        isLocked: false,
+        number: 3,
+      },
+      {
+        title: "Suporte com Sage",
+        description: "Como usar Sage para curar e proteger a equipe",
+        categoryId: createdCategories["agentes-e-habilidades"],
+        videoUrl: "https://youtu.be/valorant-sage-support",
+        thumbnailUrl: "https://example.com/thumbs/sage-support.jpg",
+        isLive: false,
+        scheduledAt: null,
+        createdById: createdUsers["admin@valorant.com"],
+        duration: 190,
+        isCompleted: false,
+        isLocked: false,
+        number: 4,
+      },
+
+      // ========================================
+      // DRIBLES E COMBATE (4 aulas)
+      // ========================================
       {
         title: "Movimentação com Spray",
         description: "Como se mover com spray para manter a pressão",
@@ -624,7 +758,38 @@ async function main() {
         isLocked: false,
         number: 2,
       },
-      // Estratégia de Equipe
+      {
+        title: "Crosshair Placement",
+        description: "Como posicionar a mira para eliminações rápidas",
+        categoryId: createdCategories["dribles-e-combate"],
+        videoUrl: "https://youtu.be/valorant-crosshair-placement",
+        thumbnailUrl: "https://example.com/thumbs/crosshair-placement.jpg",
+        isLive: false,
+        scheduledAt: null,
+        createdById: createdUsers["admin@valorant.com"],
+        duration: 150,
+        isCompleted: false,
+        isLocked: false,
+        number: 3,
+      },
+      {
+        title: "Recoil Control",
+        description: "Como controlar o recuo das armas para maior precisão",
+        categoryId: createdCategories["dribles-e-combate"],
+        videoUrl: "https://youtu.be/valorant-recoil-control",
+        thumbnailUrl: "https://example.com/thumbs/recoil-control.jpg",
+        isLive: false,
+        scheduledAt: null,
+        createdById: createdUsers["admin@valorant.com"],
+        duration: 200,
+        isCompleted: false,
+        isLocked: false,
+        number: 4,
+      },
+
+      // ========================================
+      // ESTRATÉGIA DE EQUIPE (4 aulas)
+      // ========================================
       {
         title: "Comunicação Eficiente",
         description: "Como comunicar-se com a equipe para coordenar ataques",
@@ -654,16 +819,92 @@ async function main() {
         isLocked: false,
         number: 2,
       },
+      {
+        title: "Economia de Equipe",
+        description:
+          "Como gerenciar economia coletiva para compras estratégicas",
+        categoryId: createdCategories["estrategia-de-time"],
+        videoUrl: "https://youtu.be/valorant-team-economy",
+        thumbnailUrl: "https://example.com/thumbs/team-economy.jpg",
+        isLive: false,
+        scheduledAt: null,
+        createdById: createdUsers["admin@valorant.com"],
+        duration: 180,
+        isCompleted: false,
+        isLocked: false,
+        number: 3,
+      },
+      {
+        title: "Callouts Padrão",
+        description: "Sistema de comunicação padronizado para equipes",
+        categoryId: createdCategories["estrategia-de-time"],
+        videoUrl: "https://youtu.be/valorant-callouts",
+        thumbnailUrl: "https://example.com/thumbs/callouts.jpg",
+        isLive: false,
+        scheduledAt: null,
+        createdById: createdUsers["admin@valorant.com"],
+        duration: 160,
+        isCompleted: false,
+        isLocked: false,
+        number: 4,
+      },
     ];
+
+    // Criar as aulas uma a uma com validações
+    let aulasCriadas = 0;
+    let aulasComErro = 0;
 
     for (const lessonData of lessonsData) {
       try {
-        await prisma.lessons.create({ data: lessonData });
-        console.log(`✅ Aula criada: ${lessonData.title}`);
+        // Validar dados obrigatórios
+        if (!lessonData.categoryId) {
+          console.error(
+            `❌ Categoria não encontrada para: ${lessonData.title}`,
+          );
+          aulasComErro++;
+          continue;
+        }
+
+        if (!adminUserId) {
+          console.error(
+            `❌ Usuário admin não encontrado para: ${lessonData.title}`,
+          );
+          aulasComErro++;
+          continue;
+        }
+
+        // Criar aula com dados validados
+        const aula = await prisma.lessons.create({
+          data: {
+            title: lessonData.title,
+            description: lessonData.description,
+            categoryId: lessonData.categoryId,
+            videoUrl: lessonData.videoUrl,
+            thumbnailUrl: lessonData.thumbnailUrl,
+            isLive: lessonData.isLive,
+            scheduledAt: lessonData.scheduledAt,
+            createdById: adminUserId, // Usar o ID válido
+            duration: lessonData.duration,
+            isCompleted: lessonData.isCompleted,
+            isLocked: lessonData.isLocked,
+            number: lessonData.number,
+          },
+        });
+
+        console.log(`✅ Aula criada: ${lessonData.title} (ID: ${aula.id})`);
+        aulasCriadas++;
       } catch (error) {
         console.error(`❌ Erro ao criar aula ${lessonData.title}:`, error);
+        aulasComErro++;
       }
     }
+
+    console.log(`\n📊 Resumo das aulas:`);
+    console.log(`✅ Aulas criadas com sucesso: ${aulasCriadas}`);
+    console.log(`❌ Aulas com erro: ${aulasComErro}`);
+    console.log(
+      `📚 Total de aulas processadas: ${aulasCriadas + aulasComErro}`,
+    );
 
     // ========================================
     // 9. CRIAR CONQUISTAS
