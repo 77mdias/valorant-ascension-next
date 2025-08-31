@@ -5,6 +5,7 @@ import { z } from "zod";
 import { authOptions } from "@/lib/auth";
 import { createCheckoutSession } from "@/lib/stripe";
 import { db } from "@/lib/prisma";
+import { PLANOS, getPlanTypeFromPriceId } from "@/config/stripe-config";
 
 // Schema para validação
 const checkoutSchema = z.object({
@@ -46,15 +47,33 @@ export async function POST(req: NextRequest) {
     const existingSubscription = await db.subscription.findFirst({
       where: {
         userId: session.user.id,
-        status: "active",
+        status: {
+          in: ["active", "trialing"],
+        },
       },
     });
 
     if (existingSubscription) {
-      return NextResponse.json(
-        { error: "Você já possui uma assinatura ativa" },
-        { status: 400 },
+      // Verificar se é o mesmo plano (não permitir duplicata)
+      const currentPlanType = getPlanTypeFromPriceId(
+        existingSubscription.stripePriceId,
       );
+
+      if (currentPlanType === planType) {
+        return NextResponse.json(
+          { error: "Você já possui este plano" },
+          { status: 400 },
+        );
+      }
+
+      console.log("🔄 Usuário alterando plano:", {
+        currentPlan: currentPlanType,
+        newPlan: planType,
+        userId: session.user.id,
+      });
+
+      // Para upgrade/downgrade, cancelamos a assinatura atual primeiro
+      // O Stripe vai criar uma nova assinatura e cancelar a antiga automaticamente
     }
 
     // Verificar e formatar URL base
@@ -88,6 +107,9 @@ export async function POST(req: NextRequest) {
           userId: session.user.id,
           planType,
           priceId,
+          isUpgrade: existingSubscription ? "true" : "false",
+          previousSubscriptionId:
+            existingSubscription?.stripeSubscriptionId || "",
         },
         subscription_data: {
           metadata: {
@@ -111,6 +133,7 @@ export async function POST(req: NextRequest) {
       sessionId: checkoutSession.id,
       userId: session.user.id,
       planType,
+      isUpgrade: !!existingSubscription,
     });
 
     return NextResponse.json({ sessionId: checkoutSession.id });

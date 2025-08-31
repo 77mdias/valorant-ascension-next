@@ -4,6 +4,7 @@ import { z } from "zod";
 import { retrieveSubscription } from "@/lib/stripe";
 import { authOptions } from "@/lib/auth";
 import { db } from "@/lib/prisma";
+import { updateSubscription } from "@/lib/stripe";
 
 const createSubscriptionSchema = z.object({
   stripeSubscriptionId: z.string().min(1, "ID da subscription é obrigatório"),
@@ -74,6 +75,42 @@ export async function POST(req: NextRequest) {
         { error: "Assinatura não pertence ao usuário atual" },
         { status: 403 },
       );
+    }
+
+    // Atualizar a assinatura no Stripe
+    if (
+      // metadata key enviada pelo fluxo de checkout é `isUpgrade` (string "true")
+      stripeData.metadata?.isUpgrade === "true" &&
+      stripeData.metadata.previousSubscriptionId
+    ) {
+      try {
+        // marca a assinatura anterior para terminar ao fim do período atual
+        await updateSubscription(stripeData.metadata.previousSubscriptionId, {
+          cancel_at_period_end: true,
+        });
+
+        // atualiza a assinatura no banco
+        await db.subscription.updateMany({
+          where: {
+            stripeSubscriptionId: stripeData.metadata.previousSubscriptionId,
+          },
+          data: {
+            cancelAtPeriodEnd: true,
+          },
+        });
+        console.log(
+          "✅ Assinatura anterior marcada para terminar ao fim do período atual:",
+          {
+            previousSubscriptionId: stripeData.metadata.previousSubscriptionId,
+          },
+        );
+      } catch (error) {
+        console.error(
+          "❌ Erro ao marcar assinatura anterior para terminar ao fim do período atual:",
+          error,
+        );
+        //Não bloquear a criação da nova assinatura por causa de erro, mas logar para investigação
+      }
     }
 
     // Criar a assinatura no banco

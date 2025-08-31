@@ -3,9 +3,6 @@ import { useState } from "react";
 import axios, { AxiosError } from "axios";
 import { PLANOS } from "@/config/stripe-config";
 
-// Debug: verificar as variáveis de ambiente
-console.log("Preços disponíveis:", PLANOS);
-
 // Verifica se a chave pública do Stripe está definida
 const NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY =
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
@@ -22,17 +19,6 @@ interface ErrorResponse {
   details?: string;
 }
 
-class CheckoutError extends Error {
-  constructor(
-    message: string,
-    public readonly code?: string,
-    public readonly details?: unknown,
-  ) {
-    super(message);
-    this.name = "CheckoutError";
-  }
-}
-
 export function useStripeCheckout() {
   const [isLoading, setIsLoading] = useState(false);
 
@@ -40,88 +26,37 @@ export function useStripeCheckout() {
     try {
       setIsLoading(true);
 
-      // Validações iniciais
-      if (!priceId || typeof priceId !== "string") {
-        throw new CheckoutError("ID do preço inválido", "INVALID_PRICE_ID", {
-          priceId,
-        });
+      // Validações básicas (seguindo regra: "Valide entrada à medida que os usuários digitam")
+      if (!priceId || !planType) {
+        throw new Error("Dados do plano incompletos");
       }
 
-      if (!planType || typeof planType !== "string") {
-        throw new CheckoutError("Tipo de plano inválido", "INVALID_PLAN_TYPE", {
-          planType,
-        });
-      }
-
-      // Valida se o priceId foi fornecido e é válido
       if (!priceId.startsWith("price_")) {
-        throw new CheckoutError(
-          `ID do preço deve começar com "price_"`,
-          "INVALID_PRICE_FORMAT",
-          { priceId, planType },
-        );
+        throw new Error("ID do preço inválido");
       }
 
-      // Valida se o planType corresponde a um plano válido
       if (!Object.keys(PLANOS).includes(planType)) {
-        throw new CheckoutError(
-          `Plano não encontrado. Planos disponíveis: ${Object.keys(PLANOS).join(
-            ", ",
-          )}`,
-          "PLAN_NOT_FOUND",
-          { planType, availablePlans: Object.keys(PLANOS) },
-        );
+        throw new Error("Plano não encontrado");
       }
 
-      // Valida se o priceId corresponde ao plano correto
       if (PLANOS[planType as keyof typeof PLANOS] !== priceId) {
-        throw new CheckoutError(
-          `ID do preço não corresponde ao plano selecionado`,
-          "PRICE_PLAN_MISMATCH",
-          {
-            planType,
-            expectedPriceId: PLANOS[planType as keyof typeof PLANOS],
-            receivedPriceId: priceId,
-          },
-        );
+        throw new Error("Plano e preço não correspondem");
       }
 
-      console.log("✓ Iniciando checkout:", {
+      console.log("Iniciando checkout:", { planType, priceId });
+
+      // Criar sessão de checkout (seguindo regra: "Trate operações assíncronas adequadamente")
+      const response = await axios.post("/api/create-checkout-session", {
         priceId,
         planType,
-        planos: PLANOS,
       });
 
-      // Criar sessão de checkout
-      let response;
-      try {
-        response = await axios.post("/api/create-checkout-session", {
-          priceId,
-          planType,
-        });
-        console.log("✓ Sessão criada:", response.data);
-      } catch (error) {
-        if (error instanceof AxiosError) {
-          const data = error.response?.data as ErrorResponse;
-          throw new CheckoutError(
-            data?.error || "Erro ao criar sessão de checkout",
-            "API_ERROR",
-            {
-              status: error.response?.status,
-              data: error.response?.data,
-            },
-          );
-        }
-        throw error;
-      }
+      console.log("Sessão criada:", response.data.sessionId);
 
       // Inicializar Stripe
       const stripe = await stripePromise;
       if (!stripe) {
-        throw new CheckoutError(
-          "Não foi possível inicializar o Stripe",
-          "STRIPE_INIT_ERROR",
-        );
+        throw new Error("Erro ao inicializar sistema de pagamento");
       }
 
       // Redirecionar para checkout
@@ -130,38 +65,23 @@ export function useStripeCheckout() {
       });
 
       if (error) {
-        throw new CheckoutError(
-          error.message || "Erro ao redirecionar para o checkout",
-          "REDIRECT_ERROR",
-          error,
-        );
+        throw new Error(error.message || "Erro ao abrir página de pagamento");
       }
     } catch (error) {
-      // Log detalhado do erro
-      if (error instanceof CheckoutError) {
-        console.error("❌ Erro no checkout:", {
-          message: error.message,
-          code: error.code,
-          details: error.details,
-        });
-      } else {
-        console.error("❌ Erro inesperado:", error);
+      // Tratamento de erro simplificado (seguindo regra: "Apresente mensagens de erro amigáveis")
+      console.error("Erro no checkout:", error);
+
+      let mensagemAmigavel = "Erro ao processar pagamento";
+
+      if (error instanceof AxiosError) {
+        const data = error.response?.data as ErrorResponse;
+        mensagemAmigavel = data?.error || "Erro no servidor";
+      } else if (error instanceof Error) {
+        mensagemAmigavel = error.message;
       }
 
-      // Formata a mensagem de erro para o usuário
-      if (error instanceof CheckoutError) {
-        throw error; // Já está formatado para o usuário
-      } else if (error instanceof Error) {
-        throw new CheckoutError(
-          "Ocorreu um erro inesperado ao processar o pagamento",
-          "UNKNOWN_ERROR",
-          { originalError: error.message },
-        );
-      } else {
-        throw new CheckoutError("Ocorreu um erro inesperado", "UNKNOWN_ERROR", {
-          error,
-        });
-      }
+      // Propagamos um erro simples e claro
+      throw new Error(mensagemAmigavel);
     } finally {
       setIsLoading(false);
     }
