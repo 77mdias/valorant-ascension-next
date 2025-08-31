@@ -9,6 +9,7 @@ import { Eye, EyeOff } from "lucide-react";
 import ButtonLogin from "./ButtonLogin";
 import { useNotification } from "@/components/ui/notification";
 import { Alert } from "@/components/ui/alert";
+import styles from "@/scss/components/CourseCard.module.scss";
 
 export default function SignInForm() {
   const [email, setEmail] = useState("");
@@ -73,17 +74,22 @@ export default function SignInForm() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[var(--all-black)] px-4">
+    <div className="mb-10 flex justify-center bg-[var(--all-black)] px-4">
       <div className="w-full max-w-md space-y-8">
         <div className="text-center">
-          <h2 className="mt-6 text-3xl font-bold text-white">
-            Faça login na sua conta
+          <h2 className="mt-6 text-3xl font-bold">
+            Faça login e desfrute de{" "}
+            <span
+              className={`bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text uppercase text-transparent`}
+            >
+              conteúdos exclusivos
+            </span>
           </h2>
           <p className="mt-2 text-sm text-gray-400">
             Ou{" "}
             <Link
               href={`/auth/signup`}
-              className="font-medium text-[var(--text-price)] hover:text-[var(--text-price-secondary)]"
+              className={`font-medium transition-all duration-300 ${styles.textPrimary}`}
             >
               crie uma nova conta
             </Link>
@@ -176,10 +182,10 @@ export default function SignInForm() {
             </div>
           </div>
 
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between hover:text-[var(--primary)]">
             <Link
               href={`/auth/reset-password`}
-              className="text-sm text-[var(--text-price)] hover:text-[var(--text-price-secondary)]"
+              className={`text-sm transition-all duration-300 ${styles.textPrimary}`}
             >
               Esqueceu sua senha?
             </Link>

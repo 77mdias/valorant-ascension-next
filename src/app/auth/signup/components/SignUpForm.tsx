@@ -7,6 +7,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Github, Mail, Eye, EyeOff } from "lucide-react";
+import styles from "@/scss/components/CourseCard.module.scss";
 
 export default function SignUpForm() {
   const [formData, setFormData] = useState({
@@ -129,7 +130,7 @@ export default function SignUpForm() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[var(--all-black)] px-6">
+    <div className="mb-10 flex justify-center bg-[var(--all-black)] px-6">
       <div className="w-full max-w-md space-y-8">
         <div className="text-center">
           <h2 className="mt-6 text-3xl font-bold text-white">Crie sua conta</h2>
@@ -137,7 +138,7 @@ export default function SignUpForm() {
             Ou{" "}
             <Link
               href={`/auth/signin`}
-              className="font-medium text-[var(--text-price)] hover:text-[var(--text-price-secondary)]"
+              className={`font-medium text-[var(--text-price)] transition-all duration-300 hover:text-[var(--text-price-secondary)] ${styles.textPrimary}`}
             >
               faça login em sua conta existente
             </Link>
@@ -297,21 +298,19 @@ export default function SignUpForm() {
           <Button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-[var(--button-primary)] text-white hover:bg-[var(--text-price-secondary)]"
+            className={`w-full text-white hover:bg-[var(--text-price-secondary)] ${styles.buttonAccent}`}
           >
             {isLoading ? "Criando conta..." : "Criar conta"}
           </Button>
 
           <div className="mt-6">
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-600" />
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="bg-[var(--all-black)] px-2 text-gray-400">
+            <div className="relative mt-6">
+              <div className="flex justify-center text-sm">
+                <span className="relative z-10 bg-black px-2 text-gray-400">
                   Ou continue com
                 </span>
               </div>
+              <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 border-t border-gray-600" />
             </div>
 
             <div className="mt-6 grid grid-cols-2 gap-3">
@@ -319,7 +318,7 @@ export default function SignUpForm() {
                 type="button"
                 variant="outline"
                 onClick={() => handleOAuthSignIn("github")}
-                className="w-full border-gray-600 bg-[var(--card-product)] text-white hover:bg-gray-700"
+                className={`w-full border-gray-600 text-white transition-all duration-300 hover:border-primary hover:bg-primary/10`}
               >
                 <Github className="mr-2 h-4 w-4" />
                 GitHub
@@ -329,7 +328,7 @@ export default function SignUpForm() {
                 type="button"
                 variant="outline"
                 onClick={() => handleOAuthSignIn("google")}
-                className="w-full border-gray-600 bg-[var(--card-product)] text-white hover:bg-gray-700"
+                className={`w-full border-gray-600 text-white transition-all duration-300 hover:border-primary hover:bg-primary/10`}
               >
                 <Mail className="mr-2 h-4 w-4" />
                 Google

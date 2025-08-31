@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import SignInForm from "./components/SignInForm";
+import ProjectInfo from "@/components/ProjectInfo";
 
 export default function SignInPage() {
   return (
@@ -11,6 +12,7 @@ export default function SignInPage() {
       }
     >
       <SignInForm />
+      <ProjectInfo />
     </Suspense>
   );
 }
