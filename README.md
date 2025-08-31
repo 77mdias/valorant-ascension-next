@@ -1,36 +1,262 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+<div align="center">
+  <h1>🎯 Valorant Ascension</h1>
+  <p>Plataforma de treinamento com assinaturas (Stripe) — Next.js + Prisma + Auth.js</p>
+  <br/>
+  <a href="#índice">Ir para o Índice ↓</a>
+</div>
 
-## Getting Started
+Aplicação full‑stack construída com Next.js (App Router) para oferecer conteúdo de treinamento de Valorant com planos de assinatura. O projeto inclui autenticação, gerenciamento de assinaturas via Stripe, sincronização de status por webhook/polling, e um conjunto completo de modelos (aulas, agentes, mapas, conquistas) com seed e validações.
 
-First, run the development server:
+## Índice
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- [✨ Funcionalidades](#-funcionalidades)
+- [🧰 Tecnologias](#-tecnologias)
+  - [Frontend](#frontend)
+  - [Backend & Database](#backend--database)
+  - [Formulários & Validação](#formulários--validação)
+  - [UI/UX](#uiux)
+- [🧱 Arquitetura](#-arquitetura)
+  - [Padrões de Design](#padrões-de-design)
+  - [Estrutura de Rotas](#estrutura-de-rotas)
+  - [Banco de Dados — Modelo Relacional](#banco-de-dados--modelo-relacional)
+- [🖥️ Interface](#️-interface)
+  - [Design System](#design-system)
+  - [Experiência Mobile](#experiência-mobile)
+- [🚀 Como Executar](#-como-executar)
+  - [Pré-requisitos](#pré-requisitos)
+  - [Instalação](#instalação)
+- [🗄️ Banco de Dados](#️-banco-de-dados)
+  - [Modelos Principais](#modelos-principais)
+- [🔐 Segurança e Boas Práticas](#-segurança-e-boas-práticas)
+- [💳 Stripe](#-stripe)
+- [🧪 Scripts](#-scripts)
+- [🛠️ Troubleshooting](#️-troubleshooting)
+
+## 🧰 Tecnologias
+
+### Frontend
+
+- Next.js (App Router, Server/Client Components)
+- Tailwind CSS + SCSS Modules para casos avançados
+
+### Backend & Database
+
+- Prisma ORM (PostgreSQL)
+- Route Handlers (API interna) + Server Actions
+
+### Formulários & Validação
+
+- React Hook Form + Zod
+
+### UI/UX
+
+- Padrões acessíveis, feedbacks visuais e responsividade
+
+## ✨ Funcionalidades
+
+- 🔑 Autenticação segura (signin/signup) com Auth.js (NextAuth.js)
+- 🧾 Assinaturas Stripe (checkout, upgrade/downgrade, cancelamento agendado)
+- 🔁 Sincronização por Webhook com fallback de Polling (resiliente a falhas)
+- 🧭 Página de preços com feedback do plano atual e ações contextuais
+- 🎬 Catálogo de Aulas com Categorias, Progresso e Conteúdo Relacionado
+- 🧩 Componentes reutilizáveis (Status de Pagamento, Banner de Plano, Cards)
+- 🧹 Tipagens fortes em TypeScript e validações com Zod
+
+## 🧱 Arquitetura
+
+### Padrões de Design
+
+- Camada de integração externa isolada em `src/lib/`
+- Configurações compartilhadas em `src/config/`
+- Componentes puros e reutilizáveis em `src/components/`
+- Hooks de domínio em `src/hooks/`
+
+### Estrutura de Rotas
+
+- API: `src/app/api/**` (ex.: `create-checkout-session`, `subscription`, `webhooks`)
+- Páginas: `src/app/**` (ex.: `prices`, `auth/signin`, `auth/signup`)
+
+### Banco de Dados — Modelo Relacional
+
+Modelos principais (resumo): `user`, `subscription`, `lessonCategory`, `lessons`, `classes`, `agents`, `agentRoles`, `maps`, `achievements`.
+
+Diagrama (Mermaid):
+
+```mermaid
+erDiagram
+  user ||--o{ subscription : has
+  user ||--o{ lessons : created
+  lessons }o--|| lessonCategory : belongs_to
+  classes ||--o{ lessons : includes
+  agents }o--|| agentRoles : has
+  maps ||--o{ mapSites : has
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🚀 Como Executar
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Pré-requisitos
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Node 18+
+- pnpm 8+
+- Banco PostgreSQL acessível
 
-## Learn More
+### Instalação
 
-To learn more about Next.js, take a look at the following resources:
+1. Instale as dependências:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+pnpm install
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+2. Configure as variáveis de ambiente (ver seção abaixo).
 
-## Deploy on Vercel
+3. Migrações e seed:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+pnpm prisma migrate deploy
+pnpm prisma db seed
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+4. Rodar a aplicação:
+
+```bash
+pnpm dev
+```
+
+Acesse `http://localhost:3000`.
+
+## 💳 Stripe
+
+Crie um arquivo `.env` com as variáveis (exemplos):
+
+```env
+DATABASE_URL=postgresql://USER:PASSWORD@HOST:PORT/DB
+
+NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_SECRET=seu-secret
+
+STRIPE_SECRET_KEY=sk_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+
+NEXT_PUBLIC_BASE_URL=http://localhost:3000
+
+# IDs de preços (sempre price_...)
+NEXT_PUBLIC_STRIPE_PRICE_BASICO=price_...
+NEXT_PUBLIC_STRIPE_PRICE_INTERMEDIARIO=price_...
+NEXT_PUBLIC_STRIPE_PRICE_AVANCADO=price_...
+```
+
+Observações:
+
+- Use sempre IDs `price_...` (e não `prod_...`).
+- Webhook em `/api/webhooks` (Node.js runtime + raw body + `constructEventAsync`).
+- Fallback resiliente: `/api/check-session` sincroniza pagamento quando webhook falhar.
+
+## 🗄️ Banco de Dados
+
+- Ajuste `DATABASE_URL` no `.env`.
+- Para aplicar schema e seed:
+
+```bash
+pnpm prisma migrate deploy
+pnpm prisma db seed
+```
+
+### Modelos Principais
+
+- 👤 `user`: dados do usuário, roles e relações (aulas, sessões, assinaturas)
+- 💳 `subscription`: vínculo com usuário e Stripe (status, período, cancelAtPeriodEnd)
+- 📚 `lessonCategory` e `lessons`: categorias e aulas (vídeo, duração, autor)
+- 🗺️ `maps`/`mapSites`, 👤 `agents`/`agentRoles`, 🏆 `achievements`, etc.
+
+Seed completo em `prisma/seed.ts` com validações (admin, categorias, relacionamentos) e 20 aulas (4 por categoria).
+
+Fluxo suportado:
+
+- Criação de sessão de checkout (`/api/create-checkout-session`)
+- Verificação de sessão e sincronização manual (`/api/check-session`)
+- Mudança de plano (`/api/subscription/change-plan`)
+- Cancelamento com `cancel_at_period_end` (`/api/subscription/cancel`)
+- Webhooks em `/api/webhooks` (Node.js runtime e raw body); quando houver falhas de assinatura, o sistema usa polling/manual sync para consistência
+
+Stripe CLI (opcional, local):
+
+```bash
+stripe listen --forward-to localhost:3000/api/webhooks
+```
+
+## 🧪 Scripts
+
+```json
+{
+  "dev": "next dev",
+  "build": "next build",
+  "start": "next start",
+  "lint": "next lint",
+  "prisma:migrate": "prisma migrate dev",
+  "prisma:studio": "prisma studio",
+  "prisma:deploy": "prisma migrate deploy",
+  "prisma:seed": "prisma db seed"
+}
+```
+
+Use `pnpm prisma:studio` para abrir o Prisma Studio.
+
+## 🖥️ Interface
+
+### Design System
+
+- Tokens em Tailwind (cores, espaçamentos, tipografia)
+- Componentes consistentes (cards, botões, banners)
+
+### Experiência Mobile
+
+- Layout responsivo (grid/cards)
+- Estados de carregamento e erro padronizados
+
+## Build e Deploy
+
+Build local:
+
+```bash
+pnpm build
+pnpm start
+```
+
+Em produção (ex.: Vercel), lembre de:
+
+- Definir todas as variáveis de ambiente
+- Apontar o webhook do Stripe para `/api/webhooks` (opcional; polling cobre inconsistências)
+- Garantir banco acessível e migrado (`prisma migrate deploy`)
+
+## 🔐 Segurança e Boas Práticas
+
+- Nunca exponha chaves secretas no cliente (use `process.env` no servidor)
+- Cookies HTTP‑Only e SameSite estritos com Auth.js
+- Sempre valide entradas com Zod nas rotas
+- Use `cancel_at_period_end` para evitar cobranças indevidas em cancelamento
+- Controle de acesso por função (role) no servidor
+
+## 🛠️ Troubleshooting
+
+**Stripe: `No signatures found matching the expected signature for payload`**
+
+- Garanta raw body no webhook (runtime Node.js e `constructEventAsync`)
+- Se persistir, utilize o fluxo de polling com `/api/check-session`
+
+**`priceId` inválido no checkout**
+
+- Use IDs `price_...` corretos no `.env`
+
+**Erros no Prisma Studio ao apagar/editar**
+
+- Rode `pnpm prisma:deploy` e verifique drift
+- Use `prisma studio` somente após migrações aplicadas
+
+**Seed falhou criando aulas**
+
+- Verifique se o admin foi criado e se todas as categorias constam nos logs do seed
+
+---
+
+Feito com ❤️ usando Next.js, Prisma, Auth.js e Stripe — foco em qualidade de código, segurança e DX.
