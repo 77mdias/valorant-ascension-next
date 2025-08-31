@@ -8,6 +8,24 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
+// Novo modelo para assinaturas
+model subscription {
+  id                  String   @id @default(uuid())
+  userId              String
+  stripeSubscriptionId String  @unique
+  stripePriceId       String
+  status              String   // active, canceled, etc
+  currentPeriodStart  DateTime
+  currentPeriodEnd    DateTime
+  cancelAtPeriodEnd   Boolean  @default(false) // Novo campo
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  user                user     @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([stripeSubscriptionId])
+}
+
 model account {
   id                String  @id @default(uuid())
   userId            String
@@ -16,7 +34,15 @@ model account {
   providerAccountId String
   refresh_token     String?
   access_token      String?
-  user              user    @relation(fields: [userId], references: [id])
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              user    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
 }
 
 model user {
@@ -43,6 +69,7 @@ model user {
   lessons                  lessons[]
   sessions                 Session[]
   userAchievements         userAchievements[]
+  subscriptions            subscription[]
 }
 
 model Session {
@@ -53,6 +80,7 @@ model Session {
   user         user     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("sessions")
+  @@index([userId])
 }
 
 model lessonCategory {
@@ -69,13 +97,13 @@ model lessons {
   id           String              @id @default(uuid())
   title        String
   description  String?
-  number       Int?
+  number       Int?                // Mantido como nullable conforme banco atual
   categoryId   String
   videoUrl     String?
   thumbnailUrl String?
   isLive       Boolean             @default(false)
   isLocked     Boolean             @default(false)
-  isCompleted  Boolean             @default(false)
+  isCompleted  Boolean             @default(false) // Mantido conforme banco atual
   duration     Int?
   scheduledAt  DateTime?
   createdAt    DateTime            @default(now())
@@ -87,6 +115,9 @@ model lessons {
   category     lessonCategory      @relation(fields: [categoryId], references: [id])
   createdBy    user                @relation(fields: [createdById], references: [id])
   classes      classes[]           @relation("classesTolessons")
+
+  @@index([categoryId])
+  @@index([createdById])
 }
 
 model lessonEnrollments {
@@ -98,6 +129,8 @@ model lessonEnrollments {
   user     user     @relation(fields: [userId], references: [id])
 
   @@unique([userId, lessonId])
+  @@index([userId])
+  @@index([lessonId])
 }
 
 model classes {
@@ -110,6 +143,8 @@ model classes {
   members     classMembers[]
   createdBy   user           @relation(fields: [createdById], references: [id])
   lessons     lessons[]      @relation("classesTolessons")
+
+  @@index([createdById])
 }
 
 model classMembers {
@@ -121,6 +156,8 @@ model classMembers {
   user     user     @relation(fields: [userId], references: [id])
 
   @@unique([userId, classId])
+  @@index([userId])
+  @@index([classId])
 }
 
 model lessonComments {
@@ -131,6 +168,9 @@ model lessonComments {
   createdAt DateTime @default(now())
   lesson    lessons  @relation(fields: [lessonId], references: [id])
   user      user     @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([lessonId])
 }
 
 model lessonProgress {
@@ -144,6 +184,8 @@ model lessonProgress {
   user      user     @relation(fields: [userId], references: [id])
 
   @@unique([userId, lessonId])
+  @@index([userId])
+  @@index([lessonId])
 }
 
 model achievements {
@@ -164,6 +206,8 @@ model userAchievements {
   user          user         @relation(fields: [userId], references: [id])
 
   @@unique([userId, achievementId])
+  @@index([userId])
+  @@index([achievementId])
 }
 
 model agents {
@@ -179,6 +223,8 @@ model agents {
   strategies AgentStrategy[]
   tutorials  AgentTutorial[]
   role       agentRoles      @relation("AgentToRole", fields: [roleId], references: [id])
+
+  @@index([roleId])
 }
 
 model AgentSkill {
@@ -189,6 +235,8 @@ model AgentSkill {
   description String
   iconUrl     String?
   agent       agents  @relation(fields: [agentId], references: [id])
+
+  @@index([agentId])
 }
 
 model AgentStrategy {
@@ -198,6 +246,8 @@ model AgentStrategy {
   content   String
   createdAt DateTime @default(now())
   agent     agents   @relation(fields: [agentId], references: [id])
+
+  @@index([agentId])
 }
 
 model AgentTutorial {
@@ -208,6 +258,8 @@ model AgentTutorial {
   type      TutorialType @default(VIDEO)
   createdAt DateTime     @default(now())
   agent     agents       @relation(fields: [agentId], references: [id])
+
+  @@index([agentId])
 }
 
 model agentRoles {
@@ -220,8 +272,6 @@ model agentRoles {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   agents      agents[] @relation("AgentToRole")
-
-  @@unique([name, slug])
 }
 
 model maps {
@@ -244,6 +294,8 @@ model mapSites {
   name        String
   description String?
   map         maps    @relation(fields: [mapId], references: [id])
+
+  @@index([mapId])
 }
 
 model mapCallouts {
@@ -254,6 +306,8 @@ model mapCallouts {
   locationX   Float?
   locationY   Float?
   map         maps    @relation(fields: [mapId], references: [id])
+
+  @@index([mapId])
 }
 
 model mapTips {
@@ -262,6 +316,8 @@ model mapTips {
   title   String
   content String
   map     maps   @relation(fields: [mapId], references: [id])
+
+  @@index([mapId])
 }
 
 model mapTutorials {
@@ -271,6 +327,8 @@ model mapTutorials {
   url   String
   type  TutorialType @default(VIDEO)
   map   maps         @relation(fields: [mapId], references: [id])
+
+  @@index([mapId])
 }
 
 enum LessonLevel {

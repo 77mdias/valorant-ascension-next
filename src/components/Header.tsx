@@ -77,7 +77,7 @@ const Header = () => {
             ></span>
           </a>
           <a
-            href="#precos"
+            href="/prices"
             className="group relative text-foreground/80 transition-colors duration-200 hover:text-primary"
           >
             Preços
