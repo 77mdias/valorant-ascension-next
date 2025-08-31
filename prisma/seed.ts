@@ -1,1884 +1,870 @@
-// prisma/seed.js
+// prisma/seed.ts
+import {
+  PrismaClient,
+  UserRole,
+  LessonLevel,
+  TutorialType,
+} from "@prisma/client";
 
-import { PrismaClient, TutorialType } from "@prisma/client";
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log("Iniciando verificação e seed dos dados...");
+  try {
+    console.log("🔍 Verificando estado atual do banco de dados...");
 
-  // VERIFICANDO E CRIANDO FUNÇÕES DO VALORANT
-  const roles = [
-    {
-      name: "Duelist",
-      slug: "duelist",
-      description:
-        "Iniciadores de confronto com foco em eliminação. Ideal para entry fraggers.",
-      iconUrl: "https://cdn.valorant-api.com/icons/duelist.png",
-      color: "#FF4655",
-    },
-    {
-      name: "Initiator",
-      slug: "initiator",
-      description:
-        "Preparam o terreno para a equipe entrar, revelando inimigos ou interrompendo defesas.",
-      iconUrl: "https://cdn.valorant-api.com/icons/initiator.png",
-      color: "#17BEBB",
-    },
-    {
-      name: "Controller",
-      slug: "controller",
-      description:
-        "Manipulam o campo de batalha, bloqueando visão e controlando espaço.",
-      iconUrl: "https://cdn.valorant-api.com/icons/controller.png",
-      color: "#7159C1",
-    },
-    {
-      name: "Sentinel",
-      slug: "sentinel",
-      description:
-        "Especialistas defensivos que seguram posições e protegem o time.",
-      iconUrl: "https://cdn.valorant-api.com/icons/sentinel.png",
-      color: "#FDCB6E",
-    },
-  ];
+    // Verifica todas as tabelas principais
+    const existingCounts = await Promise.all([
+      prisma.user.count(),
+      prisma.lessonCategory.count(),
+      prisma.lessons.count(),
+      prisma.subscription.count(),
+      prisma.agents.count(),
+      prisma.agentRoles.count(),
+      prisma.maps.count(),
+      prisma.achievements.count(),
+    ]);
 
-  for (const role of roles) {
-    const existingRole = await prisma.agentRoles.findUnique({
-      where: { slug: role.slug },
-    });
+    const [
+      userCount,
+      categoryCount,
+      lessonCount,
+      subscriptionCount,
+      agentCount,
+      agentRoleCount,
+      mapCount,
+      achievementCount,
+    ] = existingCounts;
 
-    if (!existingRole) {
-      await prisma.agentRoles.create({ data: role });
-      console.log(`Função criada: ${role.name}`);
-    } else {
-      console.log(`Função já existe: ${role.name}`);
+    console.log("\n📊 Estado atual do banco:");
+    console.log(`- Usuários: ${userCount}`);
+    console.log(`- Categorias: ${categoryCount}`);
+    console.log(`- Aulas: ${lessonCount}`);
+    console.log(`- Assinaturas: ${subscriptionCount}`);
+    console.log(`- Agentes: ${agentCount}`);
+    console.log(`- Roles de Agentes: ${agentRoleCount}`);
+    console.log(`- Mapas: ${mapCount}`);
+    console.log(`- Conquistas: ${achievementCount}\n`);
+
+    if (userCount > 0 || categoryCount > 0 || lessonCount > 0) {
+      console.log("⚠️  ATENÇÃO: Já existem dados no banco!");
+      console.log("✨ Continuando com o seed para dados faltantes...\n");
     }
-  }
 
-  // VERIFICANDO E CRIANDO CATEGORIAS DE AULAS
-  const categories = [
-    { name: "Valorant Básico" },
-    { name: "Agentes" },
-    { name: "Mapas" },
-    { name: "Estratégia" },
-    { name: "Mecânicas" },
-  ];
+    // ========================================
+    // 1. CRIAR USUÁRIOS
+    // ========================================
+    console.log("🌱 Iniciando seed de usuários...");
 
-  const categoryIds: { [key: string]: string } = {};
-
-  for (const category of categories) {
-    const slug = category.name.toLowerCase().replace(/ /g, "-");
-
-    const existingCategory = await prisma.lessonCategory.findFirst({
-      where: {
-        OR: [{ name: category.name }, { slug: slug }],
-      },
-    });
-
-    if (!existingCategory) {
-      const newCategory = await prisma.lessonCategory.create({
-        data: {
-          ...category,
-          slug: slug,
-        },
-      });
-      categoryIds[category.name] = newCategory.id;
-      console.log(`Categoria criada: ${category.name}`);
-    } else {
-      categoryIds[category.name] = existingCategory.id;
-      console.log(`Categoria já existe: ${category.name}`);
-    }
-  }
-
-  // VERIFICANDO E CRIANDO USUÁRIO ADMIN
-  let adminUser = await prisma.user.findFirst({
-    where: { email: "admin@valorant-ascension.com" },
-  });
-
-  if (!adminUser) {
-    adminUser = await prisma.user.create({
-      data: {
-        branchId: "main",
-        nickname: "Admin",
-        email: "admin@valorant-ascension.com",
-        role: "ADMIN",
+    const usersToCreate = [
+      {
+        nickname: "Zé do Ponto",
+        role: UserRole.CUSTOMER,
+        email: "ze@academy.com",
+        password:
+          "$2b$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWGw.xkY6gHfz8yqJlNvBmXpRtUoIaSdFgHjK",
         isActive: true,
-        password: "hashed_password_placeholder", // Em produção, use hash real
+        branchId: "branch-1",
       },
-    });
-    console.log("Usuário admin criado");
-  } else {
-    console.log("Usuário admin já existe");
-  }
+      {
+        nickname: "Léo Tático",
+        role: UserRole.PROFESSIONAL,
+        email: "leo@academy.com",
+        password:
+          "$2b$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWGw.xkY6gHfz8yqJlNvBmXpRtUoIaSdFgHjK",
+        isActive: true,
+        branchId: "branch-1",
+      },
+      {
+        nickname: "Ana Pro",
+        role: UserRole.ADMIN,
+        email: "ana@academy.com",
+        password:
+          "$2b$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWGw.xkY6gHfz8yqJlNvBmXpRtUoIaSdFgHjK",
+        isActive: true,
+        branchId: "branch-1",
+      },
+      {
+        nickname: "Carlos Coach",
+        role: UserRole.PROFESSIONAL,
+        email: "carlos@academy.com",
+        password:
+          "$2b$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWGw.xkY6gHfz8yqJlNvBmXpRtUoIaSdFgHjK",
+        isActive: true,
+        branchId: "branch-1",
+      },
+    ];
 
-  // VERIFICANDO E CRIANDO AULAS
-  const lessons = [
-    {
-      title: "Introdução ao Valorant",
-      number: 1,
-      duration: 10,
-      description: "Visão geral do jogo, objetivos e mecânicas básicas",
-      categoryId: categoryIds["Valorant Básico"],
-      videoUrl: "https://example.com/placeholder-video.mp4",
-      thumbnailUrl: "https://example.com/placeholder-thumb.jpg",
-    },
-    {
-      title: "Agentes: Funções e Habilidades",
-      number: 2,
-      duration: 17,
-      description:
-        "Guia completo sobre os 4 tipos de agentes e suas habilidades",
-      categoryId: categoryIds["Agentes"],
-      videoUrl: null, // Sem vídeo inicialmente
-      thumbnailUrl: null,
-    },
-    {
-      title: "Mapas: Callouts e Estratégias",
-      number: 3,
-      duration: 15,
-      categoryId: categoryIds["Mapas"],
-      videoUrl: "https://example.com/placeholder-video.mp4",
-      thumbnailUrl: "https://example.com/placeholder-thumb.jpg",
-    },
-    {
-      title: "Economia do Jogo",
-      number: 4,
-      duration: 24,
-      description:
-        "Como gerenciar créditos, compras de equipamentos e economia por rodada",
-      categoryId: categoryIds["Estratégia"],
-      videoUrl: null,
-      thumbnailUrl: null,
-    },
-    {
-      title: "Aim e Controle de Recuo",
-      number: 5,
-      duration: 16,
-      categoryId: categoryIds["Mecânicas"],
-      videoUrl: "https://example.com/placeholder-video.mp4",
-      thumbnailUrl: "https://example.com/placeholder-thumb.jpg",
-    },
-  ];
+    const createdUsers: Record<string, string> = {};
 
-  for (const lesson of lessons) {
-    const existingLesson = await prisma.lessons.findFirst({
-      where: { title: lesson.title },
-    });
-
-    if (!existingLesson) {
-      await prisma.lessons.create({
-        data: {
-          ...lesson,
-          createdById: adminUser!.id,
-        },
+    for (const userData of usersToCreate) {
+      const existingUser = await prisma.user.findUnique({
+        where: { email: userData.email },
       });
-      console.log(`Aula criada: ${lesson.title}`);
-    } else {
-      console.log(`Aula já existe: ${lesson.title}`);
-    }
-  }
 
-  // VERIFICANDO E CRIANDO MAPAS DO VALORANT
-  const maps = [
-    // Mapa 1: Bind
-    {
-      name: "Bind",
-      description: "Mapa com teleportadores e sem área central.",
-      imageKey: "maps/bind.jpg",
-      minimapUrl: "maps/bind_minimap.png",
-      sites: [
-        { name: "A", description: "Site A com entrada por short e showers." },
-        { name: "B", description: "Site B com entrada por long e hookah." },
-      ],
-      callouts: [
-        { name: "Hookah", description: "Área elevada próxima ao B site." },
-        { name: "Showers", description: "Corredor em direção ao site A." },
-      ],
-      tips: [
-        {
-          title: "Use o TP criativamente",
-          content: "Troque de site rapidamente após um fake.",
-        },
-      ],
-      tutorials: [
-        {
-          title: "Como dominar Bind",
-          url: "https://youtube.com/example_bind",
-          type: "VIDEO",
-        },
-      ],
-    },
-
-    // Mapa 2: Haven
-    {
-      name: "Haven",
-      description: "Mapa com três sites e áreas estreitas.",
-      imageKey: "maps/haven.jpg",
-      minimapUrl: "maps/haven_minimap.png",
-      sites: [
-        { name: "A", description: "Site A com entrada por heaven e lobby." },
-        { name: "B", description: "Site B com entrada por mid e link." },
-        { name: "C", description: "Site C com entrada por window e alley." },
-      ],
-      callouts: [
-        { name: "Heaven", description: "Área elevada sobre o site A." },
-        { name: "Link", description: "Passagem conectando mid ao site B." },
-        { name: "Alley", description: "Corredor lateral próximo ao site C." },
-      ],
-      tips: [
-        {
-          title: "Controle os três sites",
-          content:
-            "Mantenha pressionado em pelo menos dois sites simultaneamente.",
-        },
-      ],
-      tutorials: [
-        {
-          title: "Estratégias de posicionamento",
-          url: "https://youtube.com/example_haven",
-          type: "VIDEO",
-        },
-      ],
-    },
-
-    // Mapa 3: Split
-    {
-      name: "Split",
-      description: "Mapa simétrico com duas grandes plataformas.",
-      imageKey: "maps/split.jpg",
-      minimapUrl: "maps/split_minimap.png",
-      sites: [
-        { name: "A", description: "Site A com entrada por elbow e kitchen." },
-        { name: "B", description: "Site B com entrada por elbow e lobby." },
-      ],
-      callouts: [
-        {
-          name: "Elbow",
-          description: "Passagem principal conectando mid aos sites.",
-        },
-        {
-          name: "Kitchen",
-          description: "Área próxima ao site A com cobertura.",
-        },
-        {
-          name: "Lobby",
-          description: "Área de entrada principal para o site B.",
-        },
-      ],
-      tips: [
-        {
-          title: "Utilize as plataformas",
-          content: "Use as plataformas elevadas para visão superior.",
-        },
-      ],
-      tutorials: [
-        {
-          title: "Controle de mid",
-          url: "https://youtube.com/example_split",
-          type: "VIDEO",
-        },
-      ],
-    },
-
-    // Mapa 4: Icebox
-    {
-      name: "Icebox",
-      description: "Mapa industrial com ambientes fechados.",
-      imageKey: "maps/icebox.jpg",
-      minimapUrl: "maps/icebox_minimap.png",
-      sites: [
-        { name: "A", description: "Site A com entrada por vents e boiler." },
-        { name: "B", description: "Site B com entrada por street e truck." },
-      ],
-      callouts: [
-        {
-          name: "Vents",
-          description: "Passagens de ar condicionado conectando mid aos sites.",
-        },
-        { name: "Boiler", description: "Área industrial próxima ao site A." },
-        { name: "Street", description: "Rua principal de acesso ao site B." },
-      ],
-      tips: [
-        {
-          title: "Explore os vents",
-          content: "Use os ductos de ar para surpreender inimigos.",
-        },
-      ],
-      tutorials: [
-        {
-          title: "Controle de ambiente",
-          url: "https://youtube.com/example_icebox",
-          type: "VIDEO",
-        },
-      ],
-    },
-
-    // Mapa 5: Breeze
-    {
-      name: "Breeze",
-      description: "Mapa tropical com vegetação densa.",
-      imageKey: "maps/breeze.jpg",
-      minimapUrl: "maps/breeze_minimap.png",
-      sites: [
-        { name: "A", description: "Site A com entrada por jungle e palace." },
-        { name: "B", description: "Site B com entrada por mid e tower." },
-      ],
-      callouts: [
-        { name: "Jungle", description: "Vegetação densa próxima ao site A." },
-        {
-          name: "Palace",
-          description: "Edifício histórico próximo ao site A.",
-        },
-        { name: "Tower", description: "Torre de vigia próxima ao site B." },
-      ],
-      tips: [
-        {
-          title: "Use a vegetação a seu favor",
-          content: "Esconda-se nas plantas para emboscadas.",
-        },
-      ],
-      tutorials: [
-        {
-          title: "Domínio de jungle",
-          url: "https://youtube.com/example_breeze",
-          type: "VIDEO",
-        },
-      ],
-    },
-
-    // Mapa 6: Fracture
-    {
-      name: "Fracture",
-      description: "Mapa com fissuras e terreno irregular.",
-      imageKey: "maps/fracture.jpg",
-      minimapUrl: "maps/fracture_minimap.png",
-      sites: [
-        { name: "A", description: "Site A com entrada por link e party." },
-        { name: "B", description: "Site B com entrada por link e kitchen." },
-      ],
-      callouts: [
-        {
-          name: "Link",
-          description: "Passagem principal conectando mid aos sites.",
-        },
-        { name: "Party", description: "Área de festa próxima ao site A." },
-        {
-          name: "Kitchen",
-          description: "Cozinha industrial próxima ao site B.",
-        },
-      ],
-      tips: [
-        {
-          title: "Aproveite as fissuras",
-          content: "Use as falhas no chão para esconder-se.",
-        },
-      ],
-      tutorials: [
-        {
-          title: "Estratégias de positioning",
-          url: "https://youtube.com/example_fracture",
-          type: "VIDEO",
-        },
-      ],
-    },
-
-    // Mapa 7: Pearl
-    {
-      name: "Pearl",
-      description: "Mapa inspirado em cidades asiáticas.",
-      imageKey: "maps/pearl.jpg",
-      minimapUrl: "maps/pearl_minimap.png",
-      sites: [
-        { name: "A", description: "Site A com entrada por cafe e market." },
-        { name: "B", description: "Site B com entrada por tea e restaurant." },
-      ],
-      callouts: [
-        { name: "Cafe", description: "Cafeteria próxima ao site A." },
-        { name: "Market", description: "Mercado aberto próximo ao site A." },
-        { name: "Tea", description: "Loja de chá próxima ao site B." },
-        { name: "Restaurant", description: "Restaurante próximo ao site B." },
-      ],
-      tips: [
-        {
-          title: "Explorar os interiores",
-          content: "Use edifícios altos para visão superior.",
-        },
-      ],
-      tutorials: [
-        {
-          title: "Controle de cidade",
-          url: "https://youtube.com/example_pearl",
-          type: "VIDEO",
-        },
-      ],
-    },
-
-    // Mapa 8: Lotus
-    {
-      name: "Lotus",
-      description: "Mapa com jardins e estruturas naturais.",
-      imageKey: "maps/lotus.jpg",
-      minimapUrl: "maps/lotus_minimap.png",
-      sites: [
-        { name: "A", description: "Site A com entrada por garden e temple." },
-        { name: "B", description: "Site B com entrada por tree e bridge." },
-      ],
-      callouts: [
-        { name: "Garden", description: "Jardim florido próximo ao site A." },
-        { name: "Temple", description: "Templo antigo próximo ao site A." },
-        { name: "Tree", description: "Árvore gigante próxima ao site B." },
-        {
-          name: "Bridge",
-          description: "Ponte de madeira conectando mid ao site B.",
-        },
-      ],
-      tips: [
-        {
-          title: "Use as árvores como cobertura",
-          content: "Esconda-se atrás das árvores para emboscadas.",
-        },
-      ],
-      tutorials: [
-        {
-          title: "Domínio de jardins",
-          url: "https://youtube.com/example_lotus",
-          type: "VIDEO",
-        },
-      ],
-    },
-
-    // Mapa 9: Ascent
-    {
-      name: "Ascent",
-      description: "Mapa com prédios modernos e áreas abertas.",
-      imageKey: "maps/ascent.jpg",
-      minimapUrl: "maps/ascent_minimap.png",
-      sites: [
-        { name: "A", description: "Site A com entrada por office e lobby." },
-        { name: "B", description: "Site B com entrada por mid e connector." },
-      ],
-      callouts: [
-        {
-          name: "Office",
-          description: "Escritório corporativo próximo ao site A.",
-        },
-        {
-          name: "Lobby",
-          description: "Hall de entrada principal próximo ao site A.",
-        },
-        {
-          name: "Connector",
-          description: "Passagem conectando mid ao site B.",
-        },
-      ],
-      tips: [
-        {
-          title: "Controle os rooftops",
-          content: "Use telhados para visão superior e controle de mapa.",
-        },
-      ],
-      tutorials: [
-        {
-          title: "Estratégias urbanas",
-          url: "https://youtube.com/example_ascent",
-          type: "VIDEO",
-        },
-      ],
-    },
-
-    // Mapa 10: Sunset
-    {
-      name: "Sunset",
-      description: "Mapa com praia e resort tropical.",
-      imageKey: "maps/sunset.jpg",
-      minimapUrl: "maps/sunset_minimap.png",
-      sites: [
-        { name: "A", description: "Site A com entrada por beach e pool." },
-        { name: "B", description: "Site B com entrada por mid e cabana." },
-      ],
-      callouts: [
-        {
-          name: "Beach",
-          description: "Praia de areia branca próxima ao site A.",
-        },
-        { name: "Pool", description: "Piscina próxima ao site A." },
-        { name: "Cabana", description: "Cabana de praia próxima ao site B." },
-      ],
-      tips: [
-        {
-          title: "Aproveite a praia",
-          content: "Use a areia para esconder-se e emboscar.",
-        },
-      ],
-      tutorials: [
-        {
-          title: "Controle costeiro",
-          url: "https://youtube.com/example_sunset",
-          type: "VIDEO",
-        },
-      ],
-    },
-
-    // Mapa 11: Abyss
-    {
-      name: "Abyss",
-      description: "Mapa subaquático com estruturas futuristas.",
-      imageKey: "maps/abyss.jpg",
-      minimapUrl: "maps/abyss_minimap.png",
-      sites: [
-        {
-          name: "A",
-          description: "Site A com entrada por reactor e corridor.",
-        },
-        { name: "B", description: "Site B com entrada por mid e hatch." },
-      ],
-      callouts: [
-        { name: "Reactor", description: "Reator nuclear próximo ao site A." },
-        {
-          name: "Corridor",
-          description: "Corredor longo conectando mid ao site A.",
-        },
-        { name: "Hatch", description: "Abertura circular próxima ao site B." },
-      ],
-      tips: [
-        {
-          title: "Use as estruturas",
-          content: "Esconda-se atrás de equipamentos industriais.",
-        },
-      ],
-      tutorials: [
-        {
-          title: "Estratégias submarinas",
-          url: "https://youtube.com/example_abyss",
-          type: "VIDEO",
-        },
-      ],
-    },
-  ];
-
-  for (const mapData of maps) {
-    const existingMap = await prisma.maps.findUnique({
-      where: { name: mapData.name },
-    });
-
-    if (!existingMap) {
-      await prisma.maps.create({
-        data: {
-          name: mapData.name,
-          description: mapData.description,
-          imageKey: mapData.imageKey,
-          minimapUrl: mapData.minimapUrl,
-          sites: { create: mapData.sites },
-        },
-      });
-      console.log(`Mapa criado: ${mapData.name}`);
-    } else {
-      console.log(`Mapa já existe: ${mapData.name}`);
-    }
-  }
-
-  // VERIFICANDO E CRIANDO AGENTES DO VALORANT
-  const agents = [
-    {
-      name: "Brimstone",
-      role: "CONTROLLER",
-      biography: "Controla zonas com smokes e suporte aéreo.",
-      dica: "Use smokes taticamente para bloquear visão.",
-      imageKey: "agents/brimstone.png",
-      skills: [
-        {
-          name: "Incendiary",
-          key: "Q",
-          description: "Lança um granada incendiária que cria uma zona de fogo",
-        },
-        {
-          name: "Sky Smoke",
-          key: "E",
-          description: "Chama smokes táticos que bloqueiam a visão",
-        },
-        {
-          name: "Stim Beacon",
-          key: "C",
-          description:
-            "Coloca um beacon que concede aumento de velocidade de disparo",
-        },
-        {
-          name: "Orbital Strike",
-          key: "X",
-          description: "Chama um ataque aéreo devastador em uma localização",
-        },
-      ],
-      strategies: [
-        {
-          title: "Controle de mapa",
-          content: "Use as smokes para dividir o mapa e isolar inimigos",
-        },
-        {
-          title: "Push agressivo",
-          content: "Combine Stim Beacon com push da equipe para advantage",
-        },
-      ],
-      tutorials: [
-        {
-          title: "Posicionamento de smokes",
-          type: TutorialType.VIDEO,
-          url: "https://youtube.com/watch?v=brimstone-smokes",
-        },
-        {
-          title: "Ultimate eficiente",
-          type: TutorialType.GUIDE,
-          url: "https://guides.valorant.com/brimstone-ultimate",
-        },
-      ],
-    },
-    {
-      name: "Viper",
-      role: "CONTROLLER",
-      biography: "Mapa-denial com disrupção por veneno.",
-      dica: "Use Toxic Screen para cortar linhas de visão.",
-      imageKey: "agents/viper.png",
-      skills: [
-        {
-          name: "Snake Bite",
-          key: "Q",
-          description: "Lança um emissor de veneno que cria uma poça de dano",
-        },
-        {
-          name: "Poison Cloud",
-          key: "E",
-          description: "Lança uma nuvem de veneno que pode ser reativada",
-        },
-        {
-          name: "Toxic Screen",
-          key: "C",
-          description:
-            "Cria uma parede de veneno que bloqueia visão e causa dano",
-        },
-        {
-          name: "Viper's Pit",
-          key: "X",
-          description:
-            "Cria uma grande nuvem de veneno que reduz visão e vida dos inimigos",
-        },
-      ],
-      strategies: [
-        {
-          title: "Controle de área",
-          content: "Use Poison Cloud para bloquear entradas importantes",
-        },
-        {
-          title: "Defesa de site",
-          content: "Combine Toxic Screen com Snake Bite para defesa sólida",
-        },
-      ],
-      tutorials: [
-        {
-          title: "Gerenciamento de combustível",
-          type: TutorialType.GUIDE,
-          url: "https://guides.valorant.com/viper-fuel-management",
-        },
-        {
-          title: "Posições de Viper's Pit",
-          type: TutorialType.VIDEO,
-          url: "https://youtube.com/watch?v=viper-ultimate",
-        },
-      ],
-    },
-    {
-      name: "Omen",
-      role: "CONTROLLER",
-      biography: "Especialista em teleportar e cegar inimigos.",
-      dica: "Surpreenda com Dark Cover de ângulo diferente.",
-      imageKey: "agents/omen.png",
-      skills: [
-        {
-          name: "Shrouded Step",
-          key: "Q",
-          description: "Teleporta-se para uma localização próxima",
-        },
-        {
-          name: "Paranoia",
-          key: "E",
-          description: "Envia uma sombra que cega todos que toca",
-        },
-        {
-          name: "Dark Cover",
-          key: "C",
-          description: "Lança uma esfera de sombra que bloqueia a visão",
-        },
-        {
-          name: "From the Shadows",
-          key: "X",
-          description: "Teleporta-se para qualquer lugar do mapa",
-        },
-      ],
-      strategies: [
-        {
-          title: "Flanqueamento",
-          content: "Use Shrouded Step para posições inesperadas",
-        },
-        {
-          title: "Fake pushes",
-          content: "Use From the Shadows para distrair a equipe inimiga",
-        },
-      ],
-      tutorials: [
-        {
-          title: "Teleportes criativos",
-          type: TutorialType.VIDEO,
-          url: "https://youtube.com/watch?v=omen-teleports",
-        },
-        {
-          title: "Paranoia eficaz",
-          type: TutorialType.GUIDE,
-          url: "https://guides.valorant.com/omen-paranoia",
-        },
-      ],
-    },
-    {
-      name: "Raze",
-      role: "DUELIST",
-      biography: "Explosiva e destruidora pura.",
-      dica: "Use Paint Shells para limpar áreas fechadas.",
-      imageKey: "agents/raze.png",
-      skills: [
-        {
-          name: "Boom Bot",
-          key: "Q",
-          description: "Lança um robô que persegue inimigos e explode",
-        },
-        {
-          name: "Blast Pack",
-          key: "E",
-          description: "Coloca uma carga explosiva que pode ser detonada",
-        },
-        {
-          name: "Paint Shells",
-          key: "C",
-          description:
-            "Lança uma granada de cluster que explode múltiplas vezes",
-        },
-        {
-          name: "Showstopper",
-          key: "X",
-          description: "Dispara um lança-mísseis que causa dano massivo",
-        },
-      ],
-      strategies: [
-        {
-          title: "Entrada explosiva",
-          content: "Use Blast Pack para entrar rapidamente em sites",
-        },
-        {
-          title: "Limpeza de áreas",
-          content: "Use Boom Bot para limpar corners e áreas fechadas",
-        },
-      ],
-      tutorials: [
-        {
-          title: "Movimento com Blast Pack",
-          type: TutorialType.VIDEO,
-          url: "https://youtube.com/watch?v=raze-movement",
-        },
-        {
-          title: "Posicionamento de Showstopper",
-          type: TutorialType.GUIDE,
-          url: "https://guides.valorant.com/raze-ultimate",
-        },
-      ],
-    },
-    {
-      name: "Cypher",
-      role: "SENTINEL",
-      biography: "Especialista em vigilância e armadilhas.",
-      dica: "Monitore pontos críticos com Spycam e Trapwire.",
-      imageKey: "agents/cypher.png",
-      skills: [
-        {
-          name: "Cyber Cage",
-          key: "Q",
-          description: "Lança uma gaiola que bloqueia visão e reduz velocidade",
-        },
-        {
-          name: "Spycam",
-          key: "E",
-          description: "Coloca uma câmera remota para vigilância",
-        },
-        {
-          name: "Trapwire",
-          key: "C",
-          description: "Coloca um fio trap que revela e prende inimigos",
-        },
-        {
-          name: "Neural Theft",
-          key: "X",
-          description:
-            "Extrai informações de um inimigo morto, revelando localizações",
-        },
-      ],
-      strategies: [
-        {
-          title: "Setup defensivo",
-          content: "Crie uma rede de Trapwires para proteger um site",
-        },
-        {
-          title: "Informação constante",
-          content: "Use Spycam para gather informações sem se expor",
-        },
-      ],
-      tutorials: [
-        {
-          title: "Melhores posições para Trapwire",
-          type: TutorialType.VIDEO,
-          url: "https://youtube.com/watch?v=cypher-trapwires",
-        },
-        {
-          title: "Uso eficiente de Neural Theft",
-          type: TutorialType.GUIDE,
-          url: "https://guides.valorant.com/cypher-ultimate",
-        },
-      ],
-    },
-    {
-      name: "Sage",
-      role: "SENTINEL",
-      biography: "Curandeira e suporte defensivo.",
-      dica: "Sempre tenha Barrier Orb para bloquear entradas.",
-      imageKey: "agents/sage.png",
-      skills: [
-        {
-          name: "Barrier Orb",
-          key: "Q",
-          description: "Cria uma parede sólida que bloqueia passagem",
-        },
-        {
-          name: "Slow Orb",
-          key: "E",
-          description: "Lança uma orb que cria um campo que reduz velocidade",
-        },
-        {
-          name: "Healing Orb",
-          key: "C",
-          description: "Cura um aliado ou a si mesma",
-        },
-        {
-          name: "Resurrection",
-          key: "X",
-          description: "Revive um aliado morto com vida completa",
-        },
-      ],
-      strategies: [
-        {
-          title: "Defesa de choke points",
-          content: "Use Barrier Orb para bloquear entradas importantes",
-        },
-        {
-          title: "Suporte de retake",
-          content: "Combine Resurrection com retake para advantage numérico",
-        },
-      ],
-      tutorials: [
-        {
-          title: "Wall jumps com Barrier Orb",
-          type: TutorialType.VIDEO,
-          url: "https://youtube.com/watch?v=sage-walls",
-        },
-        {
-          title: "Posicionamento defensivo",
-          type: TutorialType.GUIDE,
-          url: "https://guides.valorant.com/sage-positioning",
-        },
-      ],
-    },
-    {
-      name: "Sova",
-      role: "INITIATOR",
-      biography: "Recon com drones e flechas rastreadoras.",
-      dica: "Use Recon Bolt com curva para mapear corners.",
-      imageKey: "agents/sova.png",
-      skills: [
-        {
-          name: "Shock Bolt",
-          key: "Q",
-          description: "Dispara uma flecha explosiva que causa dano",
-        },
-        {
-          name: "Recon Bolt",
-          key: "E",
-          description: "Dispara uma flecha que revela inimigos próximos",
-        },
-        {
-          name: "Owl Drone",
-          key: "C",
-          description: "Controla um drone que pode disparar dardos marcadores",
-        },
-        {
-          name: "Hunter's Fury",
-          key: "X",
-          description: "Dispara três rajadas de energia que atravessam paredes",
-        },
-      ],
-      strategies: [
-        {
-          title: "Informação inicial",
-          content: "Use Recon Bolt no início do round para gather informações",
-        },
-        {
-          title: "Lineups de Shock Dart",
-          content: "Aprenda lineups para causar dano através de paredes",
-        },
-      ],
-      tutorials: [
-        {
-          title: "Lineups de Recon Bolt",
-          type: TutorialType.VIDEO,
-          url: "https://youtube.com/watch?v=sova-recon",
-        },
-        {
-          title: "Hunter's Fury através de paredes",
-          type: TutorialType.GUIDE,
-          url: "https://guides.valorant.com/sova-ultimate",
-        },
-      ],
-    },
-    {
-      name: "Jett",
-      role: "DUELIST",
-      biography: "Agente ágil e evasiva com mobilidade excepcional.",
-      dica: "Use Tailwind para reposicionamento rápido.",
-      imageKey: "agents/jett.png",
-      skills: [
-        {
-          name: "Updraft",
-          key: "Q",
-          description: "Impulsiona-se para cima com jatos de vento",
-        },
-        {
-          name: "Tailwind",
-          key: "E",
-          description: "Dash instantâneo na direção do movimento",
-        },
-        {
-          name: "Cloudburst",
-          key: "C",
-          description: "Lança uma fumaça que obscurece a visão",
-        },
-        {
-          name: "Blade Storm",
-          key: "X",
-          description: "Equipa múltiplas facas precisas e letais",
-        },
-      ],
-      strategies: [
-        {
-          title: "Entrada agressiva",
-          content: "Use Tailwind para entrar rapidamente em sites",
-        },
-        {
-          title: "Reposicionamento",
-          content: "Combine Updraft com Tailwind para escapes criativos",
-        },
-      ],
-      tutorials: [
-        {
-          title: "Movimento avançado com Jett",
-          type: TutorialType.VIDEO,
-          url: "https://youtube.com/watch?v=jett-movement",
-        },
-        {
-          title: "Blade Storm precisão",
-          type: TutorialType.GUIDE,
-          url: "https://guides.valorant.com/jett-ultimate",
-        },
-      ],
-    },
-    {
-      name: "Phoenix",
-      role: "DUELIST",
-      biography: "Especialista em auto-sustentação e entrada.",
-      dica: "Use Curve Ball para cegar antes de entrar.",
-      imageKey: "agents/phoenix.png",
-      skills: [
-        {
-          name: "Curve Ball",
-          key: "Q",
-          description: "Lança uma bola de luz que cega ao explodir",
-        },
-        {
-          name: "Hot Hands",
-          key: "E",
-          description: "Lança uma bola de fogo que cura Phoenix",
-        },
-        {
-          name: "Blaze",
-          key: "C",
-          description: "Cria uma parede de fogo que bloqueia visão e cura",
-        },
-        {
-          name: "Run it Back",
-          key: "X",
-          description: "Marca uma posição para retornar após a morte",
-        },
-      ],
-      strategies: [
-        {
-          title: "Entrada com flash",
-          content: "Use Curve Ball para cegar antes de entrar em sites",
-        },
-        {
-          title: "Auto-sustentação",
-          content: "Use Hot Hands e Blaze para se curar durante o combate",
-        },
-      ],
-      tutorials: [
-        {
-          title: "Flash eficiente com Curve Ball",
-          type: TutorialType.VIDEO,
-          url: "https://youtube.com/watch?v=phoenix-flash",
-        },
-        {
-          title: "Run it Back estratégico",
-          type: TutorialType.GUIDE,
-          url: "https://guides.valorant.com/phoenix-ultimate",
-        },
-      ],
-    },
-    {
-      name: "Reyna",
-      role: "DUELIST",
-      biography: "Vampira que se alimenta de eliminações.",
-      dica: "Use Devour após eliminações para se curar.",
-      imageKey: "agents/reyna.png",
-      skills: [
-        {
-          name: "Devour",
-          key: "Q",
-          description: "Consome uma alma para se curar rapidamente",
-        },
-        {
-          name: "Dismiss",
-          key: "E",
-          description: "Consome uma alma para se tornar intangível",
-        },
-        {
-          name: "Leer",
-          key: "C",
-          description: "Lança um olho que cega todos que olham para ele",
-        },
-        {
-          name: "Empress",
-          key: "X",
-          description: "Entra em modo frenético com aumento de velocidade",
-        },
-      ],
-      strategies: [
-        {
-          title: "Agressão sustentada",
-          content: "Use Devour para manter pressão após eliminações",
-        },
-        {
-          title: "Escape com Dismiss",
-          content: "Use Dismiss para escapar de situações perigosas",
-        },
-      ],
-      tutorials: [
-        {
-          title: "Combos com Reyna",
-          type: TutorialType.VIDEO,
-          url: "https://youtube.com/watch?v=reyna-combos",
-        },
-        {
-          title: "Empress timing",
-          type: TutorialType.GUIDE,
-          url: "https://guides.valorant.com/reyna-ultimate",
-        },
-      ],
-    },
-    {
-      name: "Killjoy",
-      role: "SENTINEL",
-      biography: "Engenheira que controla o campo com dispositivos.",
-      dica: "Posicione Alarmbot em locais estratégicos.",
-      imageKey: "agents/killjoy.png",
-      skills: [
-        {
-          name: "Alarmbot",
-          key: "Q",
-          description: "Coloca um bot que persegue e explode em inimigos",
-        },
-        {
-          name: "Turret",
-          key: "E",
-          description: "Coloca uma torre que atira automaticamente",
-        },
-        {
-          name: "Nanoswarm",
-          key: "C",
-          description: "Coloca uma granada explosiva camuflada",
-        },
-        {
-          name: "Lockdown",
-          key: "X",
-          description: "Dispositivo que detém todos os inimigos na área",
-        },
-      ],
-      strategies: [
-        {
-          title: "Setup defensivo",
-          content: "Crie uma rede de dispositivos para proteger sites",
-        },
-        {
-          title: "Retake com Lockdown",
-          content: "Use Lockdown para facilitar retakes de sites",
-        },
-      ],
-      tutorials: [
-        {
-          title: "Setup de Killjoy",
-          type: TutorialType.VIDEO,
-          url: "https://youtube.com/watch?v=killjoy-setup",
-        },
-        {
-          title: "Posicionamento de dispositivos",
-          type: TutorialType.GUIDE,
-          url: "https://guides.valorant.com/killjoy-devices",
-        },
-      ],
-    },
-    {
-      name: "Breach",
-      role: "INITIATOR",
-      biography: "Especialista em stuns e disrupção.",
-      dica: "Use Flashpoint para cegar através de paredes.",
-      imageKey: "agents/breach.png",
-      skills: [
-        {
-          name: "Flashpoint",
-          key: "Q",
-          description: "Dispara um flash que cega através de paredes",
-        },
-        {
-          name: "Fault Line",
-          key: "E",
-          description: "Causa tremor que atordoa inimigos em linha",
-        },
-        {
-          name: "Aftershock",
-          key: "C",
-          description: "Causa dano em área após um delay",
-        },
-        {
-          name: "Rolling Thunder",
-          key: "X",
-          description: "Causa tremor massivo que atordoa toda a área",
-        },
-      ],
-      strategies: [
-        {
-          title: "Disrupção de defesa",
-          content: "Use stuns para quebrar setups defensivos",
-        },
-        {
-          title: "Coordenação de equipe",
-          content: "Coordene stuns com push da equipe",
-        },
-      ],
-      tutorials: [
-        {
-          title: "Flash através de paredes",
-          type: TutorialType.VIDEO,
-          url: "https://youtube.com/watch?v=breach-flash",
-        },
-        {
-          title: "Rolling Thunder eficiente",
-          type: TutorialType.GUIDE,
-          url: "https://guides.valorant.com/breach-ultimate",
-        },
-      ],
-    },
-    {
-      name: "Skye",
-      role: "INITIATOR",
-      biography: "Especialista em reconhecimento e cura.",
-      dica: "Use Trailblazer para scouting seguro.",
-      imageKey: "agents/skye.png",
-      skills: [
-        {
-          name: "Trailblazer",
-          key: "Q",
-          description: "Controla um tigre que pode atordoar inimigos",
-        },
-        {
-          name: "Guiding Light",
-          key: "E",
-          description: "Lança um falcão que pode cegar inimigos",
-        },
-        {
-          name: "Regrowth",
-          key: "C",
-          description: "Cura aliados na área (não se cura)",
-        },
-        {
-          name: "Seekers",
-          key: "X",
-          description: "Envia três seekers que atordoam inimigos próximos",
-        },
-      ],
-      strategies: [
-        {
-          title: "Informação constante",
-          content: "Use Trailblazer e Guiding Light para gather informações",
-        },
-        {
-          title: "Suporte de cura",
-          content: "Use Regrowth para manter a equipe saudável",
-        },
-      ],
-      tutorials: [
-        {
-          title: "Scouting com Skye",
-          type: TutorialType.VIDEO,
-          url: "https://youtube.com/watch?v=skye-scouting",
-        },
-        {
-          title: "Seekers timing",
-          type: TutorialType.GUIDE,
-          url: "https://guides.valorant.com/skye-ultimate",
-        },
-      ],
-    },
-    {
-      name: "Yoru",
-      role: "DUELIST",
-      biography: "Especialista em furtividade e decepção.",
-      dica: "Use Gatecrash para flanqueamentos inesperados.",
-      imageKey: "agents/yoru.png",
-      skills: [
-        {
-          name: "Blindside",
-          key: "Q",
-          description: "Lança um flash que rebate em superfícies",
-        },
-        {
-          name: "Gatecrash",
-          key: "E",
-          description: "Lança um portal que pode ser ativado para teleporte",
-        },
-        {
-          name: "Fakeout",
-          key: "C",
-          description: "Cria um clone que imita seus passos",
-        },
-        {
-          name: "Dimensional Drift",
-          key: "X",
-          description: "Torna-se invisível e intangível temporariamente",
-        },
-      ],
-      strategies: [
-        {
-          title: "Flanqueamento furtivo",
-          content: "Use Gatecrash para posições inesperadas",
-        },
-        {
-          title: "Decepção com Fakeout",
-          content: "Use Fakeout para confundir a defesa inimiga",
-        },
-      ],
-      tutorials: [
-        {
-          title: "Teleportes com Yoru",
-          type: TutorialType.VIDEO,
-          url: "https://youtube.com/watch?v=yoru-teleports",
-        },
-        {
-          title: "Dimensional Drift estratégico",
-          type: TutorialType.GUIDE,
-          url: "https://guides.valorant.com/yoru-ultimate",
-        },
-      ],
-    },
-    {
-      name: "Astra",
-      role: "CONTROLLER",
-      biography: "Controla o campo com constelações astrais.",
-      dica: "Use Stars para criar smokes e stuns dinâmicos.",
-      imageKey: "agents/astra.png",
-      skills: [
-        {
-          name: "Nova Pulse",
-          key: "Q",
-          description: "Ativa uma Star para causar concussão",
-        },
-        {
-          name: "Nebula",
-          key: "E",
-          description: "Ativa uma Star para criar uma smoke",
-        },
-        {
-          name: "Gravity Well",
-          key: "C",
-          description: "Ativa uma Star para puxar inimigos para o centro",
-        },
-        {
-          name: "Astral Form",
-          key: "X",
-          description: "Coloca Stars no mapa para uso posterior",
-        },
-      ],
-      strategies: [
-        {
-          title: "Controle dinâmico",
-          content: "Use Stars para adaptar o controle conforme necessário",
-        },
-        {
-          title: "Setup pré-round",
-          content: "Coloque Stars estrategicamente antes do round",
-        },
-      ],
-      tutorials: [
-        {
-          title: "Gerenciamento de Stars",
-          type: TutorialType.VIDEO,
-          url: "https://youtube.com/watch?v=astra-stars",
-        },
-        {
-          title: "Astral Form eficiente",
-          type: TutorialType.GUIDE,
-          url: "https://guides.valorant.com/astra-ultimate",
-        },
-      ],
-    },
-    {
-      name: "KAY/O",
-      role: "INITIATOR",
-      biography: "Especialista em supressão de habilidades.",
-      dica: "Use ZERO/point para revelar posições inimigas.",
-      imageKey: "agents/kayo.png",
-      skills: [
-        {
-          name: "FLASH/drive",
-          key: "Q",
-          description: "Lança um flash que pode ser detonado manualmente",
-        },
-        {
-          name: "ZERO/point",
-          key: "E",
-          description: "Lança uma lâmina que suprime habilidades inimigas",
-        },
-        {
-          name: "FRAG/ment",
-          key: "C",
-          description: "Lança uma granada que explode múltiplas vezes",
-        },
-        {
-          name: "NULL/cmd",
-          key: "X",
-          description: "Suprime todas as habilidades inimigas na área",
-        },
-      ],
-      strategies: [
-        {
-          title: "Supressão de habilidades",
-          content: "Use ZERO/point para negar habilidades inimigas",
-        },
-        {
-          title: "Informação com flash",
-          content: "Use FLASH/drive para gather informações seguras",
-        },
-      ],
-      tutorials: [
-        {
-          title: "Supressão com KAY/O",
-          type: TutorialType.VIDEO,
-          url: "https://youtube.com/watch?v=kayo-suppression",
-        },
-        {
-          title: "NULL/cmd timing",
-          type: TutorialType.GUIDE,
-          url: "https://guides.valorant.com/kayo-ultimate",
-        },
-      ],
-    },
-    {
-      name: "Chamber",
-      role: "SENTINEL",
-      biography: "Armeiro francês com dispositivos de precisão.",
-      dica: "Use Headhunter para economia de créditos.",
-      imageKey: "agents/chamber.png",
-      skills: [
-        {
-          name: "Headhunter",
-          key: "Q",
-          description: "Equipa uma pistola pesada de precisão",
-        },
-        {
-          name: "Rendezvous",
-          key: "E",
-          description: "Coloca dois teleportes para movimento rápido",
-        },
-        {
-          name: "Trademark",
-          key: "C",
-          description: "Coloca uma armadilha que reduz velocidade",
-        },
-        {
-          name: "Tour De Force",
-          key: "X",
-          description: "Equipa um sniper pesado que mata com um tiro",
-        },
-      ],
-      strategies: [
-        {
-          title: "Economia de créditos",
-          content: "Use Headhunter para economizar em rounds de eco",
-        },
-        {
-          title: "Posicionamento com teleportes",
-          content: "Use Rendezvous para reposicionamento tático",
-        },
-      ],
-      tutorials: [
-        {
-          title: "Precisão com Chamber",
-          type: TutorialType.VIDEO,
-          url: "https://youtube.com/watch?v=chamber-precision",
-        },
-        {
-          title: "Tour De Force posicionamento",
-          type: TutorialType.GUIDE,
-          url: "https://guides.valorant.com/chamber-ultimate",
-        },
-      ],
-    },
-    {
-      name: "Neon",
-      role: "DUELIST",
-      biography: "Agente filipina com velocidade elétrica.",
-      dica: "Use Fast Lane para criar corredores seguros.",
-      imageKey: "agents/neon.png",
-      skills: [
-        {
-          name: "Relay Bolt",
-          key: "Q",
-          description: "Lança um projétil que ricocheteia e atordoa",
-        },
-        {
-          name: "Fast Lane",
-          key: "E",
-          description: "Cria duas paredes de energia para movimento rápido",
-        },
-        {
-          name: "High Gear",
-          key: "C",
-          description: "Ativa corrida elétrica com slide",
-        },
-        {
-          name: "Overdrive",
-          key: "X",
-          description: "Dispara um raio elétrico contínuo e preciso",
-        },
-      ],
-      strategies: [
-        {
-          title: "Entrada com velocidade",
-          content: "Use Fast Lane para entrar rapidamente em sites",
-        },
-        {
-          title: "Mobilidade elétrica",
-          content: "Combine High Gear com Fast Lane para movimento rápido",
-        },
-      ],
-      tutorials: [
-        {
-          title: "Movimento com Neon",
-          type: TutorialType.VIDEO,
-          url: "https://youtube.com/watch?v=neon-movement",
-        },
-        {
-          title: "Overdrive precisão",
-          type: TutorialType.GUIDE,
-          url: "https://guides.valorant.com/neon-ultimate",
-        },
-      ],
-    },
-    {
-      name: "Fade",
-      role: "INITIATOR",
-      biography: "Caçadora turca que revela segredos.",
-      dica: "Use Seize para prender inimigos em posições.",
-      imageKey: "agents/fade.png",
-      skills: [
-        {
-          name: "Seize",
-          key: "Q",
-          description: "Lança uma orb que prende inimigos no local",
-        },
-        {
-          name: "Haunt",
-          key: "E",
-          description: "Lança um orb que revela inimigos próximos",
-        },
-        {
-          name: "Prowler",
-          key: "C",
-          description: "Lança uma criatura que persegue e revela inimigos",
-        },
-        {
-          name: "Nightfall",
-          key: "X",
-          description: "Causa surdez e revela rastros de inimigos",
-        },
-      ],
-      strategies: [
-        {
-          title: "Revelação constante",
-          content: "Use Haunt e Prowler para gather informações",
-        },
-        {
-          title: "Controle com Seize",
-          content: "Use Seize para prender inimigos em posições vulneráveis",
-        },
-      ],
-      tutorials: [
-        {
-          title: "Revelação com Fade",
-          type: TutorialType.VIDEO,
-          url: "https://youtube.com/watch?v=fade-revelation",
-        },
-        {
-          title: "Nightfall estratégico",
-          type: TutorialType.GUIDE,
-          url: "https://guides.valorant.com/fade-ultimate",
-        },
-      ],
-    },
-    {
-      name: "Harbor",
-      role: "CONTROLLER",
-      biography: "Controlador indiano com domínio da água.",
-      dica: "Use Cove para criar cobertura móvel.",
-      imageKey: "agents/harbor.png",
-      skills: [
-        {
-          name: "Cove",
-          key: "Q",
-          description: "Lança uma smoke esférica que pode ser movida",
-        },
-        {
-          name: "High Tide",
-          key: "E",
-          description: "Cria uma parede de água que pode ser curvada",
-        },
-        {
-          name: "Reckoning",
-          key: "C",
-          description: "Cria geysers que atordoa inimigos na área",
-        },
-        {
-          name: "Reckoning",
-          key: "X",
-          description: "Cria geysers que atordoa inimigos na área",
-        },
-      ],
-      strategies: [
-        {
-          title: "Controle móvel",
-          content: "Use Cove para criar cobertura que se move com você",
-        },
-        {
-          title: "Paredes dinâmicas",
-          content: "Use High Tide para criar paredes que se adaptam",
-        },
-      ],
-      tutorials: [
-        {
-          title: "Controle com Harbor",
-          type: TutorialType.VIDEO,
-          url: "https://youtube.com/watch?v=harbor-control",
-        },
-        {
-          title: "Reckoning timing",
-          type: TutorialType.GUIDE,
-          url: "https://guides.valorant.com/harbor-ultimate",
-        },
-      ],
-    },
-    {
-      name: "Gekko",
-      role: "INITIATOR",
-      biography: "Agente americano com criaturas bio-mecânicas.",
-      dica: "Use Wingman para informações e dano.",
-      imageKey: "agents/gekko.png",
-      skills: [
-        {
-          name: "Wingman",
-          key: "Q",
-          description: "Lança uma criatura que pode cegar ou causar dano",
-        },
-        {
-          name: "Dizzy",
-          key: "E",
-          description: "Lança uma criatura que cega inimigos",
-        },
-        {
-          name: "Mosh Pit",
-          key: "C",
-          description: "Lança uma criatura que explode em área",
-        },
-        {
-          name: "Thrash",
-          key: "X",
-          description: "Lança uma criatura que atordoa e pode ser detonada",
-        },
-      ],
-      strategies: [
-        {
-          title: "Informação com criaturas",
-          content: "Use Wingman e Dizzy para gather informações",
-        },
-        {
-          title: "Controle de área",
-          content: "Use Mosh Pit para controlar áreas específicas",
-        },
-      ],
-      tutorials: [
-        {
-          title: "Criaturas de Gekko",
-          type: TutorialType.VIDEO,
-          url: "https://youtube.com/watch?v=gekko-creatures",
-        },
-        {
-          title: "Thrash estratégico",
-          type: TutorialType.GUIDE,
-          url: "https://guides.valorant.com/gekko-ultimate",
-        },
-      ],
-    },
-    {
-      name: "Deadlock",
-      role: "SENTINEL",
-      biography: "Sentinela norueguesa com dispositivos de contenção.",
-      dica: "Use Sonic Sensor para detectar movimento.",
-      imageKey: "agents/deadlock.png",
-      skills: [
-        {
-          name: "Sonic Sensor",
-          key: "Q",
-          description: "Coloca um sensor que detecta movimento e atordoa",
-        },
-        {
-          name: "Barrier Mesh",
-          key: "E",
-          description: "Lança uma rede que cria uma barreira sólida",
-        },
-        {
-          name: "GravNet",
-          key: "C",
-          description: "Lança uma granada que prende inimigos no local",
-        },
-        {
-          name: "Annihilation",
-          key: "X",
-          description: "Dispara um cristal que prende e puxa inimigos",
-        },
-      ],
-      strategies: [
-        {
-          title: "Detecção de movimento",
-          content: "Use Sonic Sensor para detectar pushes inimigos",
-        },
-        {
-          title: "Contenção de área",
-          content: "Use GravNet e Barrier Mesh para controlar áreas",
-        },
-      ],
-      tutorials: [
-        {
-          title: "Sensores de Deadlock",
-          type: TutorialType.VIDEO,
-          url: "https://youtube.com/watch?v=deadlock-sensors",
-        },
-        {
-          title: "Annihilation precisão",
-          type: TutorialType.GUIDE,
-          url: "https://guides.valorant.com/deadlock-ultimate",
-        },
-      ],
-    },
-    {
-      name: "Iso",
-      role: "DUELIST",
-      biography: "Duelista chinês com habilidades de contra-ataque.",
-      dica: "Use Undercut para negar habilidades inimigas.",
-      imageKey: "agents/iso.png",
-      skills: [
-        {
-          name: "Undercut",
-          key: "Q",
-          description: "Lança uma granada que nega habilidades inimigas",
-        },
-        {
-          name: "Contingency",
-          key: "E",
-          description: "Cria um campo que bloqueia dano de uma direção",
-        },
-        {
-          name: "Kill Contract",
-          key: "C",
-          description: "Marca um inimigo para ganhar vantagem em combate",
-        },
-        {
-          name: "Kill Contract",
-          key: "X",
-          description: "Marca um inimigo para ganhar vantagem em combate",
-        },
-      ],
-      strategies: [
-        {
-          title: "Negação de habilidades",
-          content: "Use Undercut para negar habilidades inimigas",
-        },
-        {
-          title: "Contra-ataque",
-          content: "Use Contingency para bloquear dano e contra-atacar",
-        },
-      ],
-      tutorials: [
-        {
-          title: "Contra-ataque com Iso",
-          type: TutorialType.VIDEO,
-          url: "https://youtube.com/watch?v=iso-counter",
-        },
-        {
-          title: "Kill Contract estratégico",
-          type: TutorialType.GUIDE,
-          url: "https://guides.valorant.com/iso-ultimate",
-        },
-      ],
-    },
-    {
-      name: "Clove",
-      role: "CONTROLLER",
-      biography: "Controlador escocês com habilidades de vida e morte.",
-      dica: "Use Pick-Me-Up para se curar após eliminações.",
-      imageKey: "agents/clove.png",
-      skills: [
-        {
-          name: "Pick-Me-Up",
-          key: "Q",
-          description: "Consome uma alma para se curar",
-        },
-        {
-          name: "Ruse",
-          key: "E",
-          description: "Lança uma smoke que pode ser reativada",
-        },
-        {
-          name: "Meddle",
-          key: "C",
-          description: "Lança uma orb que causa vulnerabilidade",
-        },
-        {
-          name: "Not Dead Yet",
-          key: "X",
-          description: "Pode se reviver temporariamente após a morte",
-        },
-      ],
-      strategies: [
-        {
-          title: "Sustentação com cura",
-          content: "Use Pick-Me-Up para se manter vivo em combates",
-        },
-        {
-          title: "Controle com vulnerabilidade",
-          content: "Use Meddle para facilitar eliminações da equipe",
-        },
-      ],
-      tutorials: [
-        {
-          title: "Sustentação com Clove",
-          type: TutorialType.VIDEO,
-          url: "https://youtube.com/watch?v=clove-sustain",
-        },
-        {
-          title: "Not Dead Yet timing",
-          type: TutorialType.GUIDE,
-          url: "https://guides.valorant.com/clove-ultimate",
-        },
-      ],
-    },
-  ];
-
-  // Primeiro, vamos buscar os IDs dos roles
-  const duelistRole = await prisma.agentRoles.findUnique({
-    where: { slug: "duelist" },
-  });
-  const initiatorRole = await prisma.agentRoles.findUnique({
-    where: { slug: "initiator" },
-  });
-  const controllerRole = await prisma.agentRoles.findUnique({
-    where: { slug: "controller" },
-  });
-  const sentinelRole = await prisma.agentRoles.findUnique({
-    where: { slug: "sentinel" },
-  });
-
-  if (!duelistRole || !initiatorRole || !controllerRole || !sentinelRole) {
-    throw new Error(
-      "Roles não encontrados. Execute o seed dos roles primeiro.",
-    );
-  }
-
-  for (const agentData of agents) {
-    const existingAgent = await prisma.agents.findUnique({
-      where: { name: agentData.name },
-    });
-
-    if (!existingAgent) {
-      // Determinar o roleId baseado no role do agente
-      let roleId: string;
-      switch (agentData.role) {
-        case "DUELIST":
-          roleId = duelistRole.id;
-          break;
-        case "INITIATOR":
-          roleId = initiatorRole.id;
-          break;
-        case "CONTROLLER":
-          roleId = controllerRole.id;
-          break;
-        case "SENTINEL":
-          roleId = sentinelRole.id;
-          break;
-        default:
-          throw new Error(`Role inválido: ${agentData.role}`);
+      if (existingUser) {
+        console.log(`✅ Usuário ${userData.nickname} já existe`);
+        createdUsers[userData.email] = existingUser.id;
+        continue;
       }
 
-      await prisma.agents.create({
+      try {
+        const user = await prisma.user.create({ data: userData });
+        createdUsers[userData.email] = user.id;
+        console.log(`✅ Usuário criado: ${userData.nickname}`);
+      } catch (error) {
+        console.error(`❌ Erro ao criar usuário ${userData.nickname}:`, error);
+      }
+    }
+
+    // ========================================
+    // 2. CRIAR ROLES DE AGENTES
+    // ========================================
+    console.log("\n🎭 Criando roles de agentes...");
+
+    const agentRolesData = [
+      {
+        name: "Duelista",
+        slug: "duelista",
+        description: "Agentes especializados em eliminar inimigos",
+        iconUrl: "⚔️",
+        color: "#FF6B6B",
+      },
+      {
+        name: "Iniciador",
+        slug: "iniciador",
+        description: "Agentes que preparam o terreno para o time",
+        iconUrl: "🚀",
+        color: "#4ECDC4",
+      },
+      {
+        name: "Controlador",
+        slug: "controlador",
+        description: "Agentes que controlam áreas do mapa",
+        iconUrl: "🎯",
+        color: "#45B7D1",
+      },
+      {
+        name: "Sentinela",
+        slug: "sentinela",
+        description: "Agentes defensivos e de suporte",
+        iconUrl: "🛡️",
+        color: "#96CEB4",
+      },
+    ];
+
+    const createdAgentRoles: Record<string, string> = {};
+
+    for (const roleData of agentRolesData) {
+      const existingRole = await prisma.agentRoles.findUnique({
+        where: { slug: roleData.slug },
+      });
+
+      if (existingRole) {
+        createdAgentRoles[roleData.slug] = existingRole.id;
+        console.log(`✅ Role ${roleData.name} já existe`);
+        continue;
+      }
+
+      try {
+        const role = await prisma.agentRoles.create({ data: roleData });
+        createdAgentRoles[roleData.slug] = role.id;
+        console.log(`✅ Role criada: ${roleData.name}`);
+      } catch (error) {
+        console.error(`❌ Erro ao criar role ${roleData.name}:`, error);
+      }
+    }
+
+    // ========================================
+    // 3. CRIAR AGENTES
+    // ========================================
+    console.log("\n👤 Criando agentes...");
+
+    const agentsData = [
+      {
+        name: "Jett",
+        roleId: createdAgentRoles["duelista"],
+        biography: "Agente ágil e letal da Coreia do Sul",
+        dica: "Use o Ouvido para reposicionar rapidamente",
+        imageKey: "jett.jpg",
+      },
+      {
+        name: "Phoenix",
+        roleId: createdAgentRoles["duelista"],
+        biography: "Agente britânico com habilidades de fogo",
+        dica: "Combine flash com habilidades de fogo",
+        imageKey: "phoenix.jpg",
+      },
+      {
+        name: "Sage",
+        roleId: createdAgentRoles["sentinela"],
+        biography: "Agente de suporte com habilidades de cura",
+        dica: "Use a parede para bloquear rotas",
+        imageKey: "sage.jpg",
+      },
+      {
+        name: "Sova",
+        roleId: createdAgentRoles["iniciador"],
+        biography: "Caçador russo com visão aguçada",
+        dica: "Use a flecha para revelar posições inimigas",
+        imageKey: "sova.jpg",
+      },
+      {
+        name: "Omen",
+        roleId: createdAgentRoles["controlador"],
+        biography: "Agente sombrio com teleporte",
+        dica: "Use smoke para controlar visão",
+        imageKey: "omen.jpg",
+      },
+    ];
+
+    const createdAgents: Record<string, string> = {};
+
+    for (const agentData of agentsData) {
+      const existingAgent = await prisma.agents.findUnique({
+        where: { name: agentData.name },
+      });
+
+      if (existingAgent) {
+        createdAgents[agentData.name] = existingAgent.id;
+        console.log(`✅ Agente ${agentData.name} já existe`);
+        continue;
+      }
+
+      try {
+        const agent = await prisma.agents.create({ data: agentData });
+        createdAgents[agentData.name] = agent.id;
+        console.log(`✅ Agente criado: ${agentData.name}`);
+      } catch (error) {
+        console.error(`❌ Erro ao criar agente ${agentData.name}:`, error);
+      }
+    }
+
+    // ========================================
+    // 4. CRIAR HABILIDADES DOS AGENTES
+    // ========================================
+    console.log("\n⚡ Criando habilidades dos agentes...");
+
+    const agentSkillsData = [
+      // Jett
+      {
+        agentId: createdAgents["Jett"],
+        name: "Ouvido",
+        key: "Q",
+        description: "Reposicionamento rápido em direção ao movimento",
+        iconUrl: "💨",
+      },
+      {
+        agentId: createdAgents["Jett"],
+        name: "Corrente Ascendente",
+        key: "E",
+        description: "Eleva Jett para posições altas",
+        iconUrl: "⬆️",
+      },
+      // Phoenix
+      {
+        agentId: createdAgents["Phoenix"],
+        name: "Curva de Fogo",
+        key: "Q",
+        description: "Projétil de fogo que curva",
+        iconUrl: "🔥",
+      },
+      {
+        agentId: createdAgents["Phoenix"],
+        name: "Mãos Quentes",
+        key: "E",
+        description: "Cria uma parede de fogo",
+        iconUrl: "🔥",
+      },
+      // Sage
+      {
+        agentId: createdAgents["Sage"],
+        name: "Parede de Gelo",
+        key: "Q",
+        description: "Cria uma barreira de gelo",
+        iconUrl: "🧊",
+      },
+      {
+        agentId: createdAgents["Sage"],
+        name: "Orbe de Cura",
+        key: "E",
+        description: "Cura aliados ou a si mesma",
+        iconUrl: "💚",
+      },
+    ];
+
+    for (const skillData of agentSkillsData) {
+      try {
+        await prisma.agentSkill.create({ data: skillData });
+        console.log(
+          `✅ Habilidade criada: ${skillData.name} (${skillData.key})`,
+        );
+      } catch (error) {
+        console.error(`❌ Erro ao criar habilidade ${skillData.name}:`, error);
+      }
+    }
+
+    // ========================================
+    // 5. CRIAR MAPAS
+    // ========================================
+    console.log("\n🗺️ Criando mapas...");
+
+    const mapsData = [
+      {
+        name: "Bind",
+        description: "Mapa com duas sites conectadas por teleportes",
+        imageKey: "bind.jpg",
+        minimapUrl: "bind-minimap.jpg",
+      },
+      {
+        name: "Haven",
+        description: "Mapa com três sites para ataque",
+        imageKey: "haven.jpg",
+        minimapUrl: "haven-minimap.jpg",
+      },
+      {
+        name: "Split",
+        description: "Mapa vertical com duas sites",
+        imageKey: "split.jpg",
+        minimapUrl: "split-minimap.jpg",
+      },
+      {
+        name: "Ascent",
+        description: "Mapa com site A elevada e site B aberta",
+        imageKey: "ascent.jpg",
+        minimapUrl: "ascent-minimap.jpg",
+      },
+      {
+        name: "Icebox",
+        description: "Mapa com múltiplas rotas e posições elevadas",
+        imageKey: "icebox.jpg",
+        minimapUrl: "icebox-minimap.jpg",
+      },
+    ];
+
+    const createdMaps: Record<string, string> = {};
+
+    for (const mapData of mapsData) {
+      const existingMap = await prisma.maps.findUnique({
+        where: { name: mapData.name },
+      });
+
+      if (existingMap) {
+        createdMaps[mapData.name] = existingMap.id;
+        console.log(`✅ Mapa ${mapData.name} já existe`);
+        continue;
+      }
+
+      try {
+        const map = await prisma.maps.create({ data: mapData });
+        createdMaps[mapData.name] = map.id;
+        console.log(`✅ Mapa criado: ${mapData.name}`);
+      } catch (error) {
+        console.error(`❌ Erro ao criar mapa ${mapData.name}:`, error);
+      }
+    }
+
+    // ========================================
+    // 6. CRIAR SITES DOS MAPAS
+    // ========================================
+    console.log("\n📍 Criando sites dos mapas...");
+
+    const mapSitesData = [
+      // Bind
+      {
+        mapId: createdMaps["Bind"],
+        name: "Site A",
+        description: "Site com múltiplas rotas de entrada",
+      },
+      {
+        mapId: createdMaps["Bind"],
+        name: "Site B",
+        description: "Site com teleporte para mid",
+      },
+      // Haven
+      {
+        mapId: createdMaps["Haven"],
+        name: "Site A",
+        description: "Site com entrada principal e rotas laterais",
+      },
+      {
+        mapId: createdMaps["Haven"],
+        name: "Site B",
+        description: "Site com entrada direta e rotas flanqueantes",
+      },
+      {
+        mapId: createdMaps["Haven"],
+        name: "Site C",
+        description: "Site com entrada única e posições defensivas",
+      },
+    ];
+
+    for (const siteData of mapSitesData) {
+      try {
+        await prisma.mapSites.create({ data: siteData });
+        console.log(`✅ Site criado: ${siteData.name}`);
+      } catch (error) {
+        console.error(`❌ Erro ao criar site ${siteData.name}:`, error);
+      }
+    }
+
+    // ========================================
+    // 7. CRIAR CATEGORIAS DE AULAS
+    // ========================================
+    console.log("\n🎯 Criando categorias de aulas...");
+
+    const categoriesData = [
+      {
+        name: "Táticas Avançadas",
+        description:
+          "Aprenda estratégias de equipe, posicionamento e controle de mapa",
+        icon: "🎯",
+        level: LessonLevel.INTERMEDIARIO,
+        slug: "taticas-avancadas",
+      },
+      {
+        name: "Mapas e Rotas",
+        description:
+          "Domine os mapas de Valorant com rotas seguras e posições estratégicas",
+        icon: "🗺️",
+        level: LessonLevel.INICIANTE,
+        slug: "mapas-e-rotas",
+      },
+      {
+        name: "Agentes e Habilidades",
+        description:
+          "Conheça os agentes, suas habilidades e como usá-los no combate",
+        icon: "👤",
+        level: LessonLevel.INICIANTE,
+        slug: "agentes-e-habilidades",
+      },
+      {
+        name: "Dribles e Combate",
+        description:
+          "Melhore sua mira, movimentação e uso de habilidades em combate",
+        icon: "⚔️",
+        level: LessonLevel.AVANCADO,
+        slug: "dribles-e-combate",
+      },
+      {
+        name: "Estratégia de Equipe",
+        description: "Como jogar em equipe, comunicar-se e coordenar ataques",
+        icon: "👥",
+        level: LessonLevel.INTERMEDIARIO,
+        slug: "estrategia-de-time",
+      },
+    ];
+
+    const createdCategories: Record<string, string> = {};
+
+    for (const categoryData of categoriesData) {
+      const existingCategory = await prisma.lessonCategory.findUnique({
+        where: { slug: categoryData.slug },
+      });
+
+      if (existingCategory) {
+        createdCategories[categoryData.slug] = existingCategory.id;
+        console.log(`✅ Categoria ${categoryData.name} já existe`);
+        continue;
+      }
+
+      try {
+        const category = await prisma.lessonCategory.create({
+          data: categoryData,
+        });
+        createdCategories[categoryData.slug] = category.id;
+        console.log(`✅ Categoria criada: ${categoryData.name}`);
+      } catch (error) {
+        console.error(
+          `❌ Erro ao criar categoria ${categoryData.name}:`,
+          error,
+        );
+      }
+    }
+
+    // ========================================
+    // 8. CRIAR AULAS
+    // ========================================
+    console.log("\n📚 Criando aulas...");
+
+    const adminUserId =
+      createdUsers["ana@academy.com"] || createdUsers["admin@valorant.com"];
+
+    if (!adminUserId) {
+      console.log("⚠️  Criando usuário admin para as aulas...");
+      const adminUser = await prisma.user.create({
         data: {
-          name: agentData.name,
-          roleId: roleId,
-          biography: agentData.biography,
-          dica: agentData.dica,
-          imageKey: agentData.imageKey,
-          skills: { create: agentData.skills },
-          strategies: { create: agentData.strategies },
-          tutorials: { create: agentData.tutorials },
+          email: "admin@valorant.com",
+          nickname: "Admin",
+          role: UserRole.ADMIN,
+          password:
+            "$2b$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWGw.xkY6gHfz8yqJlNvBmXpRtUoIaSdFgHjK",
+          isActive: true,
+          branchId: "branch-1",
         },
       });
-      console.log(`Agente criado: ${agentData.name}`);
-    } else {
-      console.log(`Agente já existe: ${agentData.name}`);
+      createdUsers["admin@valorant.com"] = adminUser.id;
     }
-  }
 
-  console.log("Verificação e seed finalizada!");
+    const lessonsData = [
+      // Táticas Avançadas
+      {
+        title: "Posicionamento em Spike",
+        description:
+          "Como posicionar-se corretamente ao defender ou atacar o spike",
+        categoryId: createdCategories["taticas-avancadas"],
+        videoUrl: "https://youtu.be/valorant-spike-positioning",
+        thumbnailUrl: "https://example.com/thumbs/spike-position.jpg",
+        isLive: false,
+        scheduledAt: null,
+        createdById: createdUsers["admin@valorant.com"],
+        duration: 180,
+        isCompleted: false,
+        isLocked: false,
+        number: 1,
+      },
+      {
+        title: "Controle de Mapa com Smoke",
+        description: "Como usar smoke para controlar áreas do mapa",
+        categoryId: createdCategories["taticas-avancadas"],
+        videoUrl: "https://youtu.be/valorant-smoke-control",
+        thumbnailUrl: "https://example.com/thumbs/smoke-control.jpg",
+        isLive: false,
+        scheduledAt: null,
+        createdById: createdUsers["admin@valorant.com"],
+        duration: 240,
+        isCompleted: false,
+        isLocked: false,
+        number: 2,
+      },
+      // Mapas e Rotas
+      {
+        title: "Rotas Seguras em Bind",
+        description: "Rotas seguras para chegar à site B sem ser visto",
+        categoryId: createdCategories["mapas-e-rotas"],
+        videoUrl: "https://youtu.be/valorant-bind-routes",
+        thumbnailUrl: "https://example.com/thumbs/bind-routes.jpg",
+        isLive: false,
+        scheduledAt: null,
+        createdById: createdUsers["admin@valorant.com"],
+        duration: 150,
+        isCompleted: false,
+        isLocked: false,
+        number: 1,
+      },
+      {
+        title: "Defesa na Site A de Split",
+        description: "Como defender a site A em Split com bom posicionamento",
+        categoryId: createdCategories["mapas-e-rotas"],
+        videoUrl: "https://youtu.be/valorant-split-defense",
+        thumbnailUrl: "https://example.com/thumbs/split-defense.jpg",
+        isLive: false,
+        scheduledAt: null,
+        createdById: createdUsers["admin@valorant.com"],
+        duration: 190,
+        isCompleted: false,
+        isLocked: false,
+        number: 2,
+      },
+      // Agentes e Habilidades
+      {
+        title: "Ouvido do Jett",
+        description:
+          "Como usar o Ouvido do Jett para ganhar vantagem em combate",
+        categoryId: createdCategories["agentes-e-habilidades"],
+        videoUrl: "https://youtu.be/valorant-jett-ear",
+        thumbnailUrl: "https://example.com/thumbs/jett-ear.jpg",
+        isLive: false,
+        scheduledAt: null,
+        createdById: createdUsers["admin@valorant.com"],
+        duration: 160,
+        isCompleted: false,
+        isLocked: false,
+        number: 1,
+      },
+      {
+        title: "Uso do Sombra no Ataque",
+        description: "Como usar o Sombra para surpreender o inimigo",
+        categoryId: createdCategories["agentes-e-habilidades"],
+        videoUrl: "https://youtu.be/valorant-sombra-attack",
+        thumbnailUrl: "https://example.com/thumbs/sombra-attack.jpg",
+        isLive: false,
+        scheduledAt: null,
+        createdById: createdUsers["admin@valorant.com"],
+        duration: 200,
+        isCompleted: false,
+        isLocked: false,
+        number: 2,
+      },
+      // Dribles e Combate
+      {
+        title: "Movimentação com Spray",
+        description: "Como se mover com spray para manter a pressão",
+        categoryId: createdCategories["dribles-e-combate"],
+        videoUrl: "https://youtu.be/valorant-spray-movement",
+        thumbnailUrl: "https://example.com/thumbs/spray-movement.jpg",
+        isLive: false,
+        scheduledAt: null,
+        createdById: createdUsers["admin@valorant.com"],
+        duration: 170,
+        isCompleted: false,
+        isLocked: false,
+        number: 1,
+      },
+      {
+        title: "Combate com Flash",
+        description: "Como usar flash para ganhar vantagem em combate",
+        categoryId: createdCategories["dribles-e-combate"],
+        videoUrl: "https://youtu.be/valorant-flash-combat",
+        thumbnailUrl: "https://example.com/thumbs/flash-combat.jpg",
+        isLive: false,
+        scheduledAt: null,
+        createdById: createdUsers["admin@valorant.com"],
+        duration: 180,
+        isCompleted: false,
+        isLocked: false,
+        number: 2,
+      },
+      // Estratégia de Equipe
+      {
+        title: "Comunicação Eficiente",
+        description: "Como comunicar-se com a equipe para coordenar ataques",
+        categoryId: createdCategories["estrategia-de-time"],
+        videoUrl: "https://youtu.be/valorant-communication",
+        thumbnailUrl: "https://example.com/thumbs/communication.jpg",
+        isLive: false,
+        scheduledAt: null,
+        createdById: createdUsers["admin@valorant.com"],
+        duration: 140,
+        isCompleted: false,
+        isLocked: false,
+        number: 1,
+      },
+      {
+        title: "Coordenação de Ataques",
+        description:
+          "Como coordenar ataques com a equipe para maximizar o sucesso",
+        categoryId: createdCategories["estrategia-de-time"],
+        videoUrl: "https://youtu.be/valorant-coordinated-attacks",
+        thumbnailUrl: "https://example.com/thumbs/coordinated-attacks.jpg",
+        isLive: false,
+        scheduledAt: null,
+        createdById: createdUsers["admin@valorant.com"],
+        duration: 210,
+        isCompleted: false,
+        isLocked: false,
+        number: 2,
+      },
+    ];
+
+    for (const lessonData of lessonsData) {
+      try {
+        await prisma.lessons.create({ data: lessonData });
+        console.log(`✅ Aula criada: ${lessonData.title}`);
+      } catch (error) {
+        console.error(`❌ Erro ao criar aula ${lessonData.title}:`, error);
+      }
+    }
+
+    // ========================================
+    // 9. CRIAR CONQUISTAS
+    // ========================================
+    console.log("\n🏆 Criando conquistas...");
+
+    const achievementsData = [
+      {
+        title: "Primeira Aula",
+        description: "Complete sua primeira aula",
+        iconUrl: "🎓",
+      },
+      {
+        title: "Estudante Dedicado",
+        description: "Complete 10 aulas",
+        iconUrl: "📚",
+      },
+      {
+        title: "Mestre Tático",
+        description: "Complete todas as aulas de táticas",
+        iconUrl: "🎯",
+      },
+      {
+        title: "Explorador de Mapas",
+        description: "Complete todas as aulas de mapas",
+        iconUrl: "🗺️",
+      },
+      {
+        title: "Especialista em Agentes",
+        description: "Complete todas as aulas de agentes",
+        iconUrl: "👤",
+      },
+    ];
+
+    for (const achievementData of achievementsData) {
+      try {
+        await prisma.achievements.create({ data: achievementData });
+        console.log(`✅ Conquista criada: ${achievementData.title}`);
+      } catch (error) {
+        console.error(
+          `❌ Erro ao criar conquista ${achievementData.title}:`,
+          error,
+        );
+      }
+    }
+
+    // ========================================
+    // 10. CRIAR TUTORIAIS DE AGENTES
+    // ========================================
+    console.log("\n📖 Criando tutoriais de agentes...");
+
+    const agentTutorialsData = [
+      {
+        agentId: createdAgents["Jett"],
+        title: "Como usar o Ouvido do Jett",
+        url: "https://youtu.be/jett-ear-tutorial",
+        type: TutorialType.VIDEO,
+      },
+      {
+        agentId: createdAgents["Phoenix"],
+        title: "Combinações de habilidades do Phoenix",
+        url: "https://youtu.be/phoenix-combos",
+        type: TutorialType.VIDEO,
+      },
+      {
+        agentId: createdAgents["Sage"],
+        title: "Posicionamento defensivo com Sage",
+        url: "https://youtu.be/sage-defense",
+        type: TutorialType.VIDEO,
+      },
+    ];
+
+    for (const tutorialData of agentTutorialsData) {
+      try {
+        await prisma.agentTutorial.create({ data: tutorialData });
+        console.log(`✅ Tutorial criado: ${tutorialData.title}`);
+      } catch (error) {
+        console.error(
+          `❌ Erro ao criar tutorial ${tutorialData.title}:`,
+          error,
+        );
+      }
+    }
+
+    // ========================================
+    // 11. CRIAR TUTORIAIS DE MAPAS
+    // ========================================
+    console.log("\n🗺️ Criando tutoriais de mapas...");
+
+    const mapTutorialsData = [
+      {
+        mapId: createdMaps["Bind"],
+        title: "Rotas de ataque em Bind",
+        url: "https://youtu.be/bind-attack-routes",
+        type: TutorialType.VIDEO,
+      },
+      {
+        mapId: createdMaps["Haven"],
+        title: "Defesa em Haven com 3 sites",
+        url: "https://youtu.be/haven-defense",
+        type: TutorialType.VIDEO,
+      },
+      {
+        mapId: createdMaps["Split"],
+        title: "Controle de mid em Split",
+        url: "https://youtu.be/split-mid-control",
+        type: TutorialType.VIDEO,
+      },
+    ];
+
+    for (const tutorialData of mapTutorialsData) {
+      try {
+        await prisma.mapTutorials.create({ data: tutorialData });
+        console.log(`✅ Tutorial de mapa criado: ${tutorialData.title}`);
+      } catch (error) {
+        console.error(
+          `❌ Erro ao criar tutorial de mapa ${tutorialData.title}:`,
+          error,
+        );
+      }
+    }
+
+    // ========================================
+    // RESUMO FINAL
+    // ========================================
+    const finalCounts = await Promise.all([
+      prisma.user.count(),
+      prisma.lessonCategory.count(),
+      prisma.lessons.count(),
+      prisma.subscription.count(),
+      prisma.agents.count(),
+      prisma.agentRoles.count(),
+      prisma.maps.count(),
+      prisma.achievements.count(),
+    ]);
+
+    const [
+      finalUserCount,
+      finalCategoryCount,
+      finalLessonCount,
+      finalSubscriptionCount,
+      finalAgentCount,
+      finalAgentRoleCount,
+      finalMapCount,
+      finalAchievementCount,
+    ] = finalCounts;
+
+    console.log("\n📊 Estado final do banco:");
+    console.log(
+      `- Usuários: ${finalUserCount} (${finalUserCount - userCount} novos)`,
+    );
+    console.log(
+      `- Categorias: ${finalCategoryCount} (${finalCategoryCount - categoryCount} novas)`,
+    );
+    console.log(
+      `- Aulas: ${finalLessonCount} (${finalLessonCount - lessonCount} novas)`,
+    );
+    console.log(
+      `- Assinaturas: ${finalSubscriptionCount} (${finalSubscriptionCount - subscriptionCount} novas)`,
+    );
+    console.log(
+      `- Agentes: ${finalAgentCount} (${finalAgentCount - agentCount} novos)`,
+    );
+    console.log(
+      `- Roles de Agentes: ${finalAgentRoleCount} (${finalAgentRoleCount - agentRoleCount} novos)`,
+    );
+    console.log(
+      `- Mapas: ${finalMapCount} (${finalMapCount - mapCount} novos)`,
+    );
+    console.log(
+      `- Conquistas: ${finalAchievementCount} (${finalAchievementCount - achievementCount} novos)\n`,
+    );
+
+    console.log("✨ Seed concluído com sucesso!");
+    console.log("\n🎯 Dados criados:");
+    console.log(
+      "✅ Usuários com diferentes roles (ADMIN, PROFESSIONAL, CUSTOMER)",
+    );
+    console.log(
+      "✅ Roles de agentes (Duelista, Iniciador, Controlador, Sentinela)",
+    );
+    console.log("✅ Agentes populares com habilidades");
+    console.log("✅ Mapas principais com sites");
+    console.log("✅ Categorias de aulas organizadas por nível");
+    console.log("✅ Aulas completas com vídeos e metadados");
+    console.log("✅ Sistema de conquistas");
+    console.log("✅ Tutoriais de agentes e mapas");
+  } catch (error) {
+    console.error("❌ Erro durante o seed:", error);
+    throw error;
+  }
 }
 
 main()
   .catch((e) => {
-    console.error(e);
+    console.error("❌ Erro no seed:", e);
+    console.error("Detalhes do erro:", e.message);
+    if (e.code) console.error("Código do erro:", e.code);
     process.exit(1);
   })
-  .finally(async () => await prisma.$disconnect());
+  .finally(async () => {
+    console.log("\n🔌 Desconectando do banco de dados...");
+    await prisma.$disconnect();
+  });

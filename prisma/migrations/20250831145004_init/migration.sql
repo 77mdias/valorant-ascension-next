@@ -1,4 +1,7 @@
 -- CreateEnum
+CREATE TYPE "public"."LessonLevel" AS ENUM ('INICIANTE', 'INTERMEDIARIO', 'AVANÇADO', 'IMORTAL');
+
+-- CreateEnum
 CREATE TYPE "public"."UserRole" AS ENUM ('CUSTOMER', 'ADMIN', 'PROFESSIONAL');
 
 -- CreateEnum
@@ -6,6 +9,22 @@ CREATE TYPE "public"."LessonCategory" AS ENUM ('AIM', 'MAPS', 'STRATEGY', 'AGENT
 
 -- CreateEnum
 CREATE TYPE "public"."TutorialType" AS ENUM ('VIDEO', 'ARTICLE', 'GUIDE');
+
+-- CreateTable
+CREATE TABLE "public"."subscription" (
+    "id" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "stripeSubscriptionId" TEXT NOT NULL,
+    "stripePriceId" TEXT NOT NULL,
+    "status" TEXT NOT NULL,
+    "currentPeriodStart" TIMESTAMP(3) NOT NULL,
+    "currentPeriodEnd" TIMESTAMP(3) NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "cancelAtPeriodEnd" BOOLEAN NOT NULL DEFAULT false,
+
+    CONSTRAINT "subscription_pkey" PRIMARY KEY ("id")
+);
 
 -- CreateTable
 CREATE TABLE "public"."account" (
@@ -41,9 +60,23 @@ CREATE TABLE "public"."user" (
 );
 
 -- CreateTable
+CREATE TABLE "public"."sessions" (
+    "id" TEXT NOT NULL,
+    "sessionToken" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "expires" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "sessions_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "public"."lessonCategory" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
+    "description" TEXT,
+    "icon" TEXT,
+    "level" "public"."LessonLevel" NOT NULL DEFAULT 'INICIANTE',
+    "slug" TEXT NOT NULL DEFAULT 'default-slug',
 
     CONSTRAINT "lessonCategory_pkey" PRIMARY KEY ("id")
 );
@@ -61,6 +94,10 @@ CREATE TABLE "public"."lessons" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "createdById" TEXT NOT NULL,
+    "duration" INTEGER,
+    "isCompleted" BOOLEAN NOT NULL DEFAULT false,
+    "isLocked" BOOLEAN NOT NULL DEFAULT false,
+    "number" INTEGER,
 
     CONSTRAINT "lessons_pkey" PRIMARY KEY ("id")
 );
@@ -269,7 +306,22 @@ CREATE TABLE "public"."_classesTolessons" (
 );
 
 -- CreateIndex
+CREATE UNIQUE INDEX "subscription_stripeSubscriptionId_key" ON "public"."subscription"("stripeSubscriptionId");
+
+-- CreateIndex
+CREATE INDEX "subscription_userId_idx" ON "public"."subscription"("userId");
+
+-- CreateIndex
+CREATE INDEX "subscription_stripeSubscriptionId_idx" ON "public"."subscription"("stripeSubscriptionId");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "user_email_key" ON "public"."user"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "sessions_sessionToken_key" ON "public"."sessions"("sessionToken");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "lessonCategory_slug_key" ON "public"."lessonCategory"("slug");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "lessonEnrollments_userId_lessonId_key" ON "public"."lessonEnrollments"("userId", "lessonId");
@@ -302,46 +354,52 @@ CREATE UNIQUE INDEX "maps_name_key" ON "public"."maps"("name");
 CREATE INDEX "_classesTolessons_B_index" ON "public"."_classesTolessons"("B");
 
 -- AddForeignKey
-ALTER TABLE "public"."account" ADD CONSTRAINT "account_userId_fkey" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "public"."subscription" ADD CONSTRAINT "subscription_userId_fkey" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."lessons" ADD CONSTRAINT "lessons_createdById_fkey" FOREIGN KEY ("createdById") REFERENCES "public"."user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "public"."account" ADD CONSTRAINT "account_userId_fkey" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "public"."sessions" ADD CONSTRAINT "sessions_userId_fkey" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "public"."lessons" ADD CONSTRAINT "lessons_categoryId_fkey" FOREIGN KEY ("categoryId") REFERENCES "public"."lessonCategory"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."lessonEnrollments" ADD CONSTRAINT "lessonEnrollments_userId_fkey" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "public"."lessons" ADD CONSTRAINT "lessons_createdById_fkey" FOREIGN KEY ("createdById") REFERENCES "public"."user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "public"."lessonEnrollments" ADD CONSTRAINT "lessonEnrollments_lessonId_fkey" FOREIGN KEY ("lessonId") REFERENCES "public"."lessons"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."classes" ADD CONSTRAINT "classes_createdById_fkey" FOREIGN KEY ("createdById") REFERENCES "public"."user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "public"."lessonEnrollments" ADD CONSTRAINT "lessonEnrollments_userId_fkey" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."classMembers" ADD CONSTRAINT "classMembers_userId_fkey" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "public"."classes" ADD CONSTRAINT "classes_createdById_fkey" FOREIGN KEY ("createdById") REFERENCES "public"."user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "public"."classMembers" ADD CONSTRAINT "classMembers_classId_fkey" FOREIGN KEY ("classId") REFERENCES "public"."classes"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."lessonComments" ADD CONSTRAINT "lessonComments_userId_fkey" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "public"."classMembers" ADD CONSTRAINT "classMembers_userId_fkey" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "public"."lessonComments" ADD CONSTRAINT "lessonComments_lessonId_fkey" FOREIGN KEY ("lessonId") REFERENCES "public"."lessons"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."lessonProgress" ADD CONSTRAINT "lessonProgress_userId_fkey" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "public"."lessonComments" ADD CONSTRAINT "lessonComments_userId_fkey" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "public"."lessonProgress" ADD CONSTRAINT "lessonProgress_lessonId_fkey" FOREIGN KEY ("lessonId") REFERENCES "public"."lessons"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."userAchievements" ADD CONSTRAINT "userAchievements_userId_fkey" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "public"."lessonProgress" ADD CONSTRAINT "lessonProgress_userId_fkey" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "public"."userAchievements" ADD CONSTRAINT "userAchievements_achievementId_fkey" FOREIGN KEY ("achievementId") REFERENCES "public"."achievements"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "public"."userAchievements" ADD CONSTRAINT "userAchievements_userId_fkey" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "public"."agents" ADD CONSTRAINT "agents_roleId_fkey" FOREIGN KEY ("roleId") REFERENCES "public"."agentRoles"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
