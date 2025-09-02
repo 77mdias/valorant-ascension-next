@@ -372,6 +372,70 @@ export interface HenrikDevMatch {
         headshots: number;
         bodyshots: number;
         legshots: number;
+        kill_events?: Array<{
+          kill_time_in_round: number;
+          kill_time_in_match: number;
+          killer_puuid: string;
+          killer_display_name: string;
+          killer_team: string;
+          victim_puuid: string;
+          victim_display_name: string;
+          victim_team: string;
+          victim_death_location: {
+            x: number;
+            y: number;
+          };
+          damage_weapon_id: string;
+          damage_weapon_name: string;
+          secondary_fire_mode: boolean;
+          player_locations_on_kill: Array<{
+            player_puuid: string;
+            player_display_name: string;
+            player_team: string;
+            location: {
+              x: number;
+              y: number;
+            };
+            view_radians: number;
+          }>;
+          assistants: Array<{
+            assistant_puuid: string;
+            assistant_display_name: string;
+            assistant_team: string;
+          }>;
+        }>;
+      }>;
+    }>;
+    kills: Array<{
+      kill_time_in_round: number;
+      kill_time_in_match: number;
+      killer_puuid: string;
+      killer_display_name: string;
+      killer_team: string;
+      victim_puuid: string;
+      victim_display_name: string;
+      victim_team: string;
+      victim_death_location: {
+        x: number;
+        y: number;
+      };
+      damage_weapon_id: string;
+      damage_weapon_name: string;
+      secondary_fire_mode: boolean;
+      player_locations_on_kill: Array<{
+        player_puuid: string;
+        player_display_name: string;
+        player_team: string;
+        location: {
+          x: number;
+          y: number;
+        };
+        view_radians: number;
+      }>;
+      assistants: Array<{
+        assistant_puuid: string;
+        assistant_display_name: string;
+        assistant_team: string;
       }>;
     }>;
   };
@@ -686,6 +750,56 @@ export class HenrikDevAPI {
               },
             },
             rounds: [],
+            kills: [
+              {
+                kill_time_in_round: 15000,
+                kill_time_in_match: 15000,
+                killer_puuid: "mock-puuid",
+                killer_display_name: name,
+                killer_team: "Red",
+                victim_puuid: "mock-victim-1",
+                victim_display_name: "Mock Victim 1",
+                victim_team: "Blue",
+                victim_death_location: { x: 100, y: 200 },
+                damage_weapon_id: "mock-weapon-1",
+                damage_weapon_name: "Vandal",
+                secondary_fire_mode: false,
+                player_locations_on_kill: [
+                  {
+                    player_puuid: "mock-puuid",
+                    player_display_name: name,
+                    player_team: "Red",
+                    location: { x: 100, y: 200 },
+                    view_radians: 0,
+                  },
+                ],
+                assistants: [],
+              },
+              {
+                kill_time_in_round: 45000,
+                kill_time_in_match: 45000,
+                killer_puuid: "mock-victim-1",
+                killer_display_name: "Mock Victim 1",
+                killer_team: "Blue",
+                victim_puuid: "mock-puuid",
+                victim_display_name: name,
+                victim_team: "Red",
+                victim_death_location: { x: 150, y: 250 },
+                damage_weapon_id: "mock-weapon-2",
+                damage_weapon_name: "Phantom",
+                secondary_fire_mode: false,
+                player_locations_on_kill: [
+                  {
+                    player_puuid: "mock-victim-1",
+                    player_display_name: "Mock Victim 1",
+                    player_team: "Blue",
+                    location: { x: 150, y: 250 },
+                    view_radians: 0,
+                  },
+                ],
+                assistants: [],
+              },
+            ],
           },
         },
       ];
@@ -811,6 +925,7 @@ export function processMatchData(match: any, playerName: string) {
     assists: player.stats?.assists || 0,
     headshots: player.stats?.headshots || 0,
     damage: player.damage_made || 0,
+    rounds_played: match.metadata.rounds_played || 0,
     date: new Date(
       (match.metadata.game_start || match.metadata.game_start_patched) * 1000,
     ),

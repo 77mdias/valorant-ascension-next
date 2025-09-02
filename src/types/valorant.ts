@@ -20,7 +20,7 @@ export interface MatchSummary {
   map: string;
   agent: string;
   mode: string;
-  result: 'win' | 'loss' | 'draw';
+  result: "win" | "loss" | "draw";
   rrChange?: number;
   kills: number;
   deaths: number;
@@ -122,5 +122,20 @@ export interface PlayerResponse {
     status: number;
     detail?: string;
     regionTried?: string;
+  };
+}
+
+export interface Kill {
+  round: number;
+  time_in_round_in_ms: number;
+  killer: {
+    puuid: string;
+    name: string;
+    tag: string;
+  };
+  victim: {
+    puuid: string;
+    name: string;
+    tag: string;
   };
 }

@@ -32,6 +32,7 @@ interface MatchData {
   assists: number;
   headshots: number;
   damage: number;
+  rounds_played: number;
   date: Date;
   duration: number;
 }
@@ -195,6 +196,29 @@ export default function PlayerSearch() {
     }
   };
 
+  // Calcula o ADR (Average Damage per Round)
+  const calculateADR = (damage: number, rounds: number): number => {
+    return Math.round(damage / Math.max(rounds, 1));
+  };
+
+  // Calcula o ADS (Average Deaths per Round)
+  const calculateADS = (deaths: number, rounds: number): number => {
+    return Number((deaths / Math.max(rounds, 1)).toFixed(2));
+  };
+
+  // Calcula o ACS (Average Combat Score)
+  const calculateACS = (
+    damage: number,
+    kills: number,
+    rounds: number,
+  ): number => {
+    // Fórmula aproximada do ACS:
+    // (Dano total / Rounds) + (50 * Kills / Rounds)
+    const damagePerRound = damage / Math.max(rounds, 1);
+    const killScore = (50 * kills) / Math.max(rounds, 1);
+    return Math.round(damagePerRound + killScore);
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -232,40 +256,6 @@ export default function PlayerSearch() {
           >
             {loading ? "🔍 Buscando..." : "🔍 Buscar"}
           </button>
-        </div>
-
-        {/* Exemplos de jogadores para testar */}
-        <div className={styles.examples}>
-          <p>💡 Exemplos para testar:</p>
-          <div className={styles.exampleButtons}>
-            <button
-              onClick={() => {
-                setSearchInput("TenZ#1337");
-                setRegion("na");
-              }}
-              className={styles.exampleButton}
-            >
-              TenZ#1337 (NA)
-            </button>
-            <button
-              onClick={() => {
-                setSearchInput("shroud#1337");
-                setRegion("na");
-              }}
-              className={styles.exampleButton}
-            >
-              shroud#1337 (NA)
-            </button>
-            <button
-              onClick={() => {
-                setSearchInput("Mixwell#1337");
-                setRegion("eu");
-              }}
-              className={styles.exampleButton}
-            >
-              Mixwell#1337 (EU)
-            </button>
-          </div>
         </div>
       </div>
 
@@ -393,51 +383,67 @@ export default function PlayerSearch() {
                         >
                           <div className={styles.matchHeader}>
                             <div className={styles.matchInfo}>
-                              <span className={styles.map}>{match.map}</span>
-                              <span className={styles.agent}>
-                                {match.agent}
-                              </span>
-                              <span className={styles.matchNumber}>
-                                #{index + 1}
-                              </span>
-                            </div>
-                            <div className={styles.matchResult}>
-                              <span
-                                className={`${styles.result} ${getResultColor(match.result)}`}
-                              >
-                                {match.result === "win"
-                                  ? "✅ VITÓRIA"
-                                  : "❌ DERROTA"}
-                              </span>
-                              <span className={styles.score}>
-                                {match.score}
-                              </span>
-                            </div>
-                          </div>
-                          <div className={styles.matchStats}>
-                            <div className={styles.kdaSection}>
-                              <div className={styles.kda}>
-                                <span className={styles.kdaLabel}>KDA:</span>
-                                <span className={styles.kdaValue}>
-                                  {match.kills}/{match.deaths}/{match.assists}
-                                </span>
-                                <span className={styles.kdaRatio}>
-                                  (
-                                  {(
-                                    (match.kills + match.assists) /
-                                    Math.max(match.deaths, 1)
-                                  ).toFixed(2)}
-                                  )
+                              <div className={styles.agent}>
+                                <img
+                                  src={`/agents/${match.agent.toLowerCase().replace(" ", "-").replace("/", "-")}.png`}
+                                  alt={match.agent}
+                                  className={styles.agentImage}
+                                />
+                              </div>
+                              <div className={styles.matchDate}>
+                                {match.date.toLocaleDateString("pt-BR")}
+                                <span
+                                  className={`${styles.map} ${match.result === "win" ? styles.win : styles.loss}`}
+                                >
+                                  <p>{match.map}</p>
                                 </span>
                               </div>
-                              <div className={styles.headshots}>
-                                <span className={styles.headshotsLabel}>
-                                  HS:
+                            </div>
+                            <div className={styles.matchResult}>
+                              <div className="size-10">
+                                <img
+                                  src={playerData.rankImage}
+                                  alt="Rank"
+                                  className={`object-contain`}
+                                />
+                              </div>
+                              <div>
+                                <span className={styles.score}>
+                                  {match.score}
                                 </span>
-                                <span className={styles.headshotsValue}>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Match Stats */}
+                          <div className={styles.kda}>
+                            {/* K/D/A */}
+                            <div className="flex flex-col">
+                              <span className={styles.kdaLabel}>K/D/A:</span>
+                              <p className={`${styles.kdaValue}`}>
+                                {match.kills}/{match.deaths}/{match.assists}
+                              </p>
+                            </div>
+
+                            {/* K/D RATIO:*/}
+                            <div className="flex flex-col">
+                              <span className={styles.kdaLabel}>K/D:</span>
+                              <p className={styles.kdRatioValue}>
+                                {(
+                                  (match.kills + match.assists) /
+                                  Math.max(match.deaths, 1)
+                                ).toFixed(2)}
+                              </p>
+                            </div>
+
+                            {/* HEADSHOTS */}
+                            <div className="flex min-w-[4.5rem] flex-col">
+                              <span className={styles.headshotsLabel}>HS:</span>
+                              <div className="flex items-center">
+                                <p className={styles.headshotsValue}>
                                   {match.headshots}
-                                </span>
-                                <span className={styles.headshotsPercent}>
+                                </p>
+                                <p className={styles.headshotsPercent}>
                                   (
                                   {(
                                     (match.headshots /
@@ -445,38 +451,52 @@ export default function PlayerSearch() {
                                     100
                                   ).toFixed(0)}
                                   %)
-                                </span>
+                                </p>
                               </div>
                             </div>
-                            <div className={styles.damageSection}>
-                              <div className={styles.damage}>
-                                <span className={styles.damageLabel}>
-                                  Dano:
-                                </span>
-                                <span className={styles.damageValue}>
-                                  {match.damage.toLocaleString()}
-                                </span>
-                              </div>
-                              <div className={styles.duration}>
-                                <span className={styles.durationLabel}>
-                                  Duração:
-                                </span>
-                                <span className={styles.durationValue}>
-                                  {match.duration}min
-                                </span>
-                              </div>
+
+                            {/* DAMAGE */}
+                            <div className="flex flex-col">
+                              <span className={styles.damageLabel}>
+                                DAMAGE:
+                              </span>
+                              <p className={styles.damageValue}>
+                                {match.damage.toLocaleString()}
+                              </p>
                             </div>
-                          </div>
-                          <div className={styles.matchFooter}>
-                            <div className={styles.matchDate}>
-                              {match.date.toLocaleDateString("pt-BR")} às{" "}
-                              {match.date.toLocaleTimeString("pt-BR", {
-                                hour: "2-digit",
-                                minute: "2-digit",
-                              })}
+
+                            {/* ADR */}
+                            <div className="flex flex-col">
+                              <span className={styles.adLabel}>ADR:</span>
+                              <p className={styles.adValue}>
+                                {calculateADR(
+                                  match.damage,
+                                  match.rounds_played,
+                                )}
+                              </p>
                             </div>
-                            <div className={styles.matchId}>
-                              ID: {match.id.substring(0, 8)}...
+
+                            {/* ADS */}
+                            <div className="flex flex-col">
+                              <span className={styles.adLabel}>ADS:</span>
+                              <p className={styles.adValue}>
+                                {calculateADS(
+                                  match.deaths,
+                                  match.rounds_played,
+                                )}
+                              </p>
+                            </div>
+
+                            {/* ACS */}
+                            <div className="flex flex-col">
+                              <span className={styles.adLabel}>ACS:</span>
+                              <p className={styles.adValue}>
+                                {calculateACS(
+                                  match.damage,
+                                  match.kills,
+                                  match.rounds_played,
+                                )}
+                              </p>
                             </div>
                           </div>
                         </div>

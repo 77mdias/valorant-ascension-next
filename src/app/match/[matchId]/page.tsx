@@ -3,8 +3,9 @@
 import { useState, useEffect } from "react";
 import { useParams, useSearchParams } from "next/navigation";
 import styles from "./page.module.scss";
+import { calculateFKandFD, calculateMK } from "@/utils/matchCalculations";
 
-interface MatchDetails {
+export interface MatchDetails {
   metadata: {
     match_id: string;
     map: {
@@ -145,6 +146,78 @@ interface MatchDetails {
       headshots: number;
       bodyshots: number;
       legshots: number;
+      kill_events?: Array<{
+        kill_time_in_round: number;
+        kill_time_in_match: number;
+        killer_puuid: string;
+        killer_display_name: string;
+        killer_team: string;
+        victim_puuid: string;
+        victim_display_name: string;
+        victim_team: string;
+        victim_death_location: {
+          x: number;
+          y: number;
+        };
+        damage_weapon_id: string;
+        damage_weapon_name: string;
+        secondary_fire_mode: boolean;
+        player_locations_on_kill: Array<{
+          player_puuid: string;
+          player_display_name: string;
+          player_team: string;
+          location: {
+            x: number;
+            y: number;
+          };
+          view_radians: number;
+        }>;
+        assistants: Array<{
+          assistant_puuid: string;
+          assistant_display_name: string;
+          assistant_team: string;
+        }>;
+      }>;
+    }>;
+  }>;
+  kills: Array<{
+    round: number;
+    time_in_round_in_ms: number;
+    killer: {
+      puuid: string;
+    };
+    victim: {
+      puuid: string;
+    };
+    kill_time_in_round: number;
+    kill_time_in_match: number;
+    killer_puuid: string;
+    killer_display_name: string;
+    killer_team: string;
+    victim_puuid: string;
+    victim_display_name: string;
+    victim_team: string;
+    victim_death_location: {
+      x: number;
+      y: number;
+    };
+    damage_weapon_id: string;
+    damage_weapon_name: string;
+    secondary_fire_mode: boolean;
+    player_locations_on_kill: Array<{
+      player_puuid: string;
+      player_display_name: string;
+      player_team: string;
+      location: {
+        x: number;
+        y: number;
+      };
+      view_radians: number;
+    }>;
+    assistants: Array<{
+      assistant_puuid: string;
+      assistant_display_name: string;
+      assistant_team: string;
     }>;
   }>;
 }
@@ -163,7 +236,9 @@ export default function MatchDetailsPage() {
   const matchId = params.matchId as string;
   const region = searchParams.get("region") || "na";
 
+  // Busca os detalhes da partida
   useEffect(() => {
+    console.log("matchDetails:", matchDetails);
     const fetchMatchDetails = async () => {
       try {
         setLoading(true);
@@ -173,6 +248,7 @@ export default function MatchDetailsPage() {
           `/api/valorant/match/${matchId}?region=${region}`,
         );
 
+        // Verifica se a resposta é ok
         if (!response.ok) {
           const errorData = await response.json();
           throw new Error(
@@ -180,9 +256,11 @@ export default function MatchDetailsPage() {
           );
         }
 
+        // Converte a resposta para o tipo MatchDetails
         const data = await response.json();
         setMatchDetails(data.match);
       } catch (err) {
+        // Loga o erro
         console.error("Erro ao buscar detalhes da partida:", err);
         setError(err instanceof Error ? err.message : "Erro desconhecido");
       } finally {
@@ -190,11 +268,17 @@ export default function MatchDetailsPage() {
       }
     };
 
+    // Verifica se o matchId é válido
     if (matchId) {
       fetchMatchDetails();
     }
   }, [matchId, region]);
 
+  // Salva os dados de FK, FD e MK
+  const fkAndFD = calculateFKandFD(matchDetails?.kills || []);
+  const mk = calculateMK(matchDetails?.kills || []);
+
+  // Verifica se ainda está carregando
   if (loading) {
     return (
       <div className={styles.container}>
@@ -218,6 +302,7 @@ export default function MatchDetailsPage() {
     );
   }
 
+  // Verifica se não há detalhes da partida
   if (!matchDetails) {
     return (
       <div className={styles.container}>
@@ -230,16 +315,19 @@ export default function MatchDetailsPage() {
     );
   }
 
+  // Formata a duração para o formato mm:ss
   const formatDuration = (ms: number) => {
     const minutes = Math.floor(ms / 60000);
     const seconds = Math.floor((ms % 60000) / 1000);
     return `${minutes}:${seconds.toString().padStart(2, "0")}`;
   };
 
+  // Formata a data para o formato brasileiro
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleString("pt-BR");
   };
 
+  // Redireciona para a página de MMR com os parâmetros pré-preenchidos
   const handlePlayerClick = (playerName: string, playerTag: string) => {
     const encodedName = encodeURIComponent(playerName);
     const encodedTag = encodeURIComponent(playerTag);
@@ -614,9 +702,11 @@ export default function MatchDetailsPage() {
                           <td>{stats.adr}</td>
                           <td>{stats.hsPercentage}%</td>
                           <td>75%</td>
-                          <td>2</td>
-                          <td>1</td>
-                          <td>1</td>
+                          <td>{fkAndFD.fkCount[player.puuid] || 0}</td>
+                          <td>{fkAndFD.fdCount[player.puuid] || 0}</td>
+                          <td>{mk[player.puuid] || 0}</td>
+                          <td></td>
+                          <td>-</td>
                         </tr>
                       );
                     })}
