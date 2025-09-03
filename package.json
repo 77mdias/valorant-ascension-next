@@ -22,14 +22,7 @@
     "prisma:prod:studio": "./scripts/prisma-prod.sh studio",
     "prisma:prod:deploy": "./scripts/prisma-prod.sh deploy",
     "prisma:prod:status": "./scripts/prisma-prod.sh status",
-    "prisma:prod:introspect": "./scripts/prisma-prod.sh introspect",
-    "# Legacy Commands (deprecated)": "",
-    "db:migrate:dev": "echo '⚠️Atenção: Só utilize este comando em ambiente de desenvolvimento.' && npx prisma migrate dev",
-    "db:status:dev": "npx prisma migrate status --schema=prisma/schema.prisma",
-    "db:push:dev": "npx prisma db push",
-    "db:status:prod": "NODE_ENV=production npx prisma migrate status",
-    "db:migrate:prod": "NODE_ENV=production npx prisma migrate deploy",
-    "db:studio:prod": "DATABASE_URL=$DIRECT_URL_PROD npx prisma studio"
+    "prisma:prod:introspect": "./scripts/prisma-prod.sh introspect"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

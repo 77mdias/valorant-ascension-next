@@ -7,6 +7,7 @@ import {
   processMatchData,
   HenrikDevMatch,
 } from "../../lib/henrikdev-api";
+import { ScrollArea, Scrollbar } from "@radix-ui/react-scroll-area";
 import styles from "./page.module.scss";
 
 interface PlayerData {
@@ -299,19 +300,19 @@ export default function PlayerSearch() {
               className={`${styles.tab} ${activeTab === "overview" ? styles.active : ""}`}
               onClick={() => setActiveTab("overview")}
             >
-              📊 Visão Geral
+              Geral
             </button>
             <button
               className={`${styles.tab} ${activeTab === "matches" ? styles.active : ""}`}
               onClick={() => setActiveTab("matches")}
             >
-              🎮 Partidas Recentes
+              Partidas
             </button>
             <button
               className={`${styles.tab} ${activeTab === "stats" ? styles.active : ""}`}
               onClick={() => setActiveTab("stats")}
             >
-              📈 Estatísticas
+              Estatísticas
             </button>
           </div>
 
@@ -367,140 +368,112 @@ export default function PlayerSearch() {
                         </span>
                       </div>
                     </div>
-                    <div className={styles.matchesList}>
-                      {matches.map((match, index) => (
-                        <div
-                          key={match.id}
-                          className={`${styles.matchCard} ${getResultColor(match.result)}`}
-                          onClick={() => {
-                            // Navegar para a página de detalhes da partida
-                            window.open(
-                              `/match/${match.id}?region=${region}`,
-                              "_self",
-                            );
-                          }}
-                          style={{ cursor: "pointer" }}
-                        >
-                          <div className={styles.matchHeader}>
-                            <div className={styles.matchInfo}>
-                              <div className={styles.agent}>
-                                <img
-                                  src={`/agents/${match.agent.toLowerCase().replace(" ", "-").replace("/", "-")}.png`}
-                                  alt={match.agent}
-                                  className={styles.agentImage}
-                                />
-                              </div>
-                              <div className={styles.matchDate}>
-                                {match.date.toLocaleDateString("pt-BR")}
-                                <span
-                                  className={`${styles.map} ${match.result === "win" ? styles.win : styles.loss}`}
-                                >
-                                  <p>{match.map}</p>
-                                </span>
-                              </div>
-                            </div>
-                            <div className={styles.matchResult}>
-                              <div className="size-10">
-                                <img
-                                  src={playerData.rankImage}
-                                  alt="Rank"
-                                  className={`object-contain`}
-                                />
-                              </div>
-                              <div>
-                                <span className={styles.score}>
-                                  {match.score}
-                                </span>
-                              </div>
-                            </div>
-                          </div>
 
-                          {/* Match Stats */}
-                          <div className={styles.kda}>
-                            {/* K/D/A */}
-                            <div className="flex flex-col">
-                              <span className={styles.kdaLabel}>K/D/A:</span>
-                              <p className={`${styles.kdaValue}`}>
-                                {match.kills}/{match.deaths}/{match.assists}
-                              </p>
-                            </div>
-
-                            {/* K/D RATIO:*/}
-                            <div className="flex flex-col">
-                              <span className={styles.kdaLabel}>K/D:</span>
-                              <p className={styles.kdRatioValue}>
-                                {(
-                                  (match.kills + match.assists) /
-                                  Math.max(match.deaths, 1)
-                                ).toFixed(2)}
-                              </p>
-                            </div>
-
-                            {/* HEADSHOTS */}
-                            <div className="flex min-w-[4.5rem] flex-col">
-                              <span className={styles.headshotsLabel}>HS:</span>
-                              <div className="flex items-center">
-                                <p className={styles.headshotsValue}>
+                    {/* SEÇÃO DE PARTIDAS*/}
+                    <div className={styles.matchesTable}>
+                      <table>
+                        <tbody className={styles.matchesTableBody}>
+                          {matches.map((match, index) => (
+                            <tr
+                              key={match.id}
+                              onClick={() => {
+                                // Navegar para a página de detalhes da partida
+                                window.open(
+                                  `/match/${match.id}?region=${region}`,
+                                  "_self",
+                                );
+                              }}
+                              className={`${styles.matchTableRow} ${match.result === "win" ? styles.win : styles.loss}`}
+                              style={{ cursor: "pointer" }}
+                            >
+                              <td className={styles.matchInfo}>
+                                <div className="flex flex-row gap-4">
+                                  <div className={styles.agent}>
+                                    <img
+                                      src={`/agents/${match.agent.toLowerCase().replace(" ", "-").replace("/", "-")}.png`}
+                                      alt={match.agent}
+                                      className={styles.agentImage}
+                                    />
+                                  </div>
+                                  <div className={styles.matchDate}>
+                                    <span
+                                      className={`${styles.map} ${match.result === "win" ? styles.winBg : styles.lossBg}`}
+                                    >
+                                      <p>{match.map}</p>
+                                    </span>
+                                  </div>
+                                  <div className="flex flex-row items-center justify-center gap-2">
+                                    <div className="size-10">
+                                      <img
+                                        src={playerData.rankImage}
+                                        alt="Rank"
+                                        className={`object-contain`}
+                                      />
+                                    </div>
+                                    <div>
+                                      <span className={styles.score}>
+                                        {match.score}
+                                      </span>
+                                    </div>
+                                  </div>
+                                </div>
+                              </td>
+                              <td className={styles.kdaRow}>
+                                <th>K/D/A</th>
+                                <p className={styles.kdaValue}>
+                                  {match.kills}/{match.deaths}/{match.assists}
+                                </p>
+                              </td>
+                              <td className={styles.headshotsRow}>
+                                <th>HS%</th>
+                                <div className="flex flex-row gap-2 font-bold text-white shadow-md">
                                   {match.headshots}
+                                  <p className={styles.headshotsPercent}>
+                                    (
+                                    {(
+                                      (match.headshots /
+                                        Math.max(match.kills, 1)) *
+                                      100
+                                    ).toFixed(0)}
+                                    %)
+                                  </p>
+                                </div>
+                              </td>
+                              <td className={styles.damageRow}>
+                                <th>DAMAGE</th>
+                                <p className={styles.damageValue}>
+                                  {match.damage.toLocaleString()}
                                 </p>
-                                <p className={styles.headshotsPercent}>
-                                  (
-                                  {(
-                                    (match.headshots /
-                                      Math.max(match.kills, 1)) *
-                                    100
-                                  ).toFixed(0)}
-                                  %)
+                              </td>
+                              <td className={styles.adrRow}>
+                                <th>ADR</th>
+                                <p className={styles.adValue}>
+                                  {calculateADR(
+                                    match.damage,
+                                    match.rounds_played,
+                                  )}
                                 </p>
-                              </div>
-                            </div>
-
-                            {/* DAMAGE */}
-                            <div className="flex flex-col">
-                              <span className={styles.damageLabel}>
-                                DAMAGE:
-                              </span>
-                              <p className={styles.damageValue}>
-                                {match.damage.toLocaleString()}
-                              </p>
-                            </div>
-
-                            {/* ADR */}
-                            <div className="flex flex-col">
-                              <span className={styles.adLabel}>ADR:</span>
-                              <p className={styles.adValue}>
-                                {calculateADR(
-                                  match.damage,
-                                  match.rounds_played,
-                                )}
-                              </p>
-                            </div>
-
-                            {/* ADS */}
-                            <div className="flex flex-col">
-                              <span className={styles.adLabel}>ADS:</span>
-                              <p className={styles.adValue}>
-                                {calculateADS(
-                                  match.deaths,
-                                  match.rounds_played,
-                                )}
-                              </p>
-                            </div>
-
-                            {/* ACS */}
-                            <div className="flex flex-col">
-                              <span className={styles.adLabel}>ACS:</span>
-                              <p className={styles.adValue}>
-                                {calculateACS(
-                                  match.damage,
-                                  match.kills,
-                                  match.rounds_played,
-                                )}
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
+                              </td>
+                              <td className={styles.acsRow}>
+                                <th>ACS</th>
+                                <p className={styles.adValue}>
+                                  {calculateACS(
+                                    match.damage,
+                                    match.kills,
+                                    match.rounds_played,
+                                  )}
+                                </p>
+                              </td>
+                              <td className={styles.dateRow}>
+                                <th>Data</th>
+                                <p className={styles.dateValue}>
+                                  {match.date.toLocaleDateString("pt-BR")}
+                                </p>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
                     </div>
                   </>
                 )}
