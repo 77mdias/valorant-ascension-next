@@ -7,8 +7,10 @@ import {
   processMatchData,
   HenrikDevMatch,
 } from "../../lib/henrikdev-api";
+import { valorantCache } from "../../lib/cache";
 import { ScrollArea, Scrollbar } from "@radix-ui/react-scroll-area";
 import styles from "./page.module.scss";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 interface PlayerData {
   name: string;
@@ -48,6 +50,7 @@ export default function PlayerSearch() {
   const [activeTab, setActiveTab] = useState<"overview" | "matches" | "stats">(
     "overview",
   );
+  const [dataFromCache, setDataFromCache] = useState(false);
 
   // Função para executar busca diretamente com parâmetros
   const performSearch = async (
@@ -62,12 +65,36 @@ export default function PlayerSearch() {
 
     try {
       console.log(
-        "🔍 Buscando jogador automaticamente:",
+        "🔍 Buscando jogador:",
         name,
         tag,
         "na região:",
         searchRegion,
       );
+
+      // Primeiro, verificar se há dados em cache
+      const cachedData = valorantCache.getPlayerData(name, tag, searchRegion);
+
+      if (cachedData) {
+        console.log("📖 Usando dados do cache para:", name, tag);
+
+        // Processar dados do cache
+        const processedPlayer = processPlayerData(
+          cachedData.player,
+          cachedData.mmr,
+        );
+        setPlayerData(processedPlayer);
+
+        const processedMatches = cachedData.matches
+          .map((match: HenrikDevMatch) => processMatchData(match, name))
+          .filter(Boolean) as MatchData[];
+
+        setMatches(processedMatches);
+        setLoading(false);
+        return;
+      }
+
+      console.log("🌐 Dados não encontrados no cache, buscando na API...");
 
       // Buscar dados do jogador e MMR
       const [playerResponse, mmrResponse] = await Promise.all([
@@ -93,6 +120,20 @@ export default function PlayerSearch() {
         .filter(Boolean) as MatchData[];
 
       setMatches(processedMatches);
+
+      // Salvar dados no cache
+      const cacheData = {
+        player: playerResponse,
+        mmr: mmrResponse,
+        matches: matchesResponse,
+        region: searchRegion,
+      };
+
+      valorantCache.setPlayerData(name, tag, searchRegion, cacheData);
+      console.log("💾 Dados salvos no cache para:", name, tag);
+
+      // Marcar que os dados vieram da API (não do cache)
+      setDataFromCache(false);
     } catch (err: unknown) {
       console.error("❌ Erro na busca automática:", err);
       setError(err instanceof Error ? err.message : "Erro ao buscar jogador");
@@ -117,12 +158,37 @@ export default function PlayerSearch() {
         setRegion(regionParam);
       }
 
-      // Executar a busca automaticamente após um pequeno delay
-      const timer = setTimeout(() => {
-        performSearch(nameParam, tagParam, regionParam || region);
-      }, 500);
+      // Verificar cache primeiro
+      const cachedData = valorantCache.getPlayerData(
+        nameParam,
+        tagParam,
+        regionParam || region,
+      );
 
-      return () => clearTimeout(timer);
+      if (cachedData) {
+        console.log("📖 Carregando dados do cache para:", nameParam, tagParam);
+
+        // Processar dados do cache
+        const processedPlayer = processPlayerData(
+          cachedData.player,
+          cachedData.mmr,
+        );
+        setPlayerData(processedPlayer);
+
+        const processedMatches = cachedData.matches
+          .map((match: HenrikDevMatch) => processMatchData(match, nameParam))
+          .filter(Boolean) as MatchData[];
+
+        setMatches(processedMatches);
+        setDataFromCache(true);
+      } else {
+        // Se não há cache, fazer busca na API após um pequeno delay
+        const timer = setTimeout(() => {
+          performSearch(nameParam, tagParam, regionParam || region);
+        }, 500);
+
+        return () => clearTimeout(timer);
+      }
     }
   }, []); // Executar apenas uma vez ao montar o componente
 
@@ -142,6 +208,31 @@ export default function PlayerSearch() {
       }
 
       console.log("🔍 Buscando jogador:", name, tag, "na região:", region);
+
+      // Primeiro, verificar se há dados em cache
+      const cachedData = valorantCache.getPlayerData(name, tag, region);
+
+      if (cachedData) {
+        console.log("📖 Usando dados do cache para:", name, tag);
+
+        // Processar dados do cache
+        const processedPlayer = processPlayerData(
+          cachedData.player,
+          cachedData.mmr,
+        );
+        setPlayerData(processedPlayer);
+
+        const processedMatches = cachedData.matches
+          .map((match: HenrikDevMatch) => processMatchData(match, name))
+          .filter(Boolean) as MatchData[];
+
+        setMatches(processedMatches);
+        setDataFromCache(true);
+        setLoading(false);
+        return;
+      }
+
+      console.log("🌐 Dados não encontrados no cache, buscando na API...");
 
       // Buscar dados do jogador e MMR
       const [playerResponse, mmrResponse] = await Promise.all([
@@ -167,6 +258,20 @@ export default function PlayerSearch() {
         .filter(Boolean) as MatchData[];
 
       setMatches(processedMatches);
+
+      // Salvar dados no cache
+      const cacheData = {
+        player: playerResponse,
+        mmr: mmrResponse,
+        matches: matchesResponse,
+        region: region,
+      };
+
+      valorantCache.setPlayerData(name, tag, region, cacheData);
+      console.log("💾 Dados salvos no cache para:", name, tag);
+
+      // Marcar que os dados vieram da API (não do cache)
+      setDataFromCache(false);
     } catch (err: unknown) {
       console.error("❌ Erro na busca:", err);
       setError(err instanceof Error ? err.message : "Erro ao buscar jogador");
@@ -262,6 +367,45 @@ export default function PlayerSearch() {
 
       {/* Error Message */}
       {error && <div className={styles.error}>❌ {error}</div>}
+
+      {/* Cache Status */}
+      {playerData && (
+        <div className={styles.cacheStatus}>
+          {dataFromCache ? (
+            <div className={styles.cacheInfo}>
+              <span className={styles.cacheIcon}>📖</span>
+              <span>Dados carregados do cache</span>
+              <button
+                onClick={() => {
+                  if (playerData) {
+                    const [name, tag] = searchInput.split("#");
+                    if (name && tag) {
+                      // Limpar cache e buscar novamente
+                      valorantCache.clearAllCache();
+                      setDataFromCache(false);
+                      performSearch(name, tag, region);
+                    }
+                  }
+                }}
+                className={styles.refreshButton}
+              >
+                🔄 Atualizar
+              </button>
+            </div>
+          ) : (
+            <div className={styles.cacheInfo}>
+              <span className={styles.cacheIcon}>🌐</span>
+              <span>Dados carregados da API</span>
+              <button
+                onClick={() => valorantCache.clearAllCache()}
+                className={styles.clearCacheButton}
+              >
+                🧹 Limpar Cache
+              </button>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Player Data */}
       {playerData && (
@@ -377,17 +521,18 @@ export default function PlayerSearch() {
                             <tr
                               key={match.id}
                               onClick={() => {
-                                // Navegar para a página de detalhes da partida
-                                window.open(
-                                  `/match/${match.id}?region=${region}`,
-                                  "_self",
-                                );
+                                // Navegar para a API externa do HenrikDev com contexto do player
+                                if (playerData) {
+                                  const playerName = `${playerData.name}#${playerData.tag}`;
+                                  // Navegar para a página de match com contexto do player
+                                  window.location.href = `/match/${match.id}?region=${region}&player=${encodeURIComponent(playerName)}`;
+                                }
                               }}
                               className={`${styles.matchTableRow} ${match.result === "win" ? styles.win : styles.loss}`}
                               style={{ cursor: "pointer" }}
                             >
                               <td className={styles.matchInfo}>
-                                <div className="flex flex-row gap-4">
+                                <div className="flex flex-row gap-4 items-center">
                                   <div className={styles.agent}>
                                     <img
                                       src={`/agents/${match.agent.toLowerCase().replace(" ", "-").replace("/", "-")}.png`}
@@ -419,13 +564,13 @@ export default function PlayerSearch() {
                                 </div>
                               </td>
                               <td className={styles.kdaRow}>
-                                <th>K/D/A</th>
+                                <div className={styles.columnHeader}>K/D/A</div>
                                 <p className={styles.kdaValue}>
                                   {match.kills}/{match.deaths}/{match.assists}
                                 </p>
                               </td>
                               <td className={styles.headshotsRow}>
-                                <th>HS%</th>
+                                <div className={styles.columnHeader}>HS%</div>
                                 <div className="flex flex-row gap-2 font-bold text-white shadow-md">
                                   {match.headshots}
                                   <p className={styles.headshotsPercent}>
@@ -440,13 +585,15 @@ export default function PlayerSearch() {
                                 </div>
                               </td>
                               <td className={styles.damageRow}>
-                                <th>DAMAGE</th>
+                                <div className={styles.columnHeader}>
+                                  DAMAGE
+                                </div>
                                 <p className={styles.damageValue}>
                                   {match.damage.toLocaleString()}
                                 </p>
                               </td>
                               <td className={styles.adrRow}>
-                                <th>ADR</th>
+                                <div className={styles.columnHeader}>ADR</div>
                                 <p className={styles.adValue}>
                                   {calculateADR(
                                     match.damage,
@@ -455,7 +602,7 @@ export default function PlayerSearch() {
                                 </p>
                               </td>
                               <td className={styles.acsRow}>
-                                <th>ACS</th>
+                                <div className={styles.columnHeader}>ACS</div>
                                 <p className={styles.adValue}>
                                   {calculateACS(
                                     match.damage,
@@ -465,7 +612,7 @@ export default function PlayerSearch() {
                                 </p>
                               </td>
                               <td className={styles.dateRow}>
-                                <th>Data</th>
+                                <div className={styles.columnHeader}>Data</div>
                                 <p className={styles.dateValue}>
                                   {match.date.toLocaleDateString("pt-BR")}
                                 </p>

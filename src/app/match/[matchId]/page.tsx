@@ -235,6 +235,7 @@ export default function MatchDetailsPage() {
 
   const matchId = params.matchId as string;
   const region = searchParams.get("region") || "na";
+  const playerContext = searchParams.get("player");
 
   // Busca os detalhes da partida
   useEffect(() => {
@@ -432,12 +433,39 @@ export default function MatchDetailsPage() {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <button
-          onClick={() => window.history.back()}
-          className={styles.backButton}
-        >
-          ← Voltar
-        </button>
+        <div className={styles.navigation}>
+          {playerContext ? (
+            <>
+              <button
+                onClick={() => (window.location.href = "/mmr")}
+                className={styles.backButton}
+              >
+                ← Busca
+              </button>
+              <span className={styles.navigationSeparator}>/</span>
+              <button
+                onClick={() => {
+                  const [name, tag] = playerContext.split("#");
+                  if (name && tag) {
+                    window.location.href = `/mmr?name=${encodeURIComponent(name)}&tag=${encodeURIComponent(tag)}&region=${region}`;
+                  }
+                }}
+                className={styles.backButton}
+              >
+                {playerContext}
+              </button>
+              <span className={styles.navigationSeparator}>/</span>
+              <span className={styles.currentPage}>Partida</span>
+            </>
+          ) : (
+            <button
+              onClick={() => window.history.back()}
+              className={styles.backButton}
+            >
+              ← Voltar
+            </button>
+          )}
+        </div>
         <h1>Detalhes da Partida</h1>
       </div>
 
