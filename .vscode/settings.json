@@ -32,5 +32,7 @@
   "scss.validate": false,
   "typescript.preferences.includePackageJsonAutoImports": "on",
   "tailwindCSS.requireConfigFile": false,
+  "WillLuke.nextjs.addTypesOnSave": true,
+  "WillLuke.nextjs.hasPrompted": true,
 
 }
