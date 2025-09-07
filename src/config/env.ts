@@ -20,4 +20,10 @@ export const env = {
       advanced: getEnvVar("STRIPE_PRICE_ID_AVANCADO"),
     },
   },
+  henrikdev: {
+    apiUrl:
+      process.env.NEXT_PUBLIC_HENRIKDEV_API_URL ||
+      "https://api.henrikdev.xyz/valorant/v1",
+    apiKey: process.env.HENRIKDEV_API_KEY,
+  },
 };

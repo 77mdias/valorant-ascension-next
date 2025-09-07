@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
+import { env } from "@/config/env";
 
-const HENRIKDEV_BASE_URL =
-  process.env.HENRIKDEV_API_URL || "https://api.henrikdev.xyz/valorant/v1";
+const HENRIKDEV_BASE_URL = env.henrikdev.apiUrl;
 const HENRIKDEV_V3_BASE_URL = "https://api.henrikdev.xyz/valorant/v3";
-const API_KEY = process.env.HENRIKDEV_API_KEY;
+const API_KEY = env.henrikdev.apiKey;
 
 export async function GET(request: NextRequest) {
   try {
@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
     if (!name || !tag) {
       return NextResponse.json(
         { error: "Nome e tag são obrigatórios" },
-        { status: 400 },
+        { status: 400 }
       );
     }
 
@@ -44,7 +44,7 @@ export async function GET(request: NextRequest) {
     console.log("🔑 API Key presente:", !!API_KEY);
     console.log(
       "🔑 API Key (primeiros 10 chars):",
-      API_KEY ? API_KEY.substring(0, 10) + "..." : "NÃO ENCONTRADA",
+      API_KEY ? API_KEY.substring(0, 10) + "..." : "NÃO ENCONTRADA"
     );
     console.log("📋 Headers:", headers);
     const playerResponse = await fetch(playerUrl, { headers });
@@ -55,7 +55,7 @@ export async function GET(request: NextRequest) {
         {
           error: `Erro ao buscar jogador: ${playerResponse.status} - ${errorText}`,
         },
-        { status: playerResponse.status },
+        { status: playerResponse.status }
       );
     }
 
@@ -91,7 +91,7 @@ export async function GET(request: NextRequest) {
         const competitiveMatches = allMatches.filter(
           (match: any) =>
             match.metadata?.mode === "competitive" ||
-            match.metadata?.queue === "competitive",
+            match.metadata?.queue === "competitive"
         );
         matchesData = competitiveMatches.slice(0, 5);
       }
@@ -107,7 +107,7 @@ export async function GET(request: NextRequest) {
     console.error("Erro na API route:", error);
     return NextResponse.json(
       { error: "Erro interno do servidor" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }
