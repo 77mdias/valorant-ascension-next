@@ -14,7 +14,7 @@ const Community = () => {
         <div className="absolute inset-0 bg-[url('https://placehold.co/1920x1080/1a1a1a/333333?text=Valorant+Training')] bg-cover bg-center opacity-30"></div>
 
         <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="py-20 text-center">
+          <div className="mt-5 text-center">
             <h1 className="mb-6 text-4xl font-bold leading-tight md:text-6xl">
               <span>Comunidade</span>
               <span className="bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent">{" "}Next</span>

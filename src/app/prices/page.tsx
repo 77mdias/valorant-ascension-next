@@ -62,21 +62,20 @@ export default function PricingPage() {
         <div className="absolute inset-0 bg-[url('https://placehold.co/1920x1080/1a1a1a/333333?text=Valorant+Training')] bg-cover bg-center opacity-30"></div>
 
         <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="py-20 text-center">
+          <div className="mt-5 text-center">
             <h1 className="mb-6 text-4xl font-bold leading-tight md:text-6xl">
-              <span className="text-white">Escolha Seu Curso e</span>
+              <span className="text-white">Os melhores planos</span>
               <span className="bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent">
                 {" "}
-                Evolua
+                para
               </span>
               <br />
               <span className="bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent">
-                no Valorant
+                você
               </span>
             </h1>
             <p className="mx-auto mb-10 max-w-3xl text-xl leading-relaxed text-gray-300 md:text-2xl">
-              Treinos práticos, aulas ao vivo e conteúdo exclusivo para todos os
-              níveis — do básico ao imortal.
+              Escolha o plano ideal para você e comece a evoluir no Valorant, desde o iniciante até o profissional.
             </p>
               <div className="flex flex-col items-center justify-center gap-4 pt-4 sm:flex-row">
                 <Button
