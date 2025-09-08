@@ -9,6 +9,7 @@ import LessonCard from "@/components/LessonCard";
 import { LessonCategory, lessons } from "@prisma/client";
 import { useState, useEffect } from "react";
 import styles from "./page.module.scss";
+import stylesVideo from "@/components/scss/VideoPlayer.module.scss";
 import VideoPlayer from "@/components/VideoPlayer";
 import CourseDetailLoading from "@/components/CourseDetailLoading";
 
@@ -94,7 +95,6 @@ export default function CategoryPage({ params }: CategoryPageProps) {
         <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-secondary/10" />
         <div className="absolute right-0 top-0 h-96 w-96 rounded-full bg-primary/20 blur-3xl" />
         <div className="absolute bottom-0 left-0 h-96 w-96 rounded-full bg-secondary/20 blur-3xl" />
-
         <div className="container relative mx-auto px-4">
           <div className="max-w-4xl">
             <h1 className="mb-4 text-4xl font-bold md:text-5xl">
@@ -169,7 +169,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
           <div className="mb-6 lg:hidden">
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className={`${styles.gamingButton} flex w-full items-center justify-between rounded-xl p-4`}
+              className={`${stylesVideo.gamingButton} flex w-full items-center justify-between rounded-xl p-4`}
             >
               <span className="font-semibold">
                 Aula {currentLesson?.number}: {currentLesson?.title}
