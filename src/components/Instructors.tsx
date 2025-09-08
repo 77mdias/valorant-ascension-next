@@ -2,6 +2,7 @@ import { Card, CardContent } from "./ui/card";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 import { Twitch, Youtube, Instagram } from "lucide-react";
+import styles from "@/scss/components/CourseCard.module.scss";
 
 const instructors = [
   {
@@ -98,7 +99,7 @@ const Instructors = () => {
       <div className="mb-16 text-center">
         <h2 className="font-poppins mb-6 text-4xl font-bold md:text-5xl">
           Nossos
-          <span className="from-accent to-ciano bg-gradient-to-r bg-clip-text text-transparent">
+          <span className={`${styles.bgGradientPrimary} bg-clip-text text-transparent`}>
             {" "}
             Instrutores
           </span>

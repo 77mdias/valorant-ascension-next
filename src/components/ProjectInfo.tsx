@@ -196,13 +196,13 @@ const ProjectInfo = () => {
               </h4>
               <div className="grid grid-cols-2 gap-4">
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-primary">15+</div>
+                  <div className="text-2xl font-bold text-primary">37+</div>
                   <div className="text-sm text-muted-foreground">
                     Componentes
                   </div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-primary">8+</div>
+                  <div className="text-2xl font-bold text-primary">15+</div>
                   <div className="text-sm text-muted-foreground">Páginas</div>
                 </div>
                 <div className="text-center">
@@ -212,9 +212,9 @@ const ProjectInfo = () => {
                   </div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-primary">∞</div>
+                  <div className="text-2xl font-bold text-primary">125+</div>
                   <div className="text-sm text-muted-foreground">
-                    Possibilidades
+                    Arquivos TS/TSX
                   </div>
                 </div>
               </div>
