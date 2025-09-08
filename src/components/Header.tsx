@@ -68,7 +68,7 @@ const Header = () => {
             ></span>
           </a>
           <a
-            href="#comunidade"
+            href="/community"
             className="group relative text-foreground/80 transition-colors duration-200 hover:text-primary"
           >
             Comunidade
@@ -128,7 +128,7 @@ const Header = () => {
               MMR
             </Link>
             <Link
-              href="/comunidade"
+              href="/community"
               className="py-2 text-foreground/80 transition-colors hover:text-primary"
               onClick={() => setIsMenuOpen(false)}
             >

@@ -6,6 +6,10 @@ import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/components/ui/use-toast";
 import { PlanCard } from "@/components/subscription/plan-card";
 import { CurrentPlanBanner } from "@/components/subscription/current-plan-banner";
+import { Button } from "@/components/ui/button";
+import { BsCash } from "react-icons/bs";
+import styles from "@/scss/components/CourseCard.module.scss";
+import { Link } from "lucide-react";
 
 const PLANOS_INFO = {
   BASICO: {
@@ -74,26 +78,23 @@ export default function PricingPage() {
               Treinos práticos, aulas ao vivo e conteúdo exclusivo para todos os
               níveis — do básico ao imortal.
             </p>
-            <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
-              <button className="flex transform items-center justify-center space-x-2 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 px-8 py-4 font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:from-pink-600 hover:to-purple-700">
-                <svg
-                  className="h-5 w-5"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
+              <div className="flex flex-col items-center justify-center gap-4 pt-4 sm:flex-row">
+                <Button
+                  size="lg"
+                  className={`${styles.bgGradientPrimary} ${styles.buttonPrimary} px-8 text-primary-foreground transition-all duration-300 `}
                 >
-                  <path d="M10 2a8 8 0 100 16 8 8 0 000-16zm0 14a6 6 0 110-12 6 6 0 010 12z" />
-                  <path d="M10 6a2 2 0 100 4 2 2 0 000-4z" />
-                  <path d="M10 14a2 2 0 100-4 2 2 0 000 4z" />
-                </svg>
-                <span>Começar Agora</span>
-              </button>
-              <a
-                href="#pricing"
-                className="inline-flex items-center justify-center rounded-full border-2 border-purple-500/50 px-8 py-4 font-medium text-purple-400 transition-all duration-300 hover:border-purple-500/80 hover:text-purple-300"
-              >
-                Ver Planos
-              </a>
-            </div>
+                  <BsCash className="mr-2 h-5 w-5" />
+                  Começar agora
+                </Button>
+              
+                <a
+                  href="#pricing"
+                  className="border rounded-md py-2 border-primary/30 px-8 transition-all duration-300 hover:border-primary hover:bg-primary/10 bg-black"
+                >
+                  Ver Planos
+                </a>
+
+              </div>
           </div>
         </div>
       </section>
