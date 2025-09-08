@@ -135,7 +135,7 @@ const Header = () => {
               Comunidade
             </Link>
             <Link
-              href="/precos"
+              href="/prices"
               className="py-2 text-foreground/80 transition-colors hover:text-primary"
               onClick={() => setIsMenuOpen(false)}
             >
