@@ -63,7 +63,7 @@ export default function PricingPage() {
 
         <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mt-5 text-center">
-            <h1 className="mb-6 text-4xl font-bold leading-tight md:text-6xl">
+            <h1 className="mb-6 text-3xl font-bold leading-tight md:text-6xl">
               <span className="text-white">Os melhores planos</span>
               <span className="bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent">
                 {" "}
@@ -74,13 +74,13 @@ export default function PricingPage() {
                 você
               </span>
             </h1>
-            <p className="mx-auto mb-10 max-w-3xl text-xl leading-relaxed text-gray-300 md:text-2xl">
+            <p className="mx-auto mb-10 max-w-3xl text-lg leading-relaxed text-gray-300 md:text-2xl">
               Escolha o plano ideal para você e comece a evoluir no Valorant, desde o iniciante até o profissional.
             </p>
               <div className="flex flex-col items-center justify-center gap-4 pt-4 sm:flex-row">
                 <Button
                   size="lg"
-                  className={`${styles.bgGradientPrimary} ${styles.buttonPrimary} px-8 text-primary-foreground transition-all duration-300 `}
+                  className={`${styles.bgGradientPrimary} ${styles.buttonPrimary} min-w-[195px] px-8 text-primary-foreground transition-all duration-300 `}
                 >
                   <BsCash className="mr-2 h-5 w-5" />
                   Começar agora
@@ -88,7 +88,7 @@ export default function PricingPage() {
               
                 <a
                   href="#pricing"
-                  className="border rounded-md py-2 border-primary/30 px-8 transition-all duration-300 hover:border-primary hover:bg-primary/10 bg-black"
+                  className="border rounded-md py-2 border-primary/30 min-w-[195px] px-8 transition-all duration-300 hover:border-primary hover:bg-primary/10 bg-black"
                 >
                   Ver Planos
                 </a>

@@ -37,7 +37,7 @@ export function CurrentPlanBanner() {
 
   return (
     <div className="mb-8 rounded-lg bg-gradient-to-r from-purple-900/50 to-pink-900/50 p-6 backdrop-blur-sm">
-      <div className="flex items-center justify-between">
+      <div className="flex items-start justify-between flex-col gap-3">
         <div className="space-y-1">
           <div className="flex items-center">
             <CheckCircle className="mr-2 h-5 w-5 text-green-500" />

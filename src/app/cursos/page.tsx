@@ -54,7 +54,7 @@ const Courses = async () => {
 
         <div className="container relative mx-auto px-4">
           <div className="animate-slide-up mx-auto max-w-4xl space-y-6 text-center">
-            <h1 className="text-4xl font-bold leading-tight md:text-6xl">
+            <h1 className="text-3xl font-bold leading-tight md:text-6xl">
               Escolha Seu Curso e{" "}
               <span
                 className={`${styles.bgGradientPrimary} bg-clip-text text-transparent`}
@@ -72,7 +72,7 @@ const Courses = async () => {
             <div className="flex flex-col items-center justify-center gap-4 pt-4 sm:flex-row text-lg">
               <Button
                 size="lg"
-                className={`${styles.bgGradientPrimary} ${styles.buttonPrimary} px-8 text-primary-foreground transition-all duration-300`}
+                className={`${styles.bgGradientPrimary} ${styles.buttonPrimary} min-w-[195px] px-8 text-primary-foreground transition-all duration-300`}
               >
                 <Sparkles className="mr-2 h-5 w-5" />
                 Ser um Aluno
@@ -80,7 +80,7 @@ const Courses = async () => {
               <Button
                 size="lg"
                 variant="outline"
-                className="border-primary/30 px-8 transition-all duration-300 hover:border-primary hover:bg-primary/10"
+                className="border-primary/30 px-8 transition-all min-w-[195px] duration-300 hover:border-primary hover:bg-primary/10"
               >
                 Ver Cursos
               </Button>

@@ -1,0 +1,270 @@
+# 🎯 TODO - Valorant Ascension Next
+
+> **Status do Projeto**: Em desenvolvimento ativo  
+> **Última atualização**: 8 de setembro de 2025  
+> **Arquitetura**: Next.js 15 + TypeScript + Prisma + PostgreSQL + Stripe
+
+---
+
+## 📊 OVERVIEW DO PROJETO
+
+### ✅ CONCLUÍDO (Fundação Sólida)
+- [x] **Configuração Base**: Next.js 15 + TypeScript + Tailwind + SCSS Modules
+- [x] **Banco de Dados**: Schema Prisma completo com 20+ modelos
+- [x] **Autenticação**: Auth.js configurado com sessões e middleware
+- [x] **UI/UX**: 37+ componentes reutilizáveis + shadcn/ui + design responsivo
+- [x] **Pagamentos**: Integração Stripe com webhooks e assinaturas
+- [x] **Páginas Principais**: Home, Cursos, Community, Preços, Auth (6 fluxos)
+- [x] **API Routes**: 10+ endpoints para auth, pagamentos, dados Valorant
+- [x] **DevOps**: Scripts Prisma para dev/prod, validação de env
+- [x] **Documentação**: README detalhado + guias Prisma + regras do projeto
+
+### 🚧 EM PROGRESSO
+- [ ] **Sistema de Aulas**: Videoconferência e progresso do usuário
+- [ ] **Dashboard Admin**: CRUD completo para cursos/aulas/usuários  
+- [ ] **Integração Valorant API**: Match analysis e MMR tracking
+
+---
+
+## 🎯 ROADMAP POR PRIORIDADE
+
+## 🔥 ALTA PRIORIDADE (Próximas 2 semanas)
+
+### 1️⃣ SISTEMA DE AUTENTICAÇÃO & AUTORIZAÇÃO
+- [ ] **Middleware de Roles**: 
+  - [ ] Implementar verificação RBAC (ADMIN, CUSTOMER, PROFESSIONAL)
+  - [ ] Proteger rotas sensíveis (/dashboard, /admin)
+  - [ ] Guards para Server Actions por role
+- [ ] **Recuperação de Senha**:
+  - [ ] Finalizar fluxo reset-password (envio + validação)
+  - [ ] Templates de email profissionais (Resend)
+- [ ] **Verificação de Email**:
+  - [ ] Completar verify-email workflow
+  - [ ] Estados de ativação de conta
+
+### 2️⃣ DASHBOARD ADMINISTRATIVO
+- [ ] **Dashboard Layout**:
+  - [ ] Criar `/src/app/dashboard/layout.tsx` com sidebar
+  - [ ] Menu lateral responsivo com navegação
+  - [ ] Breadcrumbs e estado ativo
+- [ ] **Gestão de Usuários**:
+  - [ ] `/dashboard/users` - Listagem com filtros
+  - [ ] CRUD completo: create, edit, deactivate, promote roles
+  - [ ] Bulk actions (aprovar, remover, notificar)
+- [ ] **Gestão de Cursos**:
+  - [ ] `/dashboard/courses` - Interface para lessonCategory
+  - [ ] Criar/editar categorias com upload de ícones
+  - [ ] Preview de cards antes de publicar
+- [ ] **Gestão de Aulas**:
+  - [ ] `/dashboard/lessons` - CRUD para lessons
+  - [ ] Upload de vídeos (YouTube/Vimeo integration)
+  - [ ] Agendamento de aulas ao vivo
+  - [ ] Sistema de aprovação para instrutores
+
+### 3️⃣ SISTEMA DE AULAS (CORE FEATURE)
+- [ ] **Player de Vídeo**:
+  - [ ] Integrar VideoPlayer.tsx com controles personalizados
+  - [ ] Save/resume progress por usuário
+  - [ ] Velocidade, legendas, qualidade
+- [ ] **Tracking de Progresso**:
+  - [ ] Implementar lessonProgress com % completion
+  - [ ] Certificados automáticos ao completar curso
+  - [ ] Dashboard do aluno com estatísticas
+- [ ] **Sistema de Comentários**:
+  - [ ] Interface para lessonComments
+  - [ ] Replies, likes, moderação
+  - [ ] Notificações em tempo real
+- [ ] **Aulas ao Vivo**:
+  - [ ] Integração WebRTC ou Twitch/YouTube Live
+  - [ ] Chat em tempo real durante streams
+  - [ ] Gravação automática para replay
+
+---
+
+## 🟡 MÉDIA PRIORIDADE (Próximo mês)
+
+### 4️⃣ PÁGINAS DE VALORANT ESPECÍFICAS
+- [ ] **Agentes (/agents)**:
+  - [ ] Página listagem com filtro por role
+  - [ ] `/agents/[slug]` - Detalhes com skills e strategies
+  - [ ] Favoritos do usuário
+- [ ] **Mapas (/maps)**:
+  - [ ] Grid de mapas com preview
+  - [ ] `/maps/[slug]` - Callouts interativos
+  - [ ] Dicas por site (A/B/C, Mid)
+- [ ] **Análise de Partidas (/match)**:
+  - [ ] Melhorar `/match/[matchId]` existente
+  - [ ] Gráficos de performance
+  - [ ] Comparação com outros ranks
+
+### 5️⃣ MELHORIAS DE UX
+- [ ] **Loading States**:
+  - [ ] Usar componentes Skeleton existentes consistentemente
+  - [ ] Progressive loading para listas longas
+  - [ ] Error boundaries personalizados
+- [ ] **Busca Global**:
+  - [ ] Implementar busca por aulas, agentes, mapas
+  - [ ] Filtros avançados
+  - [ ] Histórico de buscas
+- [ ] **Favoritos & Bookmarks**:
+  - [ ] Sistema de favoritos para aulas/agentes
+  - [ ] Lista "Assistir mais tarde"
+  - [ ] Exportar progresso
+
+### 6️⃣ NOTIFICAÇÕES & COMUNICAÇÃO
+- [ ] **Sistema de Notificações**:
+  - [ ] In-app notifications (novas aulas, comentários)
+  - [ ] Push notifications (opcional)
+  - [ ] Preferências de notificação por usuário
+- [ ] **Newsletter**:
+  - [ ] Opt-in durante cadastro
+  - [ ] Templates para updates semanais
+  - [ ] Segmentação por nível/interesse
+
+---
+
+## 🟢 BAIXA PRIORIDADE (Futuro)
+
+### 7️⃣ FEATURES AVANÇADAS
+- [ ] **Conquistas (Achievements)**:
+  - [ ] Implementar userAchievements
+  - [ ] Badges visuais no perfil
+  - [ ] Sistema de XP/pontos
+- [ ] **Social Features**:
+  - [ ] Perfis públicos de usuários
+  - [ ] Follow/followers entre usuarios
+  - [ ] Feed de atividades
+- [ ] **Gamificação**:
+  - [ ] Leaderboards por progresso
+  - [ ] Streaks de estudo
+  - [ ] Torneios internos
+
+### 8️⃣ INTEGRAÇÕES EXTERNAS
+- [ ] **Discord Bot**:
+  - [ ] Notificações de novas aulas
+  - [ ] Status de progresso dos membros
+  - [ ] Comandos de consulta
+- [ ] **Valorant API Avançada**:
+  - [ ] Auto-import de partidas via henrik API
+  - [ ] Análise automática de performance
+  - [ ] Sugestões personalizadas de melhoria
+
+---
+
+## 🛠️ TAREFAS TÉCNICAS
+
+### ARQUITETURA & CODE QUALITY
+- [ ] **Criação de .env.example**:
+  - [ ] Documentar todas as variáveis necessárias
+  - [ ] Valores exemplo para development
+- [ ] **Server Actions**:
+  - [ ] Implementar actions faltando (CRUD completo)
+  - [ ] Validação zod em todas as actions
+  - [ ] Error handling consistente
+- [ ] **Testes**:
+  - [ ] Unit tests para utils e hooks
+  - [ ] Integration tests para API routes
+  - [ ] E2E tests para fluxos críticos (auth, payment)
+- [ ] **Performance**:
+  - [ ] Lazy loading para componentes pesados
+  - [ ] Image optimization (next/image)
+  - [ ] Bundle analysis e code splitting
+
+### DATABASE & MIGRATIONS
+- [ ] **Seeds Completos**:
+  - [ ] Seed para agentRoles, agents com dados reais
+  - [ ] Seed para maps com callouts básicos
+  - [ ] Seed para lessonCategories e lessons exemplo
+- [ ] **Migrations Faltando**:
+  - [ ] Indexes para queries frequentes
+  - [ ] Constraints de integridade
+  - [ ] Triggers para auditing (opcional)
+
+### SEGURANÇA
+- [ ] **Rate Limiting**:
+  - [ ] Implementar em API routes críticas
+  - [ ] Protection contra spam de comentários
+- [ ] **Sanitização**:
+  - [ ] Input sanitization em formulários
+  - [ ] XSS protection em comments
+- [ ] **Audit Logs**:
+  - [ ] Log de ações administrativas
+  - [ ] Monitoramento de tentativas de acesso
+
+---
+
+## 📋 CHECKLIST DE DEPLOY
+
+### PRÉ-PRODUÇÃO
+- [x] **Environment Variables**:
+  - [x] Configurar todas as env vars na Vercel
+  - [x] Testar Stripe em modo live
+  - [x] Configurar DATABASE_URL e DIRECT_URL
+- [ ] **Database**:
+  - [ ] Deploy migrations na Neon
+  - [ ] Run seeds em produção
+  - [ ] Backup strategy
+- [ ] **Monitoring**:
+  - [ ] Setup Vercel Analytics
+  - [ ] Error tracking (Sentry opcional)
+  - [ ] Performance monitoring
+
+### PÓS-DEPLOY
+- [ ] **Content**:
+  - [ ] Criar primeiras aulas demonstrativas
+  - [ ] Upload de assets (imagens, vídeos)
+  - [x] Configurar produtos Stripe
+- [ ] **SEO**:
+  - [ ] Meta tags otimizadas
+  - [ ] Sitemap.xml
+  - [ ] robots.txt
+- [ ] **Legal**:
+  - [ ] Política de Privacidade
+  - [ ] Termos de Uso
+  - [ ] LGPD compliance
+
+---
+
+## 📝 NOTAS DE DESENVOLVIMENTO
+
+### PADRÕES ESTABELECIDOS
+- ✅ **Componentes**: Reutilizáveis em `/src/components`, específicos em `/src/app/[route]/components`
+- ✅ **Styling**: Tailwind + SCSS Modules para casos complexos
+- ✅ **Types**: TypeScript strict em todos os arquivos
+- ✅ **Validation**: Zod schemas para forms e API
+- ✅ **Database**: Prisma com relacionamentos bem definidos
+
+### DECISÕES ARQUITETURAIS
+- **Auth Strategy**: Auth.js com sessões em cookies (melhor SSR)
+- **Payment Provider**: Stripe com webhooks para sincronização
+- **Database**: PostgreSQL na Neon (serverless, escalável)
+- **Deployment**: Vercel (integração nativa Next.js)
+- **State Management**: Server Components first, client state mínimo
+
+### PRÓXIMOS REVIEWS
+- **Code Review**: A cada 2 semanas para manter consistência
+- **Security Review**: Antes do deploy de produção
+- **Performance Review**: Após implementar features pesadas (vídeo, chat)
+- **UX Review**: Com usuários beta após MVP
+
+---
+
+## 🎯 OBJETIVOS SEMANAIS
+
+### Semana Atual (8-15 Set)
+1. Completar middleware de autenticação com RBAC
+2. Criar dashboard layout básico
+3. Implementar CRUD de usuários no dashboard
+
+### Próxima Semana (16-23 Set)  
+1. Sistema de upload e gestão de aulas
+2. Player de vídeo com tracking de progresso
+3. Interface de comentários nas aulas
+
+### Meta do Mês (Setembro)
+**MVP Funcional**: Admin pode criar aulas, usuários podem assistir e pagar, progresso é trackado.
+
+---
+
+*Última atualização: 8 de setembro de 2025 por Jean Dias*  
+*Para sugestões ou modificações, abrir issue no GitHub.*

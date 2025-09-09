@@ -126,13 +126,13 @@ const Community = () => {
             <span className={styles.gradientText}> Valorant NeXT</span>
           </h1>
           <p className={styles.heroSubtitle}>
-            Bem-vindo à maior comunidade de Valorant do Brasil. Conecte-se com milhares de jogadores, 
+            Conecte-se com milhares de jogadores, 
             participe de treinos exclusivos e acelere seu crescimento no game.
           </p>
           <div className={styles.heroButtons}>
             <Button
               size="lg"
-              className={`${globalStyles.bgGradientPrimary} ${globalStyles.buttonPrimary} px-8 text-primary-foreground transition-all duration-300`}
+              className={`${globalStyles.bgGradientPrimary} ${globalStyles.buttonPrimary} min-w-[212px] px-8 text-primary-foreground transition-all duration-300`}
               asChild
             >
               <Link href="https://discord.gg/valorant-academy" target="_blank">
@@ -143,7 +143,7 @@ const Community = () => {
             <Button
               size="lg"
               variant="outline"
-              className="border-primary/30 px-8 transition-all duration-300 hover:border-primary hover:bg-primary/10"
+              className="border-primary/30 min-w-[212px] px-8 transition-all duration-300 hover:border-primary hover:bg-primary/10"
               asChild
             >
               <Link href="/auth/register">
