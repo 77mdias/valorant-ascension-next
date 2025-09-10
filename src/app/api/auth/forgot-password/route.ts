@@ -4,16 +4,31 @@ import { sendResetPasswordEmail, generateResetToken } from "@/lib/email";
 
 export async function POST(request: NextRequest) {
   try {
+    console.log("🔍 Iniciando processo de reset de senha");
+
     const { email } = await request.json();
+    console.log("📧 Email recebido:", email);
 
     if (!email) {
       return NextResponse.json(
         { error: "Email é obrigatório" },
-        { status: 400 },
+        { status: 400 }
       );
     }
 
+    console.log("🔗 Testando conexão com o banco...");
+
+    // Teste de conexão simples primeiro
+    try {
+      await db.$connect();
+      console.log("✅ Conexão com banco estabelecida");
+    } catch (connectError) {
+      console.error("❌ Erro na conexão:", connectError);
+      throw connectError;
+    }
+
     // Verificar se o usuário existe
+    console.log("👤 Buscando usuário no banco...");
     const user = await db.user.findUnique({
       where: { email: email.toLowerCase() },
     });
@@ -25,7 +40,7 @@ export async function POST(request: NextRequest) {
           message:
             "Se o email existir, você receberá um link para redefinir sua senha",
         },
-        { status: 200 },
+        { status: 200 }
       );
     }
 
@@ -49,7 +64,7 @@ export async function POST(request: NextRequest) {
       console.error("Erro ao enviar email de reset:", emailResult.error);
       return NextResponse.json(
         { error: "Erro ao enviar email de redefinição" },
-        { status: 500 },
+        { status: 500 }
       );
     }
 
@@ -58,13 +73,13 @@ export async function POST(request: NextRequest) {
         message:
           "Se o email existir, você receberá um link para redefinir sua senha",
       },
-      { status: 200 },
+      { status: 200 }
     );
   } catch (error) {
     console.error("Erro ao processar solicitação de reset de senha:", error);
     return NextResponse.json(
       { error: "Erro interno do servidor" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

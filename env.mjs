@@ -9,6 +9,10 @@ export const env = createEnv({
     DATABASE_URL_PROD: z.string().min(1),
     DIRECT_URL_PROD: z.string().min(1),
 
+    // Email variables
+    EMAIL_USER: z.string().min(1),
+    EMAIL_PASSWORD: z.string().min(1),
+
     // Stripe variables
     STRIPE_SECRET_KEY: z.string().min(1),
     STRIPE_WEBHOOK_SECRET_KEY: z.string().min(1),
@@ -23,7 +27,12 @@ export const env = createEnv({
     DATABASE_URL: process.env.DATABASE_URL,
     DIRECT_URL: process.env.DIRECT_URL,
 
-    // Datanabase prod
+
+    // Email variables
+    EMAIL_USER: process.env.EMAIL_USER,
+    EMAIL_PASSWORD: process.env.EMAIL_PASSWORD,
+
+    // Database prod
     DATABASE_URL_PROD: process.env.DATABASE_URL_PROD,
     DIRECT_URL_PROD: process.env.DIRECT_URL_PROD,
 

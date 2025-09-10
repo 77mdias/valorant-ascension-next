@@ -2,6 +2,7 @@
 
 //IMPORT DE DEPENDÊNCIAS
 import { useState } from "react";
+import { useAuth } from "@/hooks/useAuth";
 import { Button } from "./ui/button";
 import { Menu, X } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -14,6 +15,7 @@ import styles from "@/scss/components/CourseCard.module.scss";
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const router = useRouter();
+  const { isAuthenticated, user } = useAuth();
 
   const handleMenuToggle = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -85,6 +87,17 @@ const Header = () => {
               className={`${styles.bgGradient} absolute -bottom-1 left-0 h-0.5 w-0 transition-all duration-300 group-hover:w-full`}
             ></span>
           </a>
+          {user?.role === "ADMIN" && (
+            <a
+              href="/dashboard"
+              className="group relative text-foreground/80 transition-colors duration-200 hover:text-primary"
+            >
+              Dashboard
+              <span
+                className={`${styles.bgGradient} absolute -bottom-1 left-0 h-0.5 w-0 transition-all duration-300 group-hover:w-full`}
+              ></span>
+            </a>
+          )}
         </nav>
 
         <div className="flex items-center space-x-4">
