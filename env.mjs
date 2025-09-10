@@ -6,6 +6,8 @@ export const env = createEnv({
     // Database variables
     DATABASE_URL: z.string().min(1),
     DIRECT_URL: z.string().min(1),
+    DATABASE_URL_PROD: z.string().min(1),
+    DIRECT_URL_PROD: z.string().min(1),
 
     // Stripe variables
     STRIPE_SECRET_KEY: z.string().min(1),
@@ -20,6 +22,10 @@ export const env = createEnv({
     // Database variables
     DATABASE_URL: process.env.DATABASE_URL,
     DIRECT_URL: process.env.DIRECT_URL,
+
+    // Datanabase prod
+    DATABASE_URL_PROD: process.env.DATABASE_URL_PROD,
+    DIRECT_URL_PROD: process.env.DIRECT_URL_PROD,
 
     // Stripe variables
     STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,

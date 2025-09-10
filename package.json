@@ -12,7 +12,7 @@
     "# Prisma Development Commands": "",
     "prisma:validate": "./scripts/prisma-dev.sh validate",
     "prisma:generate": "./scripts/prisma-dev.sh generate",
-    "prisma:studio": "npx prisma studio",
+    "prisma:studio": "./scripts/prisma-dev.sh studio",
     "prisma:push": "./scripts/prisma-dev.sh push",
     "prisma:migrate": "./scripts/prisma-dev.sh migrate",
     "prisma:status": "./scripts/prisma-dev.sh status",

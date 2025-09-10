@@ -31,6 +31,33 @@ else
     exit 1
 fi
 
+# Função para executar comando com retry para databases serverless (como Neon)
+execute_with_retry() {
+    local cmd=$1
+    local max_retries=2
+    local retry=0
+    local exit_code=0
+    
+    while [ $retry -lt $max_retries ]; do
+        if [ $retry -gt 0 ]; then
+            echo "🔄 Tentativa $retry de $max_retries..."
+            echo "⏳ Aguardando 3 segundos para o banco iniciar..."
+            sleep 3
+        fi
+        
+        eval "$cmd"
+        exit_code=$?
+        
+        if [ $exit_code -eq 0 ]; then
+            return 0
+        fi
+        
+        retry=$((retry+1))
+    done
+    
+    return $exit_code
+}
+
 # Executa o comando passado como parâmetro
 case "$1" in
     "validate")
