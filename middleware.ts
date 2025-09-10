@@ -7,6 +7,7 @@ export default withAuth(
     const isAuth = !!token;
     const isAuthPage = req.nextUrl.pathname.startsWith("/auth");
     const isAdminPage = req.nextUrl.pathname.startsWith("/admin");
+    const isDashboardPage = req.nextUrl.pathname.startsWith("/dashboard");
     const isProfilePage = req.nextUrl.pathname.includes("/perfil");
     const isWishlistPage = req.nextUrl.pathname.includes("/wishlist");
     const isCartPage = req.nextUrl.pathname.includes("/carrinho");
@@ -45,13 +46,20 @@ export default withAuth(
       return NextResponse.redirect(new URL("/", req.url));
     }
 
+    // Proteger páginas do dashboard - só admins podem acessar
+    if (isDashboardPage && (!isAuth || token?.role !== "ADMIN")) {
+      const signInUrl = new URL("/auth/signin", req.url);
+      signInUrl.searchParams.set("error", "AccessDenied");
+      return NextResponse.redirect(signInUrl);
+    }
+
     return NextResponse.next();
   },
   {
     callbacks: {
       authorized: () => true, // Deixar o middleware handle a lógica
     },
-  },
+  }
 );
 
 export const config = {
@@ -67,5 +75,7 @@ export const config = {
     "/:slug/checkout/:path*",
     // Proteger rotas de admin
     "/admin/:path*",
+    // Proteger rotas do dashboard
+    "/dashboard/:path*",
   ],
 };

@@ -2,7 +2,7 @@
 
 import React from "react";
 import { signIn } from "next-auth/react";
-import { useAuth } from "@/hooks/use-auth";
+import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/components/ui/use-toast";
 import { PlanCard } from "@/components/subscription/plan-card";
 import { CurrentPlanBanner } from "@/components/subscription/current-plan-banner";

@@ -2,7 +2,7 @@
 
 import { useSubscription } from "@/hooks/use-subscription";
 import { useStripeCheckout } from "@/hooks/use-stripe-checkout";
-import { useAuth } from "@/hooks/use-auth";
+import { useAuth } from "@/hooks/useAuth";
 import { Loader2 } from "lucide-react";
 import { PLANOS, getPlanTypeFromPriceId } from "@/config/stripe-config";
 import type { PlanType } from "@/types/subscription";

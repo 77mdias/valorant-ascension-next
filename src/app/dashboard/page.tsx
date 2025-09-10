@@ -4,6 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
+import { authOptions } from '@/lib/auth';
+import { UserRole } from '@prisma/client';
 import styles from './scss/Dashboard.module.scss';
 
 export const metadata: Metadata = {
@@ -12,10 +14,16 @@ export const metadata: Metadata = {
 };
 
 export default async function DashboardPage() {
-  const session = await getServerSession();
+  const session = await getServerSession(authOptions);
   
   if (!session) {
     redirect('/auth/signin');
+  }
+
+  // Verificar se o usuário é ADMIN
+  const user = session.user as any;
+  if (user?.role !== UserRole.ADMIN) {
+    redirect('/auth/signin?error=AccessDenied');
   }
 
   // Dados para os cards

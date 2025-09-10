@@ -2,6 +2,8 @@ import Link from 'next/link';
 import { ReactNode } from 'react';
 import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
+import { authOptions } from '@/lib/auth';
+import { UserRole } from '@prisma/client';
 
 // Import icons or components needed
 import styles from './scss/Dashboard.module.scss';
@@ -9,10 +11,16 @@ import styles from './scss/Dashboard.module.scss';
 // Dashboard layout with sidebar and main content
 export default async function DashboardLayout({ children }: { children: ReactNode }) {
   // Check for authentication (can be moved to middleware)
-  const session = await getServerSession();
+  const session = await getServerSession(authOptions);
   
   if (!session) {
     redirect('/auth/signin');
+  }
+
+  // Verificar se o usuário é ADMIN
+  const user = session.user as any;
+  if (user?.role !== UserRole.ADMIN) {
+    redirect('/auth/signin?error=AccessDenied');
   }
 
   return (
