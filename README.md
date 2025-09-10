@@ -65,35 +65,41 @@ Aplicação full‑stack construída com Next.js (App Router) para oferecer cont
 
 - Padrões acessíveis, feedbacks visuais e responsividade
 
+
 ## ✨ Funcionalidades
 
-- 🔑 Autenticação segura (signin/signup) com Auth.js (NextAuth.js)
+- 🔑 Autenticação segura (signin/signup) com Auth.js (NextAuth.js) e RBAC
+- 🛡️ Controle de acesso por roles: ADMIN, CUSTOMER, PROFESSIONAL
 - 🧾 Assinaturas Stripe (checkout, upgrade/downgrade, cancelamento agendado)
 - 🔁 Sincronização por Webhook com fallback de Polling (resiliente a falhas)
 - 🧭 Página de preços com feedback do plano atual e ações contextuais
 - 🎬 Catálogo de Aulas com Categorias, Progresso e Conteúdo Relacionado
 - 🧩 Componentes reutilizáveis (Status de Pagamento, Banner de Plano, Cards)
 - 🧹 Tipagens fortes em TypeScript e validações com Zod
+- 🗄️ CRUD completo para usuários, aulas e categorias no dashboard
+- 🛡️ Proteção multi-camadas: Middleware, Layout/Page, Server Actions, UI
+
 
 ## 🧱 Arquitetura
 
 ### Padrões de Design
 
-- Camada de integração externa isolada em `src/lib/`
-- Configurações compartilhadas em `src/config/`
-- Componentes puros e reutilizáveis em `src/components/`
-- Hooks de domínio em `src/hooks/`
+- **Camadas:** `app` (UI) → `server` (actions/services) → `lib` (infra/clients) → `schemas`/`types`
+- **Server Actions** para mutations CRUD e regras de negócio
+- **Validação em camadas:** Zod no client e server
+- **RBAC:** Controle de acesso por role em todas as camadas
+- **Componentes reutilizáveis:** UI e formulários
+- **Styling:** Tailwind como padrão, SCSS Modules para temas complexos
 
 ### Estrutura de Rotas
 
 - API: `src/app/api/**` (ex.: `create-checkout-session`, `subscription`, `webhooks`)
+- Dashboard: `src/app/dashboard/**` (users, lessons, categories)
 - Páginas: `src/app/**` (ex.: `prices`, `auth/signin`, `auth/signup`)
 
 ### Banco de Dados — Modelo Relacional
 
-Modelos principais (resumo): `user`, `subscription`, `lessonCategory`, `lessons`, `classes`, `agents`, `agentRoles`, `maps`, `achievements`.
-
-Diagrama (Mermaid):
+Modelos principais: `user`, `subscription`, `lessonCategory`, `lessons`, `classes`, `agents`, `agentRoles`, `maps`, `achievements`.
 
 ```mermaid
 erDiagram
@@ -104,6 +110,53 @@ erDiagram
   agents }o--|| agentRoles : has
   maps ||--o{ mapSites : has
 ```
+
+### Sistema de Roles (RBAC)
+
+```typescript
+enum UserRole {
+  CUSTOMER     // Cliente padrão
+  ADMIN        // Administrador
+  PROFESSIONAL // Instrutor
+}
+```
+
+| Funcionalidade         | CUSTOMER | PROFESSIONAL | ADMIN |
+|------------------------|----------|--------------|-------|
+| Visualizar cursos      | ✅       | ✅           | ✅    |
+| Acessar dashboard      | ❌       | ⚠️           | ✅    |
+| Gerenciar usuários     | ❌       | ❌           | ✅    |
+| Criar/editar aulas     | ❌       | ✅           | ✅    |
+| Configurações sistema  | ❌       | ❌           | ✅    |
+
+## 🛡️ Camadas de Segurança
+
+1. **Middleware:** Protege rotas sensíveis (`/dashboard`, `/admin`) por role
+2. **Layout/Page:** Validação server-side de sessão e role
+3. **Server Actions:** Verificação de permissão antes de mutações
+4. **UI/Hook:** Controle de interface por role
+
+## 🚀 Fluxo CRUD no Dashboard
+
+1. **CREATE:** Formulário → validação Zod → server action → banco → revalidação → UI
+2. **READ:** Server component → busca no banco → renderização SSR → UI
+3. **UPDATE:** Formulário → validação → server action → update → revalidação → UI
+4. **DELETE:** Botão → confirmação → server action → delete → revalidação → UI
+
+## 📚 Documentação e Guias
+
+- [Guia Completo de CRUD e Roles](docs/crud-roles-complete-guide.md)
+- [Diagrama de Autenticação e Autorização](docs/auth-flow-diagram.md)
+- [Guia de CRUD do Dashboard](docs/crud-guide.md)
+
+## 📝 Melhores Práticas
+
+- Valide dados em todas as camadas (Zod)
+- Proteja rotas e ações por role (RBAC)
+- Reutilize componentes e lógica
+- Documente regras de negócio
+- Teste fluxos principais
+- Otimize performance e UX
 
 ## 🚀 Como Executar
 
