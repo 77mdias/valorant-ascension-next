@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { LessonCategoryInput, LessonCategorySchema } from "@/schemas/lessonCategory";
+import { LessonCategoryFormInput, LessonCategoryFormInputType } from "@/schemas/lessonCategory";
 import { createLessonCategory, updateLessonCategory } from "@/server/lessonCategoryActions";
 import { generateSlug } from "@/lib/prisma";
 import { Button } from "@/components/ui/button";
@@ -14,7 +14,7 @@ import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 
 interface LessonCategoryFormProps {
-  initialData?: Partial<LessonCategoryInput> & { id?: string };
+  initialData?: Partial<LessonCategoryFormInputType> & { id?: string };
   onSuccess?: () => void;
 }
 
@@ -28,8 +28,8 @@ export default function LessonCategoryForm({ initialData, onSuccess }: LessonCat
     setValue,
     watch,
     formState: { errors },
-  } = useForm<LessonCategoryInput>({
-    resolver: zodResolver(LessonCategorySchema),
+  } = useForm<LessonCategoryFormInputType>({
+    resolver: zodResolver(LessonCategoryFormInput),
     defaultValues: {
       name: initialData?.name || "",
       description: initialData?.description || "",
@@ -52,7 +52,7 @@ export default function LessonCategoryForm({ initialData, onSuccess }: LessonCat
     }
   }
 
-  async function onSubmit(data: LessonCategoryInput) {
+  async function onSubmit(data: LessonCategoryFormInputType) {
     setIsLoading(true);
     
     try {

@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { toast } from "@/components/ui/use-toast";
 import LessonCategoryForm from "@/components/forms/LessonCategoryForm";
-import styles from "./CategoriesPage.module.scss";
+import styles from "./scss/CategoriesPage.module.scss";
 import { 
   Table,
   TableBody,

@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { LessonInput, LessonSchema } from "@/schemas/lesson";
+import { LessonFormInput, LessonFormInputType } from "@/schemas/lessons";
 import { createLesson, updateLesson } from "@/server/lessonsActions";
 import { listLessonCategories } from "@/server/lessonCategoryActions";
 import { Button } from "@/components/ui/button";
@@ -15,7 +15,7 @@ import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 
 interface LessonFormProps {
-  initialData?: Partial<LessonInput> & { id?: string };
+  initialData?: Partial<LessonFormInputType> & { id?: string };
   defaultCategoryId?: string;
   onSuccess?: () => void;
 }
@@ -31,16 +31,20 @@ export default function LessonForm({ initialData, defaultCategoryId, onSuccess }
     setValue,
     watch,
     formState: { errors },
-  } = useForm<LessonInput>({
-    resolver: zodResolver(LessonSchema),
+  } = useForm<LessonFormInputType>({
+    resolver: zodResolver(LessonFormInput),
     defaultValues: {
       title: initialData?.title || "",
       description: initialData?.description || "",
-      content: initialData?.content || "",
       videoUrl: initialData?.videoUrl || "",
       thumbnailUrl: initialData?.thumbnailUrl || "",
       duration: initialData?.duration || 0,
       categoryId: initialData?.categoryId || defaultCategoryId || "",
+      createdById: initialData?.createdById || "",
+      isLive: initialData?.isLive || false,
+      isCompleted: initialData?.isCompleted || false,
+      isLocked: initialData?.isLocked || false,
+      number: initialData?.number || 1,
     },
   });
 
@@ -57,7 +61,7 @@ export default function LessonForm({ initialData, defaultCategoryId, onSuccess }
     loadCategories();
   }, []);
 
-  async function onSubmit(data: LessonInput) {
+  async function onSubmit(data: LessonFormInputType) {
     setIsLoading(true);
     
     try {

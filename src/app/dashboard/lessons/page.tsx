@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { toast } from "@/components/ui/use-toast";
 import LessonForm from "@/components/forms/LessonForm";
-import styles from "./LessonsPage.module.scss";
+import styles from "./scss/LessonsPage.module.scss";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { 

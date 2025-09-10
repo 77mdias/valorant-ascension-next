@@ -4,7 +4,7 @@ import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
 
 // Import icons or components needed
-import styles from './Dashboard.module.scss';
+import styles from './scss/Dashboard.module.scss';
 
 // Dashboard layout with sidebar and main content
 export default async function DashboardLayout({ children }: { children: ReactNode }) {

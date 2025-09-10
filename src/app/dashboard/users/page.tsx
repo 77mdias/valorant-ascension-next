@@ -7,7 +7,7 @@ import { Card } from "@/components/ui/card";
 import { toast } from "@/components/ui/use-toast";
 import Link from "next/link";
 import UserForm from "@/components/forms/UserForm";
-import styles from "./UsersPage.module.scss";
+import styles from "./scss/UsersPage.module.scss";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { 

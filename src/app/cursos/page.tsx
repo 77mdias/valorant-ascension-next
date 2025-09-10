@@ -1,9 +1,10 @@
-"use server";
-
 import { db } from "@/lib/prisma";
 import styles from "@/scss/components/CourseCard.module.scss";
 import Header from "@/components/Header";
 import CourseCard from "@/components/CourseCard";
+
+// Força a página a ser dinâmica para evitar problemas no build
+export const dynamic = 'force-dynamic';
 
 // import TestimonialCarousel from "@/components/TestimonialCarousel";
 import { Button } from "@/components/ui/button";

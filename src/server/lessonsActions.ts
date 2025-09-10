@@ -3,31 +3,7 @@
 import { db } from "@/lib/prisma";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
-
-// Enum de níveis conforme schema.prisma
-export const LessonLevelEnum = z.enum([
-  "INICIANTE",
-  "INTERMEDIARIO",
-  "AVANCADO",
-  "IMORTAL",
-]);
-
-// Schema de entrada para aula
-export const LessonInput = z.object({
-  title: z.string(),
-  description: z.string().optional(),
-  categoryId: z.string(),
-  videoUrl: z.string().optional(),
-  thumbnailUrl: z.string().optional(),
-  isLive: z.boolean().optional(),
-  scheduledAt: z.coerce.date().optional(),
-  createdById: z.string(),
-  duration: z.number().int().optional(),
-  isCompleted: z.boolean().optional(),
-  isLocked: z.boolean().optional(),
-  number: z.number().int().optional(),
-});
-export type LessonInputType = z.infer<typeof LessonInput>;
+import { LessonInput, LessonInputType } from "@/schemas/lessons";
 
 export async function createLesson(raw: unknown) {
   const data = LessonInput.parse(raw);

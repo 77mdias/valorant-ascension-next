@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
-import styles from '../scss/Dashboard.module.scss';
+import styles from './scss/Dashboard.module.scss';
 
 export const metadata: Metadata = {
   title: 'Dashboard | Valorant Academy',

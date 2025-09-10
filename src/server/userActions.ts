@@ -4,20 +4,7 @@ import { db } from "@/lib/prisma";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { hash } from "bcryptjs";
-
-// Enum de roles conforme schema.prisma
-export const UserRoleEnum = z.enum(["ADMIN", "CUSTOMER", "PROFESSIONAL"]);
-
-// Schema de entrada para criação/edição de usuário
-export const UserInput = z.object({
-  branchId: z.string(),
-  nickname: z.string(),
-  role: UserRoleEnum.default("CUSTOMER"),
-  email: z.string().email(),
-  password: z.string().min(6).optional(),
-  isActive: z.boolean().optional(),
-});
-export type UserInputType = z.infer<typeof UserInput>;
+import { UserInput, UserInputType } from "@/schemas/userSchemas";
 
 // Cria o usuário
 export async function createUser(raw: unknown) {
@@ -51,8 +38,8 @@ export async function createUser(raw: unknown) {
 }
 
 // Atualiza usuário, incluindo lógica para hash de senha se fornecida
-export const UserUpdateInput = UserInput.partial().extend({ id: z.string() });
-export type UserUpdateInputType = z.infer<typeof UserUpdateInput>;
+const UserUpdateInput = UserInput.partial().extend({ id: z.string() });
+type UserUpdateInputType = z.infer<typeof UserUpdateInput>;
 export async function updateUser(raw: unknown) {
   const { id, ...data } = UserUpdateInput.parse(raw);
   const updateData: any = { ...data };

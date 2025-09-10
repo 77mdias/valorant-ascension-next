@@ -3,11 +3,10 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { UserInput, UserSchema } from "@/schemas/user";
-import { z } from "zod";
-// Enum de roles conforme schema.prisma
-const UserRoleEnum = z.enum(["ADMIN", "CUSTOMER", "PROFESSIONAL"]);
+import { UserFormInput, UserFormInputType } from "@/schemas/userSchemas";
 import { createUser, updateUser } from "@/server/userActions";
+
+const USER_ROLES = ["ADMIN", "CUSTOMER", "PROFESSIONAL"] as const;
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,7 +15,7 @@ import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 
 interface UserFormProps {
-  initialData?: Partial<UserInput> & { id?: string };
+  initialData?: Partial<UserFormInputType> & { id?: string };
   onSuccess?: () => void;
 }
 
@@ -30,8 +29,8 @@ export default function UserForm({ initialData, onSuccess }: UserFormProps) {
     setValue,
     watch,
     formState: { errors },
-  } = useForm<UserInput>({
-    resolver: zodResolver(UserSchema),
+  } = useForm<UserFormInputType>({
+    resolver: zodResolver(UserFormInput),
     defaultValues: {
       branchId: initialData?.branchId || "",
       nickname: initialData?.nickname || "",
@@ -45,7 +44,7 @@ export default function UserForm({ initialData, onSuccess }: UserFormProps) {
   const watchedRole = watch("role");
   const watchedIsActive = watch("isActive");
 
-  async function onSubmit(data: UserInput) {
+  async function onSubmit(data: UserFormInputType) {
     setIsLoading(true);
     
     try {
@@ -133,14 +132,14 @@ export default function UserForm({ initialData, onSuccess }: UserFormProps) {
           <Label htmlFor="role">Função</Label>
           <Select
             value={watchedRole}
-            onValueChange={(value: string) => setValue("role", value as keyof typeof UserRoleEnum.enum)}
+            onValueChange={(value: string) => setValue("role", value as typeof USER_ROLES[number])}
             disabled={isLoading}
           >
             <SelectTrigger>
               <SelectValue placeholder="Selecione uma função" />
             </SelectTrigger>
             <SelectContent>
-              {Object.values(UserRoleEnum.enum).map((role) => (
+              {USER_ROLES.map((role) => (
                 <SelectItem key={role} value={role}>{role}</SelectItem>
               ))}
             </SelectContent>

@@ -3,24 +3,10 @@
 import { db } from "@/lib/prisma";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
-
-// Enum de níveis conforme schema.prisma
-export const LessonLevelEnum = z.enum([
-  "INICIANTE",
-  "INTERMEDIARIO",
-  "AVANCADO",
-  "IMORTAL",
-]);
-
-// Schema de entrada para categoria
-export const LessonCategoryInput = z.object({
-  name: z.string(),
-  description: z.string().optional(),
-  icon: z.string().optional(),
-  level: LessonLevelEnum.default("INICIANTE"),
-  slug: z.string().optional(),
-});
-export type LessonCategoryInputType = z.infer<typeof LessonCategoryInput>;
+import {
+  LessonCategoryInput,
+  LessonCategoryInputType,
+} from "@/schemas/lessonCategory";
 
 export async function createLessonCategory(raw: unknown) {
   const data = LessonCategoryInput.parse(raw);
