@@ -32,20 +32,20 @@
 
 ### 1️⃣ SISTEMA DE AUTENTICAÇÃO & AUTORIZAÇÃO
 - [ ] **Middleware de Roles**: 
-  - [ ] Implementar verificação RBAC (ADMIN, CUSTOMER, PROFESSIONAL)
-  - [ ] Proteger rotas sensíveis (/dashboard, /admin)
+  - [x] Implementar verificação RBAC (ADMIN, CUSTOMER, PROFESSIONAL)
+  - [x] Proteger rotas sensíveis (/dashboard, /admin)
   - [ ] Guards para Server Actions por role
-- [ ] **Recuperação de Senha**:
-  - [ ] Finalizar fluxo reset-password (envio + validação)
-  - [ ] Templates de email profissionais (Resend)
+- [x] **Recuperação de Senha**:
+  - [x] Finalizar fluxo reset-password (envio + validação)
+  - [x] Templates de email profissionais (Resend)
 - [ ] **Verificação de Email**:
   - [ ] Completar verify-email workflow
   - [ ] Estados de ativação de conta
 
 ### 2️⃣ DASHBOARD ADMINISTRATIVO
 - [ ] **Dashboard Layout**:
-  - [ ] Criar `/src/app/dashboard/layout.tsx` com sidebar
-  - [ ] Menu lateral responsivo com navegação
+  - [x] Criar `/src/app/dashboard/layout.tsx` com sidebar
+  - [x] Menu lateral responsivo com navegação
   - [ ] Breadcrumbs e estado ativo
 - [ ] **Gestão de Usuários**:
   - [ ] `/dashboard/users` - Listagem com filtros
