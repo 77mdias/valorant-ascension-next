@@ -15,3 +15,15 @@ if (process.env.NODE_ENV === "production") {
 }
 
 export const db = prisma;
+
+// Função para gerar slug a partir de uma string
+export function generateSlug(text: string): string {
+  return text
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "") // Remove acentos
+    .replace(/[^a-z0-9\s-]/g, "") // Remove caracteres especiais
+    .trim()
+    .replace(/\s+/g, "-") // Substitui espaços por hífens
+    .replace(/-+/g, "-"); // Remove hífens duplicados
+}

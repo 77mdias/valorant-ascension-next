@@ -1,0 +1,46 @@
+.dataTableCard {
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+  color: #1a202c;
+}
+
+.actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.searchContainer {
+  width: 250px;
+}
+
+.tableContainer {
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+.rowActions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.emptyState {
+  text-align: center;
+  padding: 2rem;
+  color: #718096;
+}

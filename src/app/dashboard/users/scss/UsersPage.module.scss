@@ -1,0 +1,66 @@
+.usersContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.title {
+  font-size: 1.875rem;
+  font-weight: 600;
+  color: #1a202c;
+  margin: 0;
+}
+
+.formCard {
+  margin-bottom: 1.5rem;
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.tableCard {
+  overflow: hidden;
+}
+
+.tableContainer {
+  overflow-x: auto;
+}
+
+.loadingCell,
+.emptyCell {
+  text-align: center;
+  padding: 2rem;
+  color: #718096;
+}
+
+.statusActive {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  background-color: #c6f6d5;
+  color: #22543d;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.statusInactive {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  background-color: #fed7d7;
+  color: #822727;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.actions {
+  display: flex;
+  gap: 0.5rem;
+}
