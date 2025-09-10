@@ -143,19 +143,40 @@ Acesse `http://localhost:3000`.
 Crie um arquivo `.env` com as variáveis (exemplos):
 
 ```env
-DATABASE_URL=postgresql://USER:PASSWORD@HOST:PORT/DB
+# Conexões com banco de dados (Neon PostgreSQL)
+# Note: use aspas duplas nas variáveis para evitar problemas com caracteres especiais
+DATABASE_URL="postgresql://user:password@host/dbname?sslmode=require&channel_binding=require"
+DIRECT_URL="postgresql://user:password@host/dbname?sslmode=require&channel_binding=require"
 
-NEXTAUTH_URL=http://localhost:3000
-NEXTAUTH_SECRET=seu-secret
+# Conexões com banco de dados de produção (Neon PostgreSQL)
+DATABASE_URL_PROD="postgresql://user:password@host/dbname?sslmode=require&channel_binding=require"
+DIRECT_URL_PROD="postgresql://user:password@host/dbname?sslmode=require&channel_binding=require"
 
-STRIPE_SECRET_KEY=sk_...
-STRIPE_WEBHOOK_SECRET=whsec_...
+# NextAuth.js
+NEXTAUTH_URL="http://localhost:3000"
+NEXTAUTH_SECRET="seu-secret-aqui-use-um-valor-seguro-gerado"
 
-NEXT_PUBLIC_BASE_URL=http://localhost:3000
+# Stripe (Pagamentos)
+STRIPE_SECRET_KEY="sk_test_sua-chave-aqui"
+STRIPE_WEBHOOK_SECRET_KEY="whsec_sua-chave-aqui"
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY="pk_test_sua-chave-aqui"
 
-# IDs de preços (sempre price_...)
-NEXT_PUBLIC_STRIPE_PRICE_BASICO=price_...
-NEXT_PUBLIC_STRIPE_PRICE_INTERMEDIARIO=price_...
+# E-mail
+EMAIL_USER="seu-email@exemplo.com"
+EMAIL_PASSWORD="sua-senha-ou-app-password"
+
+# URL base do frontend (sem barra no final)
+NEXT_PUBLIC_BASE_URL="http://localhost:3000"
+
+# IDs de preços Stripe (sempre price_...)
+NEXT_PUBLIC_STRIPE_PRICE_BASICO="price_seu_id_aqui"
+NEXT_PUBLIC_STRIPE_PRICE_INTERMEDIARIO="price_seu_id_aqui"
+NEXT_PUBLIC_STRIPE_PRICE_AVANCADO="price_seu_id_aqui"
+
+# API Externa (HenrikDev - Valorant)
+HENRIKDEV_BASE_URL="https://henrikdev.xyz/api"
+HENRIKDEV_API_KEY="sua-chave-api-aqui"
+
 NEXT_PUBLIC_STRIPE_PRICE_AVANCADO=price_...
 ```
 
