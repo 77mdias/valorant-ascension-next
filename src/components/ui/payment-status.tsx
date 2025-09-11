@@ -52,12 +52,12 @@ export function PaymentStatus({
           </div>
         )}
         <div className="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
-          <button
+          {/*<button
             onClick={() => router.push("/dashboard")}
             className="inline-flex h-10 items-center justify-center rounded-md bg-purple-600 px-8 text-sm font-medium text-white shadow transition-colors hover:bg-purple-700 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-purple-700 disabled:pointer-events-none disabled:opacity-50"
           >
             Ir para Dashboard
-          </button>
+          </button>*/}
           <button
             onClick={() => router.push("/prices")}
             className="inline-flex h-10 items-center justify-center rounded-md border border-gray-700 px-8 text-sm font-medium text-gray-300 shadow-sm transition-colors hover:bg-gray-800 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-700 disabled:pointer-events-none disabled:opacity-50"
