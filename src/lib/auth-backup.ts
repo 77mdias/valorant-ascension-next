@@ -93,26 +93,10 @@ export const authOptions: NextAuthOptions = {
       });
     },
     async createUser({ user }) {
-      console.log("🆕 User created by PrismaAdapter:", {
+      console.log("🆕 User created:", {
         email: user.email,
         id: user.id,
       });
-
-      // Se foi criado via OAuth, configurar campos padrão
-      try {
-        await db.user.update({
-          where: { id: user.id },
-          data: {
-            role: UserRole.CUSTOMER,
-            isActive: true,
-            emailVerified: new Date(),
-            nickname: user.name || user.email?.split("@")[0],
-          },
-        });
-        console.log("✅ Usuário OAuth configurado com sucesso");
-      } catch (error) {
-        console.error("❌ Erro ao configurar usuário OAuth:", error);
-      }
     },
   },
   cookies: {
@@ -148,6 +132,84 @@ export const authOptions: NextAuthOptions = {
       }
 
       return session;
+    },
+    async signIn({ user, account, profile }) {
+      // Para login OAuth (Google, GitHub)
+      if (account?.provider !== "credentials") {
+        console.log("🔍 OAuth SignIn:", {
+          provider: account?.provider,
+          email: user.email,
+        });
+
+        try {
+          // Verificar se já existe um usuário com este email
+          const existingUser = await db.user.findUnique({
+            where: { email: user.email! },
+            include: {
+              accounts: true,
+            },
+          });
+
+          if (existingUser) {
+            console.log("👤 Usuário existente encontrado");
+
+            // Verificar se já tem conta OAuth vinculada
+            const hasOAuthAccount = existingUser.accounts.some(
+              (acc) => acc.provider === account?.provider
+            );
+
+            if (!hasOAuthAccount) {
+              // Se tem conta por credenciais mas tenta OAuth, bloquear
+              if (existingUser.password) {
+                console.log("❌ Usuário tem senha, OAuth não permitido");
+                return false; // Vai redirecionar para erro
+              }
+            }
+
+            // Ativar usuário se veio pelo OAuth (email já verificado)
+            if (!existingUser.isActive) {
+              await db.user.update({
+                where: { id: existingUser.id },
+                data: {
+                  isActive: true,
+                  emailVerified: new Date(),
+                  name: user.name,
+                  image: user.image,
+                },
+              });
+            }
+
+            return true;
+          } else {
+            console.log("🆕 Criando novo usuário OAuth");
+
+            // Criar novo usuário OAuth
+            await db.user.create({
+              data: {
+                email: user.email!,
+                name: user.name || user.email?.split("@")[0],
+                nickname: user.name || user.email?.split("@")[0],
+                image: user.image,
+                role: UserRole.CUSTOMER,
+                isActive: true,
+                emailVerified: new Date(),
+              },
+            });
+
+            return true;
+          }
+        } catch (error) {
+          console.error("❌ Erro no signIn OAuth:", error);
+          return false;
+        }
+      }
+
+      // Para credentials, verificar se o usuário está ativo
+      const dbUser = await db.user.findUnique({
+        where: { email: user.email! },
+      });
+
+      return dbUser?.isActive ?? false;
     },
     async redirect({ url, baseUrl }) {
       console.log("🔍 NextAuth redirect callback:", { url, baseUrl });

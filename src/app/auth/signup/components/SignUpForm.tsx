@@ -19,6 +19,7 @@ export default function SignUpForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isOAuthLoading, setIsOAuthLoading] = useState<string | null>(null);
   const [error, setError] = useState("");
 
   const router = useRouter();
@@ -106,11 +107,19 @@ export default function SignUpForm() {
       const data = await response.json();
 
       if (!response.ok) {
-        // Se o erro contém detalhes específicos da validação de senha, mostrar de forma mais amigável
-        if (data.details && Array.isArray(data.details)) {
-          throw new Error(`Senha deve conter: ${data.details.join(", ")}`);
+        // Tratamento específico para email já existente
+        if (response.status === 409) {
+          setError(
+            "Este email já está cadastrado. Use a página de login ou tente recuperar sua senha."
+          );
+        } else if (data.details && Array.isArray(data.details)) {
+          // Se o erro contém detalhes específicos da validação de senha
+          setError(`Senha deve conter: ${data.details.join(", ")}`);
+        } else {
+          setError(data.message || "Erro ao criar conta");
         }
-        throw new Error(data.message || "Erro ao criar conta");
+        setIsLoading(false);
+        return;
       }
 
       // Mostrar mensagem de sucesso e redirecionar para verificação
@@ -125,8 +134,34 @@ export default function SignUpForm() {
     }
   };
 
-  const handleOAuthSignIn = (provider: string) => {
-    signIn(provider);
+  const handleOAuthSignIn = async (provider: string) => {
+    setIsOAuthLoading(provider);
+    setError(""); // Limpar erros anteriores
+
+    try {
+      const result = await signIn(provider, {
+        callbackUrl: "/", // Redirecionar para home após sucesso
+      });
+
+      if (result?.error) {
+        console.log("Erro OAuth no SignUp:", result.error);
+        
+        if (result.error === "OAuthAccountNotLinked") {
+          setError(
+            "Este email já está cadastrado. Use a senha que você criou ou faça login na página de entrada."
+          );
+        } else if (result.error === "AccessDenied") {
+          setError("Acesso negado. Tente novamente.");
+        } else {
+          setError("Erro ao conectar com " + provider + ". Tente novamente.");
+        }
+      }
+    } catch (error) {
+      console.error("Erro no OAuth:", error);
+      setError("Erro ao conectar com " + provider + ". Tente novamente.");
+    } finally {
+      setIsOAuthLoading(null);
+    }
   };
 
   return (
@@ -297,7 +332,7 @@ export default function SignUpForm() {
 
           <Button
             type="submit"
-            disabled={isLoading}
+            disabled={isLoading || isOAuthLoading !== null}
             className={`w-full text-white hover:bg-[var(--text-price-secondary)] ${styles.buttonAccent}`}
           >
             {isLoading ? "Criando conta..." : "Criar conta"}
@@ -318,20 +353,22 @@ export default function SignUpForm() {
                 type="button"
                 variant="outline"
                 onClick={() => handleOAuthSignIn("github")}
+                disabled={isLoading || isOAuthLoading === "github"}
                 className={`w-full border-gray-600 text-white transition-all duration-300 hover:border-primary hover:bg-primary/10`}
               >
                 <Github className="mr-2 h-4 w-4" />
-                GitHub
+                {isOAuthLoading === "github" ? "Conectando..." : "GitHub"}
               </Button>
 
               <Button
                 type="button"
                 variant="outline"
                 onClick={() => handleOAuthSignIn("google")}
+                disabled={isLoading || isOAuthLoading === "google"}
                 className={`w-full border-gray-600 text-white transition-all duration-300 hover:border-primary hover:bg-primary/10`}
               >
                 <Mail className="mr-2 h-4 w-4" />
-                Google
+                {isOAuthLoading === "google" ? "Conectando..." : "Google"}
               </Button>
             </div>
           </div>

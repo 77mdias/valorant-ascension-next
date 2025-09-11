@@ -41,7 +41,8 @@ Aplicação full‑stack construída com Next.js (App Router) para oferecer cont
 - [🗄️ Banco de Dados](#️-banco-de-dados)
   - [Modelos Principais](#modelos-principais)
 - [🔐 Segurança e Boas Práticas](#-segurança-e-boas-práticas)
-- [💳 Stripe](#-stripe)
+- [� Autenticação OAuth Google](#-autenticação-oauth-google)
+- [�💳 Stripe](#-stripe)
 - [🧪 Scripts](#-scripts)
 - [🛠️ Troubleshooting](#️-troubleshooting)
 
@@ -69,7 +70,8 @@ Aplicação full‑stack construída com Next.js (App Router) para oferecer cont
 ## ✨ Funcionalidades
 
 - 🔑 Autenticação segura (signin/signup) com Auth.js (NextAuth.js) e RBAC
-- 🛡️ Controle de acesso por roles: ADMIN, CUSTOMER, PROFESSIONAL
+- � **OAuth Google implementado** — Login/cadastro com Google funcionando
+- �🛡️ Controle de acesso por roles: ADMIN, CUSTOMER, PROFESSIONAL
 - 🧾 Assinaturas Stripe (checkout, upgrade/downgrade, cancelamento agendado)
 - 🔁 Sincronização por Webhook com fallback de Polling (resiliente a falhas)
 - 🧭 Página de preços com feedback do plano atual e ações contextuais
@@ -323,6 +325,40 @@ Em produção (ex.: Vercel), lembre de:
 - Sempre valide entradas com Zod nas rotas
 - Use `cancel_at_period_end` para evitar cobranças indevidas em cancelamento
 - Controle de acesso por função (role) no servidor
+
+## 🔑 Autenticação OAuth Google
+
+**Status**: ✅ **IMPLEMENTADO E FUNCIONANDO**
+
+### **Funcionalidades Ativas**
+- 🔐 **Login com Google**: Autenticação OAuth2 completa
+- 🆕 **Cadastro automático**: Usuários OAuth criados automaticamente no banco
+- 🛡️ **Sessão segura**: JWT + Prisma sessions gerenciadas pelo Auth.js
+- ⚡ **UX otimizada**: Loading states e error handling granular
+
+### **Configuração**
+```env
+# Google OAuth
+GOOGLE_CLIENT_ID=your-google-client-id
+GOOGLE_CLIENT_SECRET=your-google-client-secret
+
+# NextAuth
+NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_SECRET=your-nextauth-secret
+```
+
+### **Fluxo OAuth**
+1. **Usuário clica "Entrar com Google"**
+2. **Redirect para Google OAuth consent**
+3. **Callback com authorization code**
+4. **PrismaAdapter cria User + Account automaticamente**
+5. **Event configura role=CUSTOMER e isActive=true**
+6. **Sessão JWT criada e usuário logado**
+
+### **Documentação Técnica**
+- 📋 **Completa**: [`docs/oauth-google-complete.md`](docs/oauth-google-complete.md)
+- 📊 **Status**: [`docs/oauth-google-status.md`](docs/oauth-google-status.md)
+- 🔧 **Decisões**: [`docs/notes/2025-09-11-oauth-google-implementation.md`](docs/notes/2025-09-11-oauth-google-implementation.md)
 
 ## 🛠️ Troubleshooting
 

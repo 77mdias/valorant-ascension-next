@@ -5,11 +5,12 @@ import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Input } from "@/components/ui/input";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, Github, Mail } from "lucide-react";
 import ButtonLogin from "./ButtonLogin";
 import { useNotification } from "@/components/ui/notification";
 import { Alert } from "@/components/ui/alert";
 import styles from "@/scss/components/CourseCard.module.scss";
+import { Button } from "@/components/ui/button";
 
 export default function SignInForm() {
   const [email, setEmail] = useState("");
@@ -72,6 +73,8 @@ export default function SignInForm() {
   const handleCloseOAuthError = () => {
     setOauthError(null);
   };
+
+  
 
   return (
     <div className="mb-12 mt-16 flex justify-center bg-[var(--all-black)] px-4">
@@ -192,6 +195,8 @@ export default function SignInForm() {
           </div>
 
           <ButtonLogin isLoading={isLoading} />
+
+        
         </form>
       </div>
 

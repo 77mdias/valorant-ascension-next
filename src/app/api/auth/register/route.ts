@@ -34,7 +34,7 @@ function validatePassword(password: string): {
   // Pelo menos um caractere especial
   if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
     errors.push(
-      "A senha deve conter pelo menos um caractere especial (!@#$%^&*()_+-=[]{}|;':\",./<>?)",
+      "A senha deve conter pelo menos um caractere especial (!@#$%^&*()_+-=[]{}|;':\",./<>?)"
     );
   }
 
@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
     if (!name || !email || !password) {
       return NextResponse.json(
         { message: "Nome, email, senha e CPF são obrigatórios" },
-        { status: 400 },
+        { status: 400 }
       );
     }
 
@@ -63,7 +63,7 @@ export async function POST(request: NextRequest) {
           message: "Senha não atende aos requisitos de segurança",
           details: passwordValidation.errors,
         },
-        { status: 400 },
+        { status: 400 }
       );
     }
 
@@ -72,12 +72,28 @@ export async function POST(request: NextRequest) {
       where: {
         email: email.toLowerCase(),
       },
+      include: {
+        accounts: true, // Incluir contas OAuth para verificação
+      },
     });
 
     if (existingUser) {
+      // Se já existe com conta OAuth, informar ao usuário
+      if (existingUser.accounts && existingUser.accounts.length > 0) {
+        const providers = existingUser.accounts
+          .map((acc) => acc.provider)
+          .join(", ");
+        return NextResponse.json(
+          {
+            message: `Este email já está cadastrado via ${providers}. Use o botão "${providers}" para fazer login.`,
+          },
+          { status: 409 }
+        );
+      }
+
       return NextResponse.json(
         { message: "Usuário já existe com este email" },
-        { status: 400 },
+        { status: 409 }
       );
     }
 
@@ -91,10 +107,10 @@ export async function POST(request: NextRequest) {
     // Criar o usuário
     const user = await db.user.create({
       data: {
-        nickname: name, // Usar nickname em vez de name
+        name: name, // Adicionar campo name também
+        nickname: name, // Manter nickname para compatibilidade
         email: email.toLowerCase(),
         password: hashedPassword,
-        branchId: "default", // Adicionar branchId obrigatório
         role: UserRole.CUSTOMER,
         isActive: false, // Usuário inativo até verificar email
         emailVerificationToken: verificationToken,
@@ -102,7 +118,8 @@ export async function POST(request: NextRequest) {
       },
       select: {
         id: true,
-        nickname: true, // Usar nickname em vez de name
+        name: true,
+        nickname: true,
         email: true,
         role: true,
         createdAt: true,
@@ -117,7 +134,7 @@ export async function POST(request: NextRequest) {
       await db.user.delete({ where: { id: user.id } });
       return NextResponse.json(
         { message: "Erro ao enviar email de verificação. Tente novamente." },
-        { status: 500 },
+        { status: 500 }
       );
     }
 
@@ -131,7 +148,7 @@ export async function POST(request: NextRequest) {
     console.error("Erro ao criar usuário:", error);
     return NextResponse.json(
       { message: "Erro interno do servidor" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

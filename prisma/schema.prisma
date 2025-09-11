@@ -33,13 +33,23 @@ model account {
   providerAccountId String
   refresh_token     String?
   access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
   user              user    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
 }
 
 model user {
   id                       String              @id @default(uuid())
-  branchId                 String
-  nickname                 String
+  branchId                 String?
+  nickname                 String?
+  name                     String?
+  image                    String?
   role                     UserRole            @default(CUSTOMER)
   email                    String              @unique
   emailVerified            DateTime?
@@ -48,7 +58,7 @@ model user {
   password                 String?
   resetPasswordExpires     DateTime?
   resetPasswordToken       String?
-  isActive                 Boolean             @default(false)
+  isActive                 Boolean             @default(true)
   createdAt                DateTime            @default(now())
   updatedAt                DateTime            @updatedAt
   accounts                 account[]
