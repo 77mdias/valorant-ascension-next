@@ -1,6 +1,6 @@
 .dashboardContainer {
   display: flex;
-  height: 100vh;
+  min-height: 100vh;
   background-color: #f0f2f5;
 }
 
@@ -88,7 +88,7 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  overflow-y: auto;
+  background-color: var(--background-dark);
 }
 
 .header {
@@ -96,14 +96,14 @@
   align-items: center;
   justify-content: space-between;
   padding: 1rem 1.5rem;
-  background-color: white;
+  background-color: #0d101b;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   
   h1 {
     margin: 0;
     font-size: 1.5rem;
     font-weight: 600;
-    color: #1a202c;
+    color: #d1d5db;
   }
 }
 
@@ -152,7 +152,9 @@
 
 .pageContent {
   padding: 1.5rem;
-  flex: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
 }
 
 // Estilos para os links rápidos
@@ -160,16 +162,18 @@
   display: flex;
   align-items: center;
   padding: 1.25rem;
-  background-color: white;
+  background-color: #0e121c;
+  border: 1px solid #1f2937;
   border-radius: 0.5rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: all 0.4s ease-in-out;
   text-decoration: none;
   color: inherit;
   
   &:hover {
     transform: translateY(-3px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transform: scale(1.04);
+    box-shadow: var(--shadow-card);
   }
 }
 
@@ -184,12 +188,12 @@
     margin: 0 0 0.25rem;
     font-size: 1.1rem;
     font-weight: 600;
-    color: #1a202c;
+    color: white;
   }
   
   p {
     margin: 0;
     font-size: 0.875rem;
-    color: #4a5568;
+    color: #8691a6;
   }
 }

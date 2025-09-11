@@ -34,7 +34,7 @@ export default async function DashboardPage() {
       <h1 className="text-3xl font-bold mb-6">Visão Geral</h1>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-        <Card>
+        <Card className='bg-[#0e121c] border border-gray-700 hover:shadow-[0_0_15px_rgba(250,0,150,0.6)] hover:scale-105 transition-all duration-300 ease'>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">Usuários</CardTitle>
           </CardHeader>
@@ -44,7 +44,7 @@ export default async function DashboardPage() {
           </CardContent>
         </Card>
         
-        <Card>
+        <Card className='bg-[#0e121c] border border-gray-700 hover:shadow-[0_0_15px_rgba(250,0,150,0.6)] hover:scale-105 transition-all duration-300 ease'>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">Aulas</CardTitle>
           </CardHeader>
@@ -54,7 +54,7 @@ export default async function DashboardPage() {
           </CardContent>
         </Card>
         
-        <Card>
+        <Card className='bg-[#0e121c] border border-gray-700 hover:shadow-[0_0_15px_rgba(255,0,150,0.6)] hover:scale-105 transition-all duration-300 ease'>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">Categorias</CardTitle>
           </CardHeader>
