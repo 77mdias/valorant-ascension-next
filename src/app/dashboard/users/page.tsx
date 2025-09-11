@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { DashboardNavSelect } from "@/components/dashboard/DashboardNavSelect";
 import { listUsers, deleteUser } from "@/server/userActions";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -85,17 +86,19 @@ export default function UsersPage() {
     return format(new Date(date), "dd/MM/yyyy HH:mm", { locale: ptBR });
   };
 
+  // Rotas do dashboard para navegação
+
   return (
-    <div className={styles.usersContainer}>
-      <div className={styles.header}>
-        <h1 className={styles.title}>Usuários</h1>
+    <div className="w-full max-w-7xl mx-auto p-2 md:p-6">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 mb-4">
+        <DashboardNavSelect currentRoute="/dashboard/users" />
         <Button onClick={() => setShowAddForm(!showAddForm)}>
           {showAddForm ? "Cancelar" : "Adicionar Usuário"}
         </Button>
       </div>
-      
+
       {showAddForm && (
-        <Card className={styles.formCard}>
+        <Card className="mb-4">
           <UserForm 
             onSuccess={() => {
               setShowAddForm(false);
@@ -104,9 +107,9 @@ export default function UsersPage() {
           />
         </Card>
       )}
-      
+
       {editingUser && (
-        <Card className={styles.formCard}>
+        <Card className="mb-4">
           <UserForm 
             initialData={editingUser}
             onSuccess={() => {
@@ -116,69 +119,63 @@ export default function UsersPage() {
           />
         </Card>
       )}
-      
-      <Card className={styles.tableCard}>
-        <div className={styles.tableContainer}>
-          <Table>
-            <TableHeader>
+
+      <Card className="overflow-x-auto shadow-lg">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="min-w-[160px] text-lg">Nome</TableHead>
+              <TableHead className="min-w-[200px] text-lg">Email</TableHead>
+              <TableHead className="min-w-[120px] text-lg">Função</TableHead>
+              <TableHead className="min-w-[100px] text-lg">Status</TableHead>
+              <TableHead className="min-w-[160px] text-lg">Cadastro</TableHead>
+              <TableHead className="min-w-[120px] text-lg">Ações</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {loading ? (
               <TableRow>
-                <TableHead>Nome</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Função</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Cadastro</TableHead>
-                <TableHead>Ações</TableHead>
+                <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">Carregando...</TableCell>
               </TableRow>
-            </TableHeader>
-            <TableBody>
-              {loading ? (
-                <TableRow>
-                  <TableCell colSpan={6} className={styles.loadingCell}>
-                    Carregando...
+            ) : users.length > 0 ? (
+              users.map((user) => (
+                <TableRow key={user.id} className="hover:bg-muted/40">
+                  <TableCell className="font-semibold">{user.nickname}</TableCell>
+                  <TableCell>{user.email}</TableCell>
+                  <TableCell>{user.role}</TableCell>
+                  <TableCell>
+                    <span className={`px-2 py-1 rounded text-xs font-bold ${user.isActive ? "bg-green-500/20 text-green-600" : "bg-muted/30 text-muted-foreground"}`}>
+                      {user.isActive ? "Ativo" : "Inativo"}
+                    </span>
+                  </TableCell>
+                  <TableCell>{formatDate(user.createdAt)}</TableCell>
+                  <TableCell>
+                    <div className="flex gap-2">
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => setEditingUser(user)}
+                      >
+                        Editar
+                      </Button>
+                      <Button 
+                        variant="destructive" 
+                        size="sm"
+                        onClick={() => handleDeleteUser(user.id)}
+                      >
+                        Excluir
+                      </Button>
+                    </div>
                   </TableCell>
                 </TableRow>
-              ) : users.length > 0 ? (
-                users.map((user) => (
-                  <TableRow key={user.id}>
-                    <TableCell>{user.nickname}</TableCell>
-                    <TableCell>{user.email}</TableCell>
-                    <TableCell>{user.role}</TableCell>
-                    <TableCell>
-                      <span className={user.isActive ? styles.statusActive : styles.statusInactive}>
-                        {user.isActive ? "Ativo" : "Inativo"}
-                      </span>
-                    </TableCell>
-                    <TableCell>{formatDate(user.createdAt)}</TableCell>
-                    <TableCell>
-                      <div className={styles.actions}>
-                        <Button 
-                          variant="outline" 
-                          size="sm"
-                          onClick={() => setEditingUser(user)}
-                        >
-                          Editar
-                        </Button>
-                        <Button 
-                          variant="destructive" 
-                          size="sm"
-                          onClick={() => handleDeleteUser(user.id)}
-                        >
-                          Excluir
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={6} className={styles.emptyCell}>
-                    Nenhum usuário encontrado
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </div>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">Nenhum usuário encontrado</TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
       </Card>
     </div>
   );

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { DashboardNavSelect } from "@/components/dashboard/DashboardNavSelect";
 import { listLessons, deleteLesson } from "@/server/lessonsActions";
 import { listLessonCategories } from "@/server/lessonCategoryActions";
 import { Button } from "@/components/ui/button";
@@ -109,17 +110,19 @@ export default function LessonsPage() {
     return category ? category.name : "N/A";
   };
 
+  // Rotas do dashboard para navegação
+
   return (
-    <div className={styles.lessonsContainer}>
-      <div className={styles.header}>
-        <h1 className={styles.title}>Aulas</h1>
+    <div className="w-full max-w-7xl mx-auto p-2 md:p-6">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 mb-4">
+        <DashboardNavSelect currentRoute="/dashboard/lessons" />
         <Button onClick={() => setShowAddForm(!showAddForm)}>
           {showAddForm ? "Cancelar" : "Adicionar Aula"}
         </Button>
       </div>
-      
+
       {showAddForm && (
-        <Card className={styles.formCard}>
+        <Card className="mb-4">
           <LessonForm 
             onSuccess={() => {
               setShowAddForm(false);
@@ -128,9 +131,9 @@ export default function LessonsPage() {
           />
         </Card>
       )}
-      
+
       {editingLesson && (
-        <Card className={styles.formCard}>
+        <Card className="mb-4">
           <LessonForm 
             initialData={editingLesson}
             onSuccess={() => {
@@ -140,85 +143,75 @@ export default function LessonsPage() {
           />
         </Card>
       )}
-      
-      <Card className={styles.tableCard}>
-        <div className={styles.tableContainer}>
-          <Table>
-            <TableHeader>
+
+      <Card className="overflow-x-auto shadow-lg">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="min-w-[180px] text-lg">Título</TableHead>
+              <TableHead className="min-w-[140px] text-lg">Categoria</TableHead>
+              <TableHead className="min-w-[100px] text-lg">Duração</TableHead>
+              <TableHead className="min-w-[100px] text-lg">Status</TableHead>
+              <TableHead className="min-w-[160px] text-lg">Criado em</TableHead>
+              <TableHead className="min-w-[120px] text-lg">Ações</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {loading ? (
               <TableRow>
-                <TableHead>Título</TableHead>
-                <TableHead>Categoria</TableHead>
-                <TableHead>Duração</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Criado em</TableHead>
-                <TableHead>Ações</TableHead>
+                <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">Carregando...</TableCell>
               </TableRow>
-            </TableHeader>
-            <TableBody>
-              {loading ? (
-                <TableRow>
-                  <TableCell colSpan={6} className={styles.loadingCell}>
-                    Carregando...
+            ) : lessons.length > 0 ? (
+              lessons.map((lesson) => (
+                <TableRow key={lesson.id} className="hover:bg-muted/40">
+                  <TableCell className="font-semibold flex items-center gap-2">
+                    {lesson.thumbnailUrl && (
+                      <img 
+                        src={lesson.thumbnailUrl} 
+                        alt={lesson.title} 
+                        className="w-10 h-10 rounded object-cover border border-border mr-2" 
+                      />
+                    )}
+                    <span>{lesson.title}</span>
+                    {lesson.isLocked && (
+                      <span className="ml-2 px-2 py-1 rounded bg-destructive/20 text-destructive text-xs font-bold">Bloqueada</span>
+                    )}
+                  </TableCell>
+                  <TableCell>{getCategoryName(lesson.categoryId)}</TableCell>
+                  <TableCell>{formatDuration(lesson.duration)}</TableCell>
+                  <TableCell>
+                    <span className={`px-2 py-1 rounded text-xs font-bold ${lesson.isLive ? "bg-green-500/20 text-green-600" : "bg-muted/30 text-muted-foreground"}`}>
+                      {lesson.isLive ? "Ao vivo" : "Gravada"}
+                    </span>
+                  </TableCell>
+                  <TableCell>{formatDate(lesson.createdAt)}</TableCell>
+                  <TableCell>
+                    <div className="flex gap-2">
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => setEditingLesson(lesson)}
+                      >
+                        Editar
+                      </Button>
+                      <Button 
+                        variant="destructive" 
+                        size="sm"
+                        onClick={() => handleDeleteLesson(lesson.id)}
+                      >
+                        Excluir
+                      </Button>
+                    </div>
                   </TableCell>
                 </TableRow>
-              ) : lessons.length > 0 ? (
-                lessons.map((lesson) => (
-                  <TableRow key={lesson.id}>
-                    <TableCell>
-                      <div className={styles.lessonTitle}>
-                        {lesson.thumbnailUrl && (
-                          <img 
-                            src={lesson.thumbnailUrl} 
-                            alt={lesson.title} 
-                            className={styles.thumbnailPreview} 
-                          />
-                        )}
-                        <div>
-                          {lesson.title}
-                          {lesson.isLocked && (
-                            <span className={styles.lockedBadge}>Bloqueada</span>
-                          )}
-                        </div>
-                      </div>
-                    </TableCell>
-                    <TableCell>{getCategoryName(lesson.categoryId)}</TableCell>
-                    <TableCell>{formatDuration(lesson.duration)}</TableCell>
-                    <TableCell>
-                      <span className={`${styles.status} ${lesson.isLive ? styles.statusLive : ''}`}>
-                        {lesson.isLive ? "Ao vivo" : "Gravada"}
-                      </span>
-                    </TableCell>
-                    <TableCell>{formatDate(lesson.createdAt)}</TableCell>
-                    <TableCell>
-                      <div className={styles.actions}>
-                        <Button 
-                          variant="outline" 
-                          size="sm"
-                          onClick={() => setEditingLesson(lesson)}
-                        >
-                          Editar
-                        </Button>
-                        <Button 
-                          variant="destructive" 
-                          size="sm"
-                          onClick={() => handleDeleteLesson(lesson.id)}
-                        >
-                          Excluir
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={6} className={styles.emptyCell}>
-                    Nenhuma aula encontrada
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </div>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">Nenhuma aula encontrada</TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
       </Card>
     </div>
   );
