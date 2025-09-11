@@ -1,5 +1,7 @@
 import { Metadata } from 'next';
 import { listUsers } from '@/server/userActions';
+import { listLessons } from '@/server/lessonsActions';
+import { listLessonCategories } from '@/server/lessonCategoryActions';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
@@ -7,7 +9,8 @@ import Link from 'next/link';
 import { authOptions } from '@/lib/auth';
 import { UserRole } from '@prisma/client';
 import styles from './scss/Dashboard.module.scss';
-import { DashboardNavSelect } from '@/components/dashboard/DashboardNavSelect';
+
+
 
 export const metadata: Metadata = {
   title: 'Dashboard | Valorant Academy',
@@ -17,9 +20,7 @@ export const metadata: Metadata = {
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions);
   
-  if (!session) {
-    redirect('/auth/signin');
-  }
+  if (!session) redirect('/auth/signin');
 
   // Verificar se o usuário é ADMIN
   const user = session.user as any;
@@ -27,8 +28,10 @@ export default async function DashboardPage() {
     redirect('/auth/signin?error=AccessDenied');
   }
 
-  // Dados para os cards
+  // Dados reais
   const { data: users } = await listUsers();
+  const { data: lessons } = await listLessons();
+  const { data: categories } = await listLessonCategories();
   
   return (
     <div>
@@ -51,7 +54,7 @@ export default async function DashboardPage() {
             <CardTitle className="text-sm font-medium text-muted-foreground">Aulas</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">?</div>
+            <div className="text-3xl font-bold">{lessons?.length || 0}</div>
             <p className="text-xs text-muted-foreground mt-1">Total de aulas disponíveis</p>
           </CardContent>
         </Card>
@@ -61,7 +64,7 @@ export default async function DashboardPage() {
             <CardTitle className="text-sm font-medium text-muted-foreground">Categorias</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">?</div>
+            <div className="text-3xl font-bold">{categories?.length || 0}</div>
             <p className="text-xs text-muted-foreground mt-1">Total de categorias de aulas</p>
           </CardContent>
         </Card>
