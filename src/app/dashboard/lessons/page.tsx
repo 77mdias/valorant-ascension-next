@@ -165,13 +165,14 @@ export default function LessonsPage() {
               lessons.map((lesson) => (
                 <TableRow key={lesson.id} className="hover:bg-muted/40">
                   <TableCell className="font-semibold flex items-center gap-2">
+                    {/* SEÇÃO COMENTADA PARA EVITAR ERRO DE RENDERIZAÇÃO e também não faz muito sentido carregar imagem aqui.}
                     {lesson.thumbnailUrl && (
                       <img 
                         src={lesson.thumbnailUrl} 
                         alt={lesson.title} 
                         className="w-10 h-10 rounded object-cover border border-border mr-2" 
                       />
-                    )}
+                    )} */}
                     <span>{lesson.title}</span>
                     {lesson.isLocked && (
                       <span className="ml-2 px-2 py-1 rounded bg-destructive/20 text-destructive text-xs font-bold">Bloqueada</span>

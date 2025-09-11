@@ -64,7 +64,7 @@ export default async function DashboardLayout({ children }: { children: ReactNod
               <span className="font-medium text-foreground/90">{session.user?.name || "Usuário"}</span>
               <span className="text-xs text-muted-foreground">{session.user?.email}</span>
             </div>
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-pink-500 flex items-center justify-center text-white font-bold text-lg overflow-hidden">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-pink-500 items-center justify-center text-white font-bold text-lg hidden md:flex ">
               {session.user?.image ? (
                 <img src={session.user.image} alt="Avatar" className="w-full h-full object-cover rounded-full" />
               ) : (

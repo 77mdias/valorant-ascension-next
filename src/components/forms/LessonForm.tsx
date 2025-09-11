@@ -87,8 +87,8 @@ export default function LessonForm({ initialData, defaultCategoryId, onSuccess }
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <form onSubmit={handleSubmit(onSubmit)} >
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
         <div className="space-y-2 md:col-span-2">
           <Label htmlFor="title">Título *</Label>
           <Input
@@ -181,7 +181,7 @@ export default function LessonForm({ initialData, defaultCategoryId, onSuccess }
         </div>
       </div>
 
-      <div className="flex justify-end space-x-2">
+      <div className="flex p-4">
         <Button
           type="submit"
           disabled={isLoading}

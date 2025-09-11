@@ -154,6 +154,15 @@ const Header = () => {
             >
               Preços
             </Link>
+            {user?.role === "ADMIN" && (
+              <Link
+                href="/dashboard"
+                  className="py-2 text-foreground/80 transition-colors hover:text-primary"
+                  onClick={() => setIsMenuOpen(false)}
+              >
+                Dashboard
+              </Link>
+            )}
             <Button className="btn-gradient mt-4 rounded-full px-6 py-2 font-medium">
               Começar Agora
             </Button>

@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { authOptions } from '@/lib/auth';
 import { UserRole } from '@prisma/client';
 import styles from './scss/Dashboard.module.scss';
+import { DashboardNavSelect } from '@/components/dashboard/DashboardNavSelect';
 
 export const metadata: Metadata = {
   title: 'Dashboard | Valorant Academy',
@@ -31,6 +32,7 @@ export default async function DashboardPage() {
   
   return (
     <div>
+      
       <h1 className="text-3xl font-bold mb-6">Visão Geral</h1>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">

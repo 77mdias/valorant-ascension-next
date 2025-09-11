@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export type DashboardNavRoute = {
   label: string;
@@ -10,6 +11,7 @@ const defaultRoutes: DashboardNavRoute[] = [
   { label: "Usuários", value: "/dashboard/users" },
   { label: "Aulas", value: "/dashboard/lessons" },
   { label: "Categorias", value: "/dashboard/categories" },
+  { label: "Dashboard", value: "/dashboard" },
 ];
 
 export function DashboardNavSelect({
@@ -30,14 +32,21 @@ export function DashboardNavSelect({
   }, [selectedRoute, currentRoute]);
 
   return (
-    <select
-      className={`bg-card border border-border rounded-lg px-4 py-2 text-lg font-semibold text-pink-500 focus:outline-none focus:ring-2 focus:ring-pink-500 ${className}`}
+    <Select
       value={selectedRoute}
-      onChange={e => setSelectedRoute(e.target.value)}
+      onValueChange={(value: string) => setSelectedRoute(value)}
     >
-      {routes.map(route => (
-        <option key={route.value} value={route.value}>{route.label}</option>
-      ))}
-    </select>
+      <SelectTrigger>
+        <SelectValue placeholder="Selecione uma rota" />
+      </SelectTrigger>
+      <SelectContent>
+        {routes.map(route => (
+          <SelectItem key={route.value} value={route.value}>
+            {route.label}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
   );
 }
+

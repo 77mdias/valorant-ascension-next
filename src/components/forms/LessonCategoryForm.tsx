@@ -78,8 +78,8 @@ export default function LessonCategoryForm({ initialData, onSuccess }: LessonCat
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
         <div className="space-y-2">
           <Label htmlFor="name">Nome *</Label>
           <Input
@@ -134,13 +134,13 @@ export default function LessonCategoryForm({ initialData, onSuccess }: LessonCat
           )}
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="level">Nível</Label>
+        <div className="flex items-end space-y-2 gap-2">
+          <Label htmlFor="level">Nível: </Label>
           <select
             id="level"
             {...register("level")}
             disabled={isLoading}
-            className="input"
+            className="input px-2 text-black"
           >
             <option value="INICIANTE">Iniciante</option>
             <option value="INTERMEDIARIO">Intermediário</option>
@@ -153,7 +153,7 @@ export default function LessonCategoryForm({ initialData, onSuccess }: LessonCat
         </div>
       </div>
 
-      <div className="flex justify-end space-x-2">
+      <div className="flex p-4">
         <Button
           type="submit"
           disabled={isLoading}
