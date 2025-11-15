@@ -13,6 +13,7 @@ interface ScoreboardTableProps {
   calculatePlayerStats: (player: Player) => any;
   fkAndFD: Record<string, { fk: number; fd: number }>;
   mk: Record<string, number>;
+  winnerTeamId: "Red" | "Blue";
 }
 
 export default function ScoreboardTable({
@@ -21,6 +22,7 @@ export default function ScoreboardTable({
   calculatePlayerStats,
   fkAndFD,
   mk,
+  winnerTeamId,
 }: ScoreboardTableProps) {
   return (
     <div className={styles.scoreboardTable}>
@@ -56,6 +58,7 @@ export default function ScoreboardTable({
               mk={mk}
               showAllColumns={true}
               styles={styles}
+              winnerTeamId={winnerTeamId}
             />
           ))}
         </div>

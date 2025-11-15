@@ -18,11 +18,13 @@ import { useMatchStats } from "../../hooks";
 interface ScoreboardTabProps {
   matchDetails: MatchDetails;
   region: string;
+  winnerTeamId: "Red" | "Blue";
 }
 
 export default function ScoreboardTab({
   matchDetails,
   region,
+  winnerTeamId,
 }: ScoreboardTabProps) {
   const {
     sortBy,
@@ -67,6 +69,7 @@ export default function ScoreboardTab({
           calculatePlayerStats={calculatePlayerStats}
           fkAndFD={fkAndFD}
           mk={mk}
+          winnerTeamId={winnerTeamId}
         />
       ) : (
         <>

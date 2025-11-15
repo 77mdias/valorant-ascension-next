@@ -411,6 +411,17 @@
   }
 }
 
+// Visual cue para score por time (apenas coluna score na visão geral)
+.winnerScore {
+  background-color: #77dd7717;
+  border-color: rgba(74, 222, 128, 0.25);
+}
+
+.loserScore {
+  background-color: #ec176c15;
+  border-color: rgba(236, 23, 107, 0.25);
+}
+
 .teamHeader {
   display: flex;
   justify-content: space-between;

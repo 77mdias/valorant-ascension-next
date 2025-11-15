@@ -57,6 +57,9 @@ export default function TeamScoreboard({
             <div className={`${styles.headerCell} ${styles.kdCol}`}>K/D</div>
             <div className={`${styles.headerCell} ${styles.adrCol}`}>ADR</div>
             <div className={`${styles.headerCell} ${styles.hsCol}`}>HS%</div>
+            <div className={`${styles.headerCell} ${styles.statCol}`}>FK</div>
+            <div className={`${styles.headerCell} ${styles.statCol}`}>FD</div>
+            <div className={`${styles.headerCell} ${styles.statCol}`}>MK</div>
           </div>
 
           {/* Player Rows */}
@@ -69,7 +72,7 @@ export default function TeamScoreboard({
               calculatePlayerStats={calculatePlayerStats}
               fkAndFD={fkAndFD}
               mk={mk}
-              showAllColumns={false}
+              showAllColumns={true}
               styles={styles}
             />
           ))}

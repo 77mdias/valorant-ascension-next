@@ -76,33 +76,44 @@ export default function MatchDetailsPage() {
   const blueTeamScore =
     matchDetails.teams?.find((team) => team.team_id === "Blue")?.rounds?.won || 0;
 
+  const redTeamWon =
+    matchDetails.teams?.find((team) => team.team_id === "Red")?.won ??
+    redTeamScore > blueTeamScore;
+  const winnerTeamId = redTeamWon ? "Red" : "Blue";
+
   return (
     <div className={styles.container}>
-      <MatchPageHeader playerContext={playerContext} region={region} />
+      <div className={styles.content}>
+        <MatchPageHeader playerContext={playerContext} region={region} />
 
-      <MatchHeader
-        matchDetails={matchDetails}
-        redTeamScore={redTeamScore}
-        blueTeamScore={blueTeamScore}
-        formatDate={formatDate}
-        formatDuration={formatDuration}
-        matchId={matchId}
-      />
+        <MatchHeader
+          matchDetails={matchDetails}
+          redTeamScore={redTeamScore}
+          blueTeamScore={blueTeamScore}
+          formatDate={formatDate}
+          formatDuration={formatDuration}
+          matchId={matchId}
+        />
 
-      <TabNavigation activeTab={activeTab} onTabChange={setActiveTab} />
+        <TabNavigation activeTab={activeTab} onTabChange={setActiveTab} />
 
-      <div className={styles.tabContent}>
-        {activeTab === "scoreboard" && (
-          <ScoreboardTab matchDetails={matchDetails} region={region} />
-        )}
+        <div className={styles.tabContent}>
+          {activeTab === "scoreboard" && (
+            <ScoreboardTab
+              matchDetails={matchDetails}
+              region={region}
+              winnerTeamId={winnerTeamId}
+            />
+          )}
 
-        {activeTab === "rounds" && (
-          <RoundsTab rounds={matchDetails.rounds || []} />
-        )}
+          {activeTab === "rounds" && (
+            <RoundsTab rounds={matchDetails.rounds || []} />
+          )}
 
-        {(activeTab === "performance" ||
-          activeTab === "economy" ||
-          activeTab === "duels") && <ComingSoonTab />}
+          {(activeTab === "performance" ||
+            activeTab === "economy" ||
+            activeTab === "duels") && <ComingSoonTab />}
+        </div>
       </div>
     </div>
   );

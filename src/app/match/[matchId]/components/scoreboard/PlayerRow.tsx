@@ -21,6 +21,7 @@ interface PlayerRowProps {
   mk: Record<string, number>;
   showAllColumns?: boolean;
   styles: any; // SCSS module from parent
+  winnerTeamId?: "Red" | "Blue";
 }
 
 // Helper para obter URL da imagem do rank
@@ -40,19 +41,24 @@ export default function PlayerRow({
   mk,
   showAllColumns = true,
   styles,
+  winnerTeamId,
 }: PlayerRowProps) {
   const stats = calculatePlayerStats(player);
   const playerFK = fkAndFD[player.puuid]?.fk || 0;
   const playerFD = fkAndFD[player.puuid]?.fd || 0;
   const playerMK = mk[player.puuid] || 0;
+  const isWinner = winnerTeamId ? player.team_id === winnerTeamId : false;
+  const isLoser = winnerTeamId ? player.team_id !== winnerTeamId : false;
 
   return (
     <div
-      className={styles.playerRow}
+      className={`${styles.playerRow} ${isWinner ? styles.winnerScore : ""} ${isLoser ? styles.loserScore : ""}`}
       onClick={() => onPlayerClick(player.name, player.tag)}
     >
       {/* Sticky Player Info Column */}
-      <div className={`${styles.cell} ${styles.stickyCell} ${styles.playerInfoCell}`}>
+      <div
+        className={`${styles.cell} ${styles.stickyCell} ${styles.playerInfoCell}`}
+      >
         <div className={styles.playerInfo}>
           <div className={styles.playerAvatar}>
             <Image
@@ -79,7 +85,9 @@ export default function PlayerRow({
               {player.account_level && (
                 <>
                   <span className={styles.separator}>•</span>
-                  <span className={styles.accountLevel}>{player.account_level} RR</span>
+                  <span className={styles.accountLevel}>
+                    {player.account_level} RR
+                  </span>
                 </>
               )}
             </div>
@@ -88,7 +96,9 @@ export default function PlayerRow({
       </div>
 
       {/* Rank Badge */}
-      <div className={`${styles.cell} ${styles.rankBadgeCell} ${styles.centerAlign}`}>
+      <div
+        className={`${styles.cell} ${styles.rankBadgeCell} ${styles.centerAlign} `}
+      >
         <Image
           src={getRankImageUrl(player.tier.id)}
           alt={player.tier.name}
@@ -98,65 +108,87 @@ export default function PlayerRow({
       </div>
 
       {/* TRS (Score) */}
-      <div className={`${styles.cell} ${styles.trsCell} ${styles.centerAlign}`}>
+      <div
+        className={`${styles.cell} ${styles.trsCell} ${styles.centerAlign} `}
+      >
         <div className={styles.trsValue}>{player.stats.score}</div>
       </div>
 
       {/* Score (ACS) */}
-      <div className={`${styles.cell} ${styles.scoreCell} ${styles.centerAlign}`}>
+      <div
+        className={`${styles.cell} ${styles.scoreCell} ${styles.centerAlign} `}
+      >
         {player.stats.score}
       </div>
 
       {/* Kills */}
-      <div className={`${styles.cell} ${styles.statCell} ${styles.centerAlign}`}>
+      <div
+        className={`${styles.cell} ${styles.statCell} ${styles.centerAlign} `}
+      >
         {player.stats.kills}
       </div>
 
       {/* Deaths */}
-      <div className={`${styles.cell} ${styles.statCell} ${styles.centerAlign}`}>
+      <div
+        className={`${styles.cell} ${styles.statCell} ${styles.centerAlign} `}
+      >
         {player.stats.deaths}
       </div>
 
       {/* Assists */}
-      <div className={`${styles.cell} ${styles.statCell} ${styles.centerAlign}`}>
+      <div
+        className={`${styles.cell} ${styles.statCell} ${styles.centerAlign} `}
+      >
         {player.stats.assists}
       </div>
 
       {/* K/D Diff (+/-) */}
-      <div className={`${styles.cell} ${styles.statCell} ${styles.centerAlign} ${stats.kdDiff >= 0 ? styles.positive : styles.negative}`}>
+      <div
+        className={`${styles.cell} ${styles.statCell} ${styles.centerAlign} ${stats.kdDiff >= 0 ? styles.positive : styles.negative} `}
+      >
         {stats.kdDiff >= 0 ? "+" : ""}
         {stats.kdDiff}
       </div>
 
       {/* K/D Ratio */}
-      <div className={`${styles.cell} ${styles.kdCell} ${styles.centerAlign} ${parseFloat(stats.kd) >= 1 ? styles.positive : ''}`}>
+      <div
+        className={`${styles.cell} ${styles.kdCell} ${styles.centerAlign} ${parseFloat(stats.kd) >= 1 ? styles.positive : ""} `}
+      >
         {stats.kd}
       </div>
 
       {/* ADR */}
-      <div className={`${styles.cell} ${styles.adrCell} ${styles.centerAlign} ${stats.adr >= 150 ? styles.positive : ''}`}>
+      <div
+        className={`${styles.cell} ${styles.adrCell} ${styles.centerAlign} ${stats.adr >= 150 ? styles.positive : ""} `}
+      >
         {stats.adr}
       </div>
 
       {/* HS% */}
-      <div className={`${styles.cell} ${styles.hsCell} ${styles.centerAlign}`}>
+      <div className={`${styles.cell} ${styles.hsCell} ${styles.centerAlign} `}>
         {stats.hsPercentage}%
       </div>
 
       {showAllColumns && (
         <>
           {/* FK */}
-          <div className={`${styles.cell} ${styles.statCell} ${styles.centerAlign}`}>
+          <div
+            className={`${styles.cell} ${styles.statCell} ${styles.centerAlign} `}
+          >
             {playerFK}
           </div>
 
           {/* FD */}
-          <div className={`${styles.cell} ${styles.statCell} ${styles.centerAlign}`}>
+          <div
+            className={`${styles.cell} ${styles.statCell} ${styles.centerAlign} `}
+          >
             {playerFD}
           </div>
 
           {/* MK */}
-          <div className={`${styles.cell} ${styles.statCell} ${styles.centerAlign}`}>
+          <div
+            className={`${styles.cell} ${styles.statCell} ${styles.centerAlign} `}
+          >
             {playerMK}
           </div>
         </>
