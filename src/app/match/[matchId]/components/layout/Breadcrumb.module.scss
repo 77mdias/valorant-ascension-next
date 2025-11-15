@@ -1,0 +1,50 @@
+@use "../../../../../scss/utils/responsive" as *;
+
+.navigation {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+
+  @include mobile-only {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}
+
+.backButton {
+  padding: 0.75rem 1.5rem;
+  background: rgba(236, 23, 107, 0.1);
+  border: 1px solid rgba(236, 23, 107, 0.2);
+  border-radius: 12px;
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: rgba(236, 23, 107, 0.2);
+    transform: translateX(-5px);
+  }
+}
+
+.navigationSeparator {
+  color: rgba(255, 255, 255, 0.5);
+  font-weight: 600;
+  font-size: 1.2rem;
+
+  @include mobile-only {
+    display: none;
+  }
+}
+
+.currentPage {
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 0.5rem 1rem;
+  background: rgba(236, 23, 107, 0.1);
+  border-radius: 8px;
+}

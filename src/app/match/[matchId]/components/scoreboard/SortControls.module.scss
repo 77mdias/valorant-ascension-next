@@ -1,0 +1,57 @@
+.sortControls {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+
+  .sortGroup {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: rgba(20, 25, 35, 0.7);
+    padding: 1rem 2rem;
+    border-radius: 12px;
+    border: 1px solid rgba(236, 23, 107, 0.2);
+
+    label {
+      color: rgba(255, 255, 255, 0.8);
+      font-weight: 600;
+    }
+
+    .sortSelect {
+      padding: 0.5rem 1rem;
+      background: rgba(15, 20, 25, 0.8);
+      border: 1px solid rgba(236, 23, 107, 0.2);
+      border-radius: 8px;
+      color: white;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+
+      &:hover {
+        border-color: rgba(236, 23, 107, 0.4);
+      }
+
+      &:focus {
+        outline: none;
+        border-color: #ec176b;
+      }
+    }
+
+    .sortButton {
+      padding: 0.5rem 1rem;
+      background: rgba(236, 23, 107, 0.1);
+      border: 1px solid rgba(236, 23, 107, 0.2);
+      border-radius: 8px;
+      color: white;
+      font-size: 1.2rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background: rgba(236, 23, 107, 0.2);
+        transform: scale(1.1);
+      }
+    }
+  }
+}

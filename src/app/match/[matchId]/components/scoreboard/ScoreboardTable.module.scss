@@ -1,0 +1,436 @@
+@use "../../../../../scss/utils/responsive" as *;
+
+.scoreboardTable {
+  background: rgba(20, 25, 35, 0.7);
+  border-radius: 24px;
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(236, 23, 107, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  margin-bottom: 2rem;
+  position: relative;
+
+  // Estilos para time vencedor (verde pastel com glass)
+  &.winner {
+    background: rgba(74, 222, 128, 0.08);
+    border: 1px solid rgba(74, 222, 128, 0.25);
+    backdrop-filter: blur(20px);
+
+    .playerRow .cell {
+      &:first-child {
+        border-left: 1px solid rgba(74, 222, 128, 0.15);
+      }
+
+      &:last-child {
+        border-right: 1px solid rgba(74, 222, 128, 0.15);
+      }
+    }
+
+    .playerRow:hover .cell {
+    }
+
+    .headerRow .headerCell {
+      border-bottom: 1px solid rgba(74, 222, 128, 0.2);
+    }
+  }
+
+  // Estilos para time perdedor (vermelho pastel com glass)
+  &.loser {
+    background: rgba(236, 23, 107, 0.08);
+    border: 1px solid rgba(236, 23, 107, 0.25);
+    backdrop-filter: blur(20px);
+
+    .playerRow .cell {
+      border-top: 1px solid rgba(236, 23, 107, 0.15);
+      border-bottom: 1px solid rgba(236, 23, 107, 0.15);
+
+      &:first-child {
+        border-left: 1px solid rgba(236, 23, 107, 0.15);
+      }
+
+      &:last-child {
+        border-right: 1px solid rgba(236, 23, 107, 0.15);
+      }
+    }
+
+    .playerRow:hover .cell {
+      background: rgba(236, 23, 107, 0.15);
+    }
+
+    .headerRow .headerCell {
+      border-bottom: 1px solid rgba(236, 23, 107, 0.2);
+    }
+  }
+
+  // Wrapper com scroll (fica ao redor do tableContainer)
+  .scrollWrapper {
+    overflow-x: auto;
+    overflow-y: visible;
+
+    // Customizar scrollbar
+    &::-webkit-scrollbar {
+      height: 8px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 4px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: rgba(236, 23, 107, 0.4);
+      border-radius: 4px;
+
+      &:hover {
+        background: rgba(236, 23, 107, 0.6);
+      }
+    }
+  }
+
+  // Winner scrollbar
+  &.winner .scrollWrapper::-webkit-scrollbar-thumb {
+    background: rgba(74, 222, 128, 0.4);
+
+    &:hover {
+      background: rgba(74, 222, 128, 0.6);
+    }
+  }
+
+  // Container da tabela com flexbox
+  .tableContainer {
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+    min-width: 100%;
+  }
+
+  // Header row
+  .headerRow {
+    display: flex;
+    margin-bottom: 0.5rem;
+  }
+
+  .headerCell {
+    padding: 1rem;
+    color: rgba(255, 255, 255, 0.7);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+    text-align: center;
+    border-bottom: 1px solid rgba(236, 23, 107, 0.2);
+
+    // Larguras das colunas (baseado no Tracker.gg)
+    &.playerCol {
+      width: 16rem;
+      min-width: 16rem;
+      text-align: left;
+      position: sticky;
+      left: 0;
+      z-index: 10;
+      background: rgba(20, 25, 35, 0.95);
+      backdrop-filter: blur(20px);
+      border-right: 1px solid rgba(236, 23, 107, 0.15);
+    }
+
+    &.rankBadgeCol {
+      width: 6rem;
+      min-width: 6rem;
+    }
+
+    &.trsCol {
+      width: 7rem;
+      min-width: 7rem;
+    }
+
+    &.scoreCol {
+      width: 6rem;
+      min-width: 6rem;
+    }
+
+    &.statCol {
+      width: 4rem;
+      min-width: 4rem;
+    }
+
+    &.kdCol {
+      width: 5.5rem;
+      min-width: 5.5rem;
+    }
+
+    &.adrCol {
+      width: 5.5rem;
+      min-width: 5.5rem;
+    }
+
+    &.hsCol {
+      width: 5rem;
+      min-width: 5rem;
+    }
+  }
+
+  // Player row (flexbox)
+  .playerRow {
+    display: flex;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    &:hover .cell {
+      background: rgba(236, 23, 107, 0.1);
+    }
+  }
+
+  // Células da row
+  .cell {
+    padding: 1rem;
+    background: rgba(15, 20, 25, 0.4);
+    border-top: 1px solid rgba(236, 23, 107, 0.1);
+    border-bottom: 1px solid rgba(236, 23, 107, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:first-child {
+      border-left: 1px solid rgba(236, 23, 107, 0.1);
+    }
+
+    &:last-child {
+      border-right: 1px solid rgba(236, 23, 107, 0.1);
+    }
+
+    // Larguras das células (matching headers)
+    &.playerInfoCell {
+      width: 16rem;
+      min-width: 16rem;
+      justify-content: flex-start;
+    }
+
+    &.rankBadgeCell {
+      width: 6rem;
+      min-width: 6rem;
+    }
+
+    &.trsCell {
+      width: 7rem;
+      min-width: 7rem;
+    }
+
+    &.scoreCell {
+      width: 6rem;
+      min-width: 6rem;
+    }
+
+    &.statCell {
+      width: 4rem;
+      min-width: 4rem;
+    }
+
+    &.kdCell {
+      width: 5.5rem;
+      min-width: 5.5rem;
+    }
+
+    &.adrCell {
+      width: 5.5rem;
+      min-width: 5.5rem;
+    }
+
+    &.hsCell {
+      width: 5rem;
+      min-width: 5rem;
+    }
+  }
+
+  // Sticky column (Player info)
+  .stickyCell {
+    position: sticky;
+    left: 0;
+    z-index: 5;
+  }
+
+  // Winner sticky cell background
+  &.winner .stickyCell {
+    background: black;
+
+    border-right: 1px solid rgba(74, 222, 128, 0.3) !important;
+  }
+
+  // Winner sticky header background
+  &.winner .headerCell.playerCol {
+    background: black;
+    border-right: 1px solid rgba(74, 222, 128, 0.3);
+  }
+
+  // Loser sticky cell background
+  &.loser .stickyCell {
+    background: black;
+    border-right: 1px solid rgba(236, 23, 107, 0.3) !important;
+  }
+
+  // Loser sticky header background
+  &.loser .headerCell.playerCol {
+    background: black;
+    border-right: 1px solid rgba(236, 23, 107, 0.3);
+  }
+
+  // Center align helper
+  .centerAlign {
+    justify-content: center;
+  }
+
+  // Player info section
+  .playerInfo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+
+    .playerAvatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      overflow: hidden;
+      flex-shrink: 0;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+
+    .playerDetails {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      min-width: 0;
+
+      .playerName {
+        font-weight: 600;
+        color: white;
+        font-size: 0.95rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+
+        .playerTag {
+          color: rgba(255, 255, 255, 0.6);
+          font-weight: 400;
+        }
+      }
+
+      .playerRankInfo {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        font-size: 0.8rem;
+
+        .rankIcon {
+          flex-shrink: 0;
+        }
+
+        .playerRank {
+          color: rgba(255, 255, 255, 0.6);
+        }
+
+        .separator {
+          color: rgba(255, 255, 255, 0.4);
+        }
+
+        .accountLevel {
+          color: rgba(255, 255, 255, 0.5);
+          font-size: 0.75rem;
+        }
+      }
+    }
+  }
+
+  // TRS value styling
+  .trsValue {
+    font-weight: 600;
+    font-size: 1rem;
+    color: #ec176b;
+  }
+
+  // Stat value colors
+  .positive {
+    color: #4ade80;
+    font-weight: 600;
+  }
+
+  .negative {
+    color: #ec176b;
+    font-weight: 600;
+  }
+}
+
+.teamHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 1rem;
+  padding: 1rem 1.5rem;
+  background: rgba(15, 20, 25, 0.6);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+
+  h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+
+  .teamScore {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    .roundsWon {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #ec176b;
+    }
+
+    .status {
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+
+      &.winner {
+        background: rgba(74, 222, 128, 0.25);
+        color: #4ade80;
+        border: 1px solid rgba(74, 222, 128, 0.3);
+      }
+
+      &.loser {
+        background: rgba(236, 23, 107, 0.25);
+        color: #ec176b;
+        border: 1px solid rgba(236, 23, 107, 0.3);
+      }
+    }
+  }
+}
+
+// Ajustes no header baseado no status do time
+.scoreboardTable.winner .teamHeader {
+  background: rgba(74, 222, 128, 0.1);
+  border: 1px solid rgba(74, 222, 128, 0.2);
+
+  .roundsWon {
+    color: #4ade80;
+  }
+}
+
+.scoreboardTable.loser .teamHeader {
+  background: rgba(236, 23, 107, 0.1);
+  border: 1px solid rgba(236, 23, 107, 0.2);
+
+  .roundsWon {
+    color: #ec176b;
+  }
+}

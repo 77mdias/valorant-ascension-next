@@ -1,6 +1,6 @@
 // src/types/matchTypes.ts
 
-import { MatchDetails } from "@/app/match/[matchId]/page";
+import { MatchDetails } from "@/app/match/[matchId]/types/match.types";
 
 export interface Kill {
   round: number;

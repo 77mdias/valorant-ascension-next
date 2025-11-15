@@ -1,0 +1,33 @@
+.error {
+  text-align: center;
+  padding: 4rem 2rem;
+
+  h2 {
+    font-size: 2rem;
+    color: #ec176b;
+    margin-bottom: 1rem;
+  }
+
+  p {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+  }
+
+  button {
+    padding: 1rem 2rem;
+    background: rgba(236, 23, 107, 0.1);
+    border: 1px solid rgba(236, 23, 107, 0.2);
+    border-radius: 12px;
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: rgba(236, 23, 107, 0.2);
+      transform: translateY(-2px);
+    }
+  }
+}

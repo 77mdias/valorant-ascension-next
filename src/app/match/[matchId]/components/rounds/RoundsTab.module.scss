@@ -1,0 +1,68 @@
+.roundsTab {
+  .roundsList {
+    display: grid;
+    gap: 1.5rem;
+
+    .round {
+      background: rgba(20, 25, 35, 0.7);
+      border-radius: 16px;
+      padding: 1.5rem;
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(236, 23, 107, 0.2);
+      transition: all 0.3s ease;
+
+      &:hover {
+        border-color: rgba(236, 23, 107, 0.4);
+        transform: translateY(-2px);
+      }
+
+      .roundHeader {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+
+        .roundNumber {
+          font-weight: 700;
+          color: rgba(255, 255, 255, 0.9);
+          font-size: 1.1rem;
+        }
+
+        .roundWinner {
+          font-weight: 600;
+          padding: 0.5rem 1rem;
+          border-radius: 8px;
+
+          &.redTeam {
+            background: rgba(236, 23, 107, 0.2);
+            color: #ec176b;
+          }
+
+          &.blueTeam {
+            background: rgba(74, 222, 128, 0.2);
+            color: #4ade80;
+          }
+        }
+
+        .roundType {
+          color: rgba(255, 255, 255, 0.6);
+          font-size: 0.9rem;
+        }
+      }
+
+      .bombInfo {
+        padding: 0.75rem;
+        background: rgba(15, 20, 25, 0.6);
+        border-radius: 8px;
+        margin-top: 0.5rem;
+
+        span {
+          color: rgba(255, 255, 255, 0.8);
+          font-size: 0.95rem;
+        }
+      }
+    }
+  }
+}

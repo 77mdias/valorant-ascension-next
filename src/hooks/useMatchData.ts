@@ -12,15 +12,15 @@ export const useMatchStats = (matchData: MatchResponse | null) => {
     const { kills, players, metadata } = data;
 
     const totalRounds = metadata.is_completed
-      ? Object.values(data.teams).reduce(
+      ? (Object.values(data.teams) as Array<{ rounds: { won: number; lost: number } }>).reduce(
           (sum, team) => sum + team.rounds.won + team.rounds.lost,
           0,
         ) / 2
-      : Math.max(...kills.map((k) => k.kill_time_in_round), 0);
+      : Math.max(...kills.map((k: any) => k.kill_time_in_round), 0);
 
     // Agrupar kills por round
     const killsByRound = kills.reduce(
-      (acc, kill) => {
+      (acc: Record<number, Kill[]>, kill: any) => {
         if (!acc[kill.kill_time_in_round]) acc[kill.kill_time_in_round] = [];
         acc[kill.kill_time_in_round].push(kill as unknown as Kill);
         return acc;
@@ -33,13 +33,14 @@ export const useMatchStats = (matchData: MatchResponse | null) => {
     const firstDeathPerRound: Record<number, string> = {};
 
     for (const round in killsByRound) {
-      const roundKills = killsByRound[round];
+      const roundNum = Number(round);
+      const roundKills = killsByRound[roundNum];
       const firstKill = roundKills.sort(
-        (a, b) => a.time_in_round_in_ms - b.time_in_round_in_ms,
+        (a: Kill, b: Kill) => a.time_in_round_in_ms - b.time_in_round_in_ms,
       )[0];
 
-      firstKillPerRound[round] = firstKill.killer.puuid;
-      firstDeathPerRound[round] = firstKill.victim.puuid;
+      firstKillPerRound[roundNum] = firstKill.killer.puuid;
+      firstDeathPerRound[roundNum] = firstKill.victim.puuid;
     }
 
     // Calcular FK e FD por jogador
@@ -54,7 +55,7 @@ export const useMatchStats = (matchData: MatchResponse | null) => {
     });
 
     // Processar estatísticas extendidas
-    const extendedStats: PlayerExtendedStats[] = players.map((player) => {
+    const extendedStats: PlayerExtendedStats[] = players.map((player: any) => {
       const totalShots =
         player.stats.headshots +
         player.stats.bodyshots +
