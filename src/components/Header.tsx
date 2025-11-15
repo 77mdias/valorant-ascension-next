@@ -52,7 +52,7 @@ const Header = () => {
             ></span>
           </a>
           <a
-            href="#instrutores"
+            href="/instrutores"
             className="group relative text-foreground/80 transition-colors duration-200 hover:text-primary"
           >
             Instrutores

@@ -1,0 +1,7 @@
+                                                       Lista de funções de banco de dados (roles)
+ Nome da função de banco de dados (role) |                                                   Atributos                                                   
+-----------------------------------------+---------------------------------------------------------------------------------------------------------------
+ cloud_admin                             | Superusuário, Cria função de banco de dados (role), Cria banco de dados, Replicação, Contornar RLS
+ neon_superuser                          | Cria função de banco de dados (role), Cria banco de dados, Não é possível conectar, Replicação, Contornar RLS
+ neondb_owner                            | Cria função de banco de dados (role), Cria banco de dados, Replicação, Contornar RLS
+
