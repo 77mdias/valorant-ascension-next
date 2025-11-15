@@ -1,0 +1,133 @@
+# Dependabot Configuration
+# Docs: https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+
+version: 2
+updates:
+  # NPM Dependencies
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "UTC"
+    open-pull-requests-limit: 10
+
+    # Agrupamento de updates
+    groups:
+      # Agrupar Next.js e React juntos
+      nextjs:
+        patterns:
+          - "next"
+          - "react"
+          - "react-dom"
+        update-types:
+          - "minor"
+          - "patch"
+
+      # Agrupar Radix UI components
+      radix-ui:
+        patterns:
+          - "@radix-ui/*"
+        update-types:
+          - "minor"
+          - "patch"
+
+      # Agrupar ferramentas de desenvolvimento
+      development-tools:
+        patterns:
+          - "eslint*"
+          - "prettier*"
+          - "@types/*"
+          - "typescript"
+          - "@typescript-eslint/*"
+        update-types:
+          - "minor"
+          - "patch"
+
+      # Agrupar Prisma
+      prisma:
+        patterns:
+          - "prisma"
+          - "@prisma/*"
+        update-types:
+          - "minor"
+          - "patch"
+
+      # Agrupar Stripe
+      stripe:
+        patterns:
+          - "stripe"
+          - "@stripe/*"
+        update-types:
+          - "minor"
+          - "patch"
+
+    # Configuração de versioning
+    versioning-strategy: increase
+
+    # Commits seguindo Conventional Commits
+    commit-message:
+      prefix: "chore"
+      prefix-development: "chore"
+      include: "scope"
+
+    # Labels para os PRs
+    labels:
+      - "dependencies"
+      - "automated"
+
+    # Reviewers (adicione usernames do GitHub)
+    # reviewers:
+    #   - "seu-username"
+
+    # Assignees
+    # assignees:
+    #   - "seu-username"
+
+    # Ignorar certas dependências (exemplo)
+    ignore:
+      # Exemplo: manter versão específica do Next.js
+      # - dependency-name: "next"
+      #   versions: ["14.x"]
+
+      # Ignorar updates de versões beta/alpha
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+
+    # Permitir apenas certos tipos de update
+    allow:
+      # Permitir direct dependencies
+      - dependency-type: "direct"
+      # Permitir dev dependencies
+      - dependency-type: "development"
+      # Permitir production dependencies
+      - dependency-type: "production"
+
+  # GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+      day: "monday"
+      time: "09:00"
+      timezone: "UTC"
+    open-pull-requests-limit: 5
+
+    commit-message:
+      prefix: "ci"
+      include: "scope"
+
+    labels:
+      - "dependencies"
+      - "github-actions"
+      - "automated"
+
+# Nota: Para habilitar Dependabot security updates:
+# 1. Vá em Settings > Code security and analysis
+# 2. Habilite "Dependabot alerts"
+# 3. Habilite "Dependabot security updates"
+#
+# Para auto-merge de patches/minor updates:
+# 1. Crie um workflow .github/workflows/dependabot-auto-merge.yml
+# 2. Use GitHub CLI ou GitHub Actions para aprovar e mergear automaticamente

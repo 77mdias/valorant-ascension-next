@@ -1,0 +1,231 @@
+name: CodeQL Security Analysis
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+    branches: [main, dev]
+  schedule:
+    # Roda toda segunda-feira às 10h UTC
+    - cron: '0 10 * * 1'
+  workflow_dispatch:
+
+# Cancelar runs anteriores da mesma branch/PR
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  analyze:
+    name: CodeQL Analysis
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    permissions:
+      # Necessário para CodeQL
+      actions: read
+      contents: read
+      security-events: write
+      # Para comentar em PRs (opcional)
+      pull-requests: write
+
+    strategy:
+      fail-fast: false
+      matrix:
+        # CodeQL suporta: javascript, typescript, python, java, csharp, cpp, go, ruby
+        language: ['javascript-typescript']
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          # Necessário para análise completa
+          fetch-depth: 0
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+          # Queries para executar (security-extended inclui mais checks)
+          queries: +security-extended,security-and-quality
+          # Configuração customizada (opcional)
+          config: |
+            paths-ignore:
+              - node_modules
+              - .next
+              - out
+              - build
+              - dist
+              - coverage
+              - public
+              - '**/*.test.ts'
+              - '**/*.test.tsx'
+              - '**/*.spec.ts'
+              - '**/*.spec.tsx'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 8
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build for analysis
+        run: pnpm run build
+        env:
+          # Variáveis mínimas para build
+          NEXTAUTH_URL: http://localhost:3000
+          NEXTAUTH_SECRET: codeql-analysis-secret
+          DATABASE_URL: postgresql://user:pass@localhost:5432/db
+          DIRECT_URL: postgresql://user:pass@localhost:5432/db
+          STRIPE_SECRET_KEY: sk_test_fake
+          NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: pk_test_fake
+          NEXT_TELEMETRY_DISABLED: 1
+        continue-on-error: true # Análise funciona mesmo se build falhar
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:${{ matrix.language }}"
+          # Upload resultados para GitHub Security tab
+          upload: true
+          # Gerar SARIF para review
+          output: codeql-results
+
+      - name: Upload SARIF results
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: codeql-results/${{ matrix.language }}.sarif
+          category: "/language:${{ matrix.language }}"
+
+      - name: Check for critical vulnerabilities
+        if: always()
+        run: |
+          # Verificar se há vulnerabilidades críticas no SARIF
+          SARIF_FILE="codeql-results/${{ matrix.language }}.sarif"
+
+          if [ -f "$SARIF_FILE" ]; then
+            # Contar vulnerabilidades por nível
+            CRITICAL=$(jq '[.runs[].results[] | select(.level == "error")] | length' "$SARIF_FILE" 2>/dev/null || echo "0")
+            WARNING=$(jq '[.runs[].results[] | select(.level == "warning")] | length' "$SARIF_FILE" 2>/dev/null || echo "0")
+            NOTE=$(jq '[.runs[].results[] | select(.level == "note")] | length' "$SARIF_FILE" 2>/dev/null || echo "0")
+
+            echo "CodeQL Analysis Results:"
+            echo "- Critical/Error: $CRITICAL"
+            echo "- Warning: $WARNING"
+            echo "- Note/Info: $NOTE"
+
+            if [ "$CRITICAL" -gt 0 ]; then
+              echo "::error::Found $CRITICAL critical security issues. Review them in the Security tab."
+              # Não falhar o workflow, apenas reportar
+              # Para falhar descomente a linha abaixo:
+              # exit 1
+            else
+              echo "✓ No critical security issues found"
+            fi
+          fi
+
+  # Análise adicional de padrões de segurança específicos do Next.js
+  nextjs-security:
+    name: Next.js Security Patterns
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check for security anti-patterns
+        run: |
+          echo "Checking for Next.js security anti-patterns..."
+
+          ISSUES_FOUND=0
+
+          # 1. Verificar uso de dangerouslySetInnerHTML
+          echo "Checking for dangerouslySetInnerHTML..."
+          DANGEROUS_HTML=$(grep -r "dangerouslySetInnerHTML" --include="*.tsx" --include="*.jsx" src/ 2>/dev/null || true)
+          if [ -n "$DANGEROUS_HTML" ]; then
+            echo "::warning::Found usage of dangerouslySetInnerHTML (XSS risk):"
+            echo "$DANGEROUS_HTML"
+            ISSUES_FOUND=$((ISSUES_FOUND + 1))
+          fi
+
+          # 2. Verificar eval() e Function()
+          echo "Checking for eval() usage..."
+          EVAL_USAGE=$(grep -r "\beval\(" --include="*.ts" --include="*.tsx" --include="*.js" --include="*.jsx" src/ 2>/dev/null || true)
+          if [ -n "$EVAL_USAGE" ]; then
+            echo "::warning::Found usage of eval() (code injection risk):"
+            echo "$EVAL_USAGE"
+            ISSUES_FOUND=$((ISSUES_FOUND + 1))
+          fi
+
+          # 3. Verificar console.log em produção
+          echo "Checking for console.log in production code..."
+          CONSOLE_LOGS=$(grep -r "console\.log\|console\.debug" --include="*.ts" --include="*.tsx" src/app src/components src/lib 2>/dev/null | grep -v "\.test\." | grep -v "// TODO" || true)
+          if [ -n "$CONSOLE_LOGS" ]; then
+            echo "::notice::Found console.log statements (consider removing for production)"
+            # Não conta como issue, apenas notice
+          fi
+
+          # 4. Verificar hardcoded secrets patterns
+          echo "Checking for potential hardcoded secrets..."
+          SECRETS=$(grep -rE "(api[_-]?key|api[_-]?secret|password|secret[_-]?key|access[_-]?token|auth[_-]?token).*=.*['\"][a-zA-Z0-9]{20,}['\"]" --include="*.ts" --include="*.tsx" --include="*.js" src/ 2>/dev/null | grep -v "\.test\." | grep -v "example" || true)
+          if [ -n "$SECRETS" ]; then
+            echo "::error::Potential hardcoded secrets found:"
+            echo "$SECRETS"
+            ISSUES_FOUND=$((ISSUES_FOUND + 1))
+          fi
+
+          # 5. Verificar Server Actions sem validação
+          echo "Checking Server Actions for validation..."
+          SERVER_ACTIONS=$(find src/server -name "*.ts" -type f 2>/dev/null || true)
+          if [ -n "$SERVER_ACTIONS" ]; then
+            for file in $SERVER_ACTIONS; do
+              # Verificar se tem "use server" mas não tem zod/validação
+              HAS_USE_SERVER=$(grep -l "use server" "$file" 2>/dev/null || true)
+              if [ -n "$HAS_USE_SERVER" ]; then
+                HAS_VALIDATION=$(grep -E "(zod|\.parse\(|\.safeParse\()" "$file" 2>/dev/null || true)
+                if [ -z "$HAS_VALIDATION" ]; then
+                  echo "::warning::Server action without validation: $file"
+                  ISSUES_FOUND=$((ISSUES_FOUND + 1))
+                fi
+              fi
+            done
+          fi
+
+          if [ $ISSUES_FOUND -eq 0 ]; then
+            echo "✓ No Next.js security anti-patterns found"
+          else
+            echo "::warning::Found $ISSUES_FOUND potential security issues"
+            # Não falhar o workflow, apenas reportar
+          fi
+
+  # Status check final
+  codeql-success:
+    name: CodeQL Success
+    runs-on: ubuntu-latest
+    needs: [analyze, nextjs-security]
+    if: always()
+
+    steps:
+      - name: Check CodeQL jobs
+        run: |
+          if [ "${{ needs.analyze.result }}" != "success" ]; then
+            echo "::error::CodeQL analysis failed"
+            exit 1
+          fi
+
+          if [ "${{ needs.nextjs-security.result }}" != "success" ]; then
+            echo "::warning::Next.js security checks had issues"
+            # Não falhar por causa deste job
+          fi
+
+          echo "✓ CodeQL analysis completed successfully"

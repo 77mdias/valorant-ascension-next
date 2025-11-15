@@ -1,0 +1,221 @@
+name: Security Checks
+
+on:
+  pull_request:
+    branches: [main, dev]
+  push:
+    branches: [main, dev]
+  schedule:
+    # Roda toda segunda-feira às 9h UTC
+    - cron: '0 9 * * 1'
+  workflow_dispatch:
+
+# Cancelar runs anteriores da mesma branch/PR
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  npm-audit:
+    name: NPM Security Audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 8
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run npm audit
+        run: |
+          echo "Running security audit..."
+          pnpm audit --audit-level=moderate --json > audit-results.json || true
+
+          # Analisar resultados
+          if [ -s audit-results.json ]; then
+            VULNERABILITIES=$(cat audit-results.json | jq -r '.metadata.vulnerabilities | to_entries[] | select(.value > 0) | "\(.key): \(.value)"' 2>/dev/null || echo "")
+
+            if [ -n "$VULNERABILITIES" ]; then
+              echo "::warning::Security vulnerabilities found:"
+              echo "$VULNERABILITIES"
+
+              # Contar vulnerabilidades críticas e altas
+              CRITICAL=$(cat audit-results.json | jq -r '.metadata.vulnerabilities.critical // 0' 2>/dev/null || echo "0")
+              HIGH=$(cat audit-results.json | jq -r '.metadata.vulnerabilities.high // 0' 2>/dev/null || echo "0")
+
+              if [ "$CRITICAL" -gt 0 ] || [ "$HIGH" -gt 0 ]; then
+                echo "::error::Found $CRITICAL critical and $HIGH high severity vulnerabilities"
+                echo "Run 'pnpm audit' locally and fix them with 'pnpm audit fix'"
+                exit 1
+              else
+                echo "::warning::Found moderate/low vulnerabilities. Consider fixing them."
+              fi
+            else
+              echo "✓ No vulnerabilities found"
+            fi
+          fi
+
+      - name: Upload audit results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: npm-audit-results
+          path: audit-results.json
+          retention-days: 30
+
+  secrets-scan:
+    name: Secrets Scanning
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Full history para escanear todos os commits
+
+      - name: TruffleHog Secrets Scan
+        uses: trufflesecurity/trufflehog@main
+        with:
+          # Escanear desde o commit base até HEAD
+          base: ${{ github.event.repository.default_branch }}
+          head: HEAD
+          extra_args: --only-verified --fail
+
+  dependency-review:
+    name: Dependency Review
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Dependency Review
+        uses: actions/dependency-review-action@v4
+        with:
+          # Falhar em vulnerabilidades críticas e altas
+          fail-on-severity: high
+          # Permitir licenças open-source comuns
+          allow-licenses: MIT, Apache-2.0, BSD-3-Clause, BSD-2-Clause, ISC, 0BSD
+          # Negar licenças GPL (copyleft forte)
+          deny-licenses: GPL-2.0, GPL-3.0, AGPL-3.0
+          comment-summary-in-pr: always
+
+  osv-scanner:
+    name: OSV Vulnerability Scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run OSV Scanner
+        uses: google/osv-scanner-action@v1
+        with:
+          scan-args: |-
+            --lockfile=pnpm-lock.yaml
+            --format=json
+            --output=osv-results.json
+        continue-on-error: true
+
+      - name: Analyze OSV Results
+        if: always()
+        run: |
+          if [ -f osv-results.json ]; then
+            VULNS=$(jq -r '.results[].vulnerabilities // [] | length' osv-results.json 2>/dev/null | awk '{s+=$1} END {print s}')
+
+            if [ -n "$VULNS" ] && [ "$VULNS" -gt 0 ]; then
+              echo "::warning::Found $VULNS vulnerabilities via OSV Scanner"
+              jq -r '.results[].vulnerabilities[]? | "- \(.id): \(.summary)"' osv-results.json 2>/dev/null || true
+            else
+              echo "✓ No vulnerabilities found via OSV Scanner"
+            fi
+          fi
+
+      - name: Upload OSV results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: osv-scan-results
+          path: osv-results.json
+          retention-days: 30
+          if-no-files-found: ignore
+
+  env-validation:
+    name: Environment Variables Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check for .env files in repo
+        run: |
+          echo "Checking for accidentally committed .env files..."
+
+          # Procurar por arquivos .env (exceto .env.example)
+          ENV_FILES=$(find . -type f \( -name ".env" -o -name ".env.local" -o -name ".env.*.local" \) -not -path "*/node_modules/*" 2>/dev/null || true)
+
+          if [ -n "$ENV_FILES" ]; then
+            echo "::error::Found .env files in repository (should not be committed):"
+            echo "$ENV_FILES"
+            exit 1
+          else
+            echo "✓ No .env files found in repository"
+          fi
+
+      - name: Verify .env.example exists
+        run: |
+          if [ ! -f ".env.example" ]; then
+            echo "::warning::.env.example not found. Consider creating one as documentation."
+          else
+            echo "✓ .env.example exists"
+          fi
+
+  # Status check final
+  security-success:
+    name: Security Success
+    runs-on: ubuntu-latest
+    needs: [npm-audit, secrets-scan, env-validation]
+    if: always()
+
+    steps:
+      - name: Check all security jobs
+        run: |
+          FAILED=""
+
+          if [ "${{ needs.npm-audit.result }}" != "success" ]; then
+            FAILED="${FAILED}npm-audit "
+          fi
+
+          if [ "${{ needs.secrets-scan.result }}" != "success" ]; then
+            FAILED="${FAILED}secrets-scan "
+          fi
+
+          if [ "${{ needs.env-validation.result }}" != "success" ]; then
+            FAILED="${FAILED}env-validation "
+          fi
+
+          if [ -n "$FAILED" ]; then
+            echo "::error::Security checks failed: $FAILED"
+            exit 1
+          fi
+
+          echo "✓ All security checks passed successfully"
