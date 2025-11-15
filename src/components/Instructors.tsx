@@ -98,14 +98,16 @@ const Instructors = () => {
   return (
     <section id="instrutores" className="container mx-auto px-4 py-24">
       <div className="mb-16 text-center">
-        <h2 className="font-poppins mb-6 text-4xl font-bold md:text-5xl">
+        <h2 className="mb-6 font-poppins text-4xl font-bold md:text-5xl">
           Nossos
-          <span className={`${styles.bgGradientPrimary} bg-clip-text text-transparent`}>
+          <span
+            className={`${styles.bgGradientPrimary} bg-clip-text text-transparent`}
+          >
             {" "}
             Instrutores
           </span>
         </h2>
-        <p className="text-muted-foreground mx-auto max-w-3xl text-xl">
+        <p className="mx-auto max-w-3xl text-xl text-muted-foreground">
           Aprenda com os melhores players e coaches do cenário brasileiro de
           Valorant.
         </p>
@@ -115,7 +117,7 @@ const Instructors = () => {
         {instructors.map((instructor) => (
           <Card
             key={instructor.id}
-            className="glass-card hover-card border-border/50 group overflow-hidden"
+            className="glass-card hover-card group overflow-hidden border-border/50"
           >
             <CardContent className="p-6">
               {/* Avatar & Rank */}
@@ -125,7 +127,7 @@ const Instructors = () => {
                   alt={instructor.name}
                   width={80}
                   height={80}
-                  className="ring-primary/20 group-hover:ring-primary/40 mx-auto mb-4 h-20 w-20 rounded-full object-cover ring-4 transition-all"
+                  className="mx-auto mb-4 h-20 w-20 rounded-full object-cover ring-4 ring-primary/20 transition-all group-hover:ring-primary/40"
                 />
                 <Badge
                   className={`${getRankClass(instructor.rank)} rounded-full px-3 py-1 text-xs font-semibold`}
@@ -136,30 +138,30 @@ const Instructors = () => {
 
               {/* Name & Role */}
               <div className="mb-4 text-center">
-                <h3 className="font-poppins text-foreground mb-1 text-xl font-semibold">
+                <h3 className="mb-1 font-poppins text-xl font-semibold text-foreground">
                   {instructor.name}
                 </h3>
-                <p className="text-primary font-medium">{instructor.role}</p>
+                <p className="font-medium text-primary">{instructor.role}</p>
               </div>
 
               {/* Bio */}
-              <p className="text-muted-foreground mb-6 text-center text-sm leading-relaxed">
+              <p className="mb-6 text-center text-sm leading-relaxed text-muted-foreground">
                 {instructor.bio}
               </p>
 
               {/* Stats */}
-              <div className="bg-muted/20 mb-6 flex items-center justify-between rounded-lg p-3">
+              <div className="mb-6 flex items-center justify-between rounded-lg bg-muted/20 p-3">
                 <div className="text-center">
-                  <div className="text-primary text-lg font-bold">
+                  <div className="text-lg font-bold text-primary">
                     {instructor.students}
                   </div>
-                  <div className="text-muted-foreground text-xs">Alunos</div>
+                  <div className="text-xs text-muted-foreground">Alunos</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-secondary text-lg font-bold">
+                  <div className="text-lg font-bold text-secondary">
                     ★ {instructor.rating}
                   </div>
-                  <div className="text-muted-foreground text-xs">Avaliação</div>
+                  <div className="text-xs text-muted-foreground">Avaliação</div>
                 </div>
               </div>
 
@@ -168,21 +170,21 @@ const Instructors = () => {
                 <Button
                   size="sm"
                   variant="outline"
-                  className="border-primary/30 hover:border-primary hover:bg-primary/10 p-2"
+                  className="border-primary/30 p-2 hover:border-primary hover:bg-primary/10"
                 >
                   <Twitch className="h-4 w-4" />
                 </Button>
                 <Button
                   size="sm"
                   variant="outline"
-                  className="border-primary/30 hover:border-primary hover:bg-primary/10 p-2"
+                  className="border-primary/30 p-2 hover:border-primary hover:bg-primary/10"
                 >
                   <Youtube className="h-4 w-4" />
                 </Button>
                 <Button
                   size="sm"
                   variant="outline"
-                  className="border-primary/30 hover:border-primary hover:bg-primary/10 p-2"
+                  className="border-primary/30 p-2 hover:border-primary hover:bg-primary/10"
                 >
                   <Instagram className="h-4 w-4" />
                 </Button>

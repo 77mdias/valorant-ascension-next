@@ -10,7 +10,13 @@ const USER_ROLES = ["ADMIN", "CUSTOMER", "PROFESSIONAL"] as const;
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 
@@ -46,10 +52,10 @@ export default function UserForm({ initialData, onSuccess }: UserFormProps) {
 
   async function onSubmit(data: UserFormInputType) {
     setIsLoading(true);
-    
+
     try {
       let result;
-      
+
       if (isEdit) {
         result = await updateUser({ id: initialData!.id, ...data });
       } else {
@@ -57,10 +63,14 @@ export default function UserForm({ initialData, onSuccess }: UserFormProps) {
       }
 
       if (result.success) {
-        toast.success(isEdit ? "Usuário atualizado com sucesso!" : "Usuário criado com sucesso!");
-  onSuccess?.();
+        toast.success(
+          isEdit
+            ? "Usuário atualizado com sucesso!"
+            : "Usuário criado com sucesso!",
+        );
+        onSuccess?.();
       } else {
-  toast.error("Erro ao processar solicitação");
+        toast.error("Erro ao processar solicitação");
       }
     } catch (error) {
       toast.error("Erro inesperado ao processar solicitação");
@@ -71,7 +81,7 @@ export default function UserForm({ initialData, onSuccess }: UserFormProps) {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
+      <div className="grid grid-cols-1 gap-4 p-4 md:grid-cols-2">
         <div className="space-y-2">
           <Label htmlFor="branchId">Branch *</Label>
           <Input
@@ -120,7 +130,11 @@ export default function UserForm({ initialData, onSuccess }: UserFormProps) {
             id="password"
             type="password"
             {...register("password")}
-            placeholder={isEdit ? "Deixe em branco para manter atual" : "Mínimo 6 caracteres"}
+            placeholder={
+              isEdit
+                ? "Deixe em branco para manter atual"
+                : "Mínimo 6 caracteres"
+            }
             disabled={isLoading}
           />
           {errors.password && (
@@ -132,7 +146,9 @@ export default function UserForm({ initialData, onSuccess }: UserFormProps) {
           <Label htmlFor="role">Função</Label>
           <Select
             value={watchedRole}
-            onValueChange={(value: string) => setValue("role", value as typeof USER_ROLES[number])}
+            onValueChange={(value: string) =>
+              setValue("role", value as (typeof USER_ROLES)[number])
+            }
             disabled={isLoading}
           >
             <SelectTrigger>
@@ -140,7 +156,9 @@ export default function UserForm({ initialData, onSuccess }: UserFormProps) {
             </SelectTrigger>
             <SelectContent>
               {USER_ROLES.map((role) => (
-                <SelectItem key={role} value={role}>{role}</SelectItem>
+                <SelectItem key={role} value={role}>
+                  {role}
+                </SelectItem>
               ))}
             </SelectContent>
           </Select>
@@ -153,7 +171,9 @@ export default function UserForm({ initialData, onSuccess }: UserFormProps) {
           <Switch
             id="isActive"
             checked={watchedIsActive}
-            onCheckedChange={(checked: boolean) => setValue("isActive", checked)}
+            onCheckedChange={(checked: boolean) =>
+              setValue("isActive", checked)
+            }
             disabled={isLoading}
           />
           <Label htmlFor="isActive">Usuário ativo</Label>
@@ -161,12 +181,8 @@ export default function UserForm({ initialData, onSuccess }: UserFormProps) {
       </div>
 
       <div className="flex p-4">
-        <Button
-          type="submit"
-          disabled={isLoading}
-          className="min-w-[120px]"
-        >
-          {isLoading ? "Salvando..." : (isEdit ? "Atualizar" : "Criar")}
+        <Button type="submit" disabled={isLoading} className="min-w-[120px]">
+          {isLoading ? "Salvando..." : isEdit ? "Atualizar" : "Criar"}
         </Button>
       </div>
     </form>

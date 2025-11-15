@@ -598,17 +598,14 @@
   width: 100%;
 }
 
-.columnHeader{
-    text-align: center;
-    color: rgba(255, 255, 255, 0.7);
-    font-weight: 600;
-    text-transform: uppercase;
-    font-size: 0.875rem;
-    letter-spacing: 0.5px;
-    
-    
-    
-  }
+.columnHeader {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.875rem;
+  letter-spacing: 0.5px;
+}
 
 .matchesHeader {
   display: flex;
@@ -676,8 +673,6 @@
     border-collapse: separate;
     border-spacing: 0;
   }
-
-   
 
   td {
     padding: 1rem 0.5rem;
@@ -806,7 +801,7 @@
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    
+
     display: block;
     text-align: start;
   }

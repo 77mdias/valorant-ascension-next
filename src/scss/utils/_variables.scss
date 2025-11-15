@@ -1,4 +1,4 @@
-@use '../../styles/_tokens' as *;
+@use "../../styles/_tokens" as *;
 
 // Cores estilo Twitch
 $twitch-purple: #9146ff;
@@ -13,10 +13,22 @@ $spotify-darker: #000000;
 $spotify-card: #181818;
 
 //White
-$white-gradient: linear-gradient(120deg, #f5f6fa 0%, #e9e9f3 40%, #e0e7ff 70%, #f8fafc 100%);
+$white-gradient: linear-gradient(
+  120deg,
+  #f5f6fa 0%,
+  #e9e9f3 40%,
+  #e0e7ff 70%,
+  #f8fafc 100%
+);
 
 //Black
-$black-gradient: linear-gradient(120deg, #000000 0%, #0f0f23 30%, #1a0033 60%, #0a0a0a 100%);
+$black-gradient: linear-gradient(
+  120deg,
+  #000000 0%,
+  #0f0f23 30%,
+  #1a0033 60%,
+  #0a0a0a 100%
+);
 
 // Cores adicionais
 $accent-blue: #00a8ff;
@@ -38,31 +50,31 @@ $redcolor: #ff0080;
 
 // Variáveis CSS para temas
 :root {
-	// Tema escuro (padrão)
-	--redcolor: #{$redcolor};
-	--meu-bg: #{$black-gradient};
-	--bg-theme: #{$black-gradient};
-	--gradient-primary: #{$purple-gradient};
-	--accent-shadow: rgba(145, 70, 255, 0.4);
-	--bg-primary: #{$bg-dark};
-	--bg-secondary: #{$twitch-darker};
-	--bg-input: #{$twitch-card};
-	--text-primary: #{$text-light};
-	--text-secondary: #{$text-gray};
-	--text-muted: #{$text-gray};
-	--accent-primary: #{$twitch-purple};
-	--accent-secondary: #{$spotify-green};
-	--accent-hover: rgba(145, 70, 255, 0.1);
-	--accent-focus: rgba(145, 70, 255, 0.3);
-	--accent-shadow: rgba(145, 70, 255, 0.4);
-	--border-color: rgba(255, 255, 255, 0.1);
-	--shadow-sm: rgba(0, 0, 0, 0.2);
-	--shadow-md: rgba(0, 0, 0, 0.3);
-	--shadow-lg: rgba(0, 0, 0, 0.5);
-	--gradient-primary: #{$purple-gradient};
-	--logo-filter: none;
+  // Tema escuro (padrão)
+  --redcolor: #{$redcolor};
+  --meu-bg: #{$black-gradient};
+  --bg-theme: #{$black-gradient};
+  --gradient-primary: #{$purple-gradient};
+  --accent-shadow: rgba(145, 70, 255, 0.4);
+  --bg-primary: #{$bg-dark};
+  --bg-secondary: #{$twitch-darker};
+  --bg-input: #{$twitch-card};
+  --text-primary: #{$text-light};
+  --text-secondary: #{$text-gray};
+  --text-muted: #{$text-gray};
+  --accent-primary: #{$twitch-purple};
+  --accent-secondary: #{$spotify-green};
+  --accent-hover: rgba(145, 70, 255, 0.1);
+  --accent-focus: rgba(145, 70, 255, 0.3);
+  --accent-shadow: rgba(145, 70, 255, 0.4);
+  --border-color: rgba(255, 255, 255, 0.1);
+  --shadow-sm: rgba(0, 0, 0, 0.2);
+  --shadow-md: rgba(0, 0, 0, 0.3);
+  --shadow-lg: rgba(0, 0, 0, 0.5);
+  --gradient-primary: #{$purple-gradient};
+  --logo-filter: none;
 
-	// Cards
+  // Cards
   --card-bg: rgba(255, 255, 255, 0.05);
   --card-bg-hover: rgba(255, 255, 255, 0.08);
   --card-border: rgba(255, 255, 255, 0.1);

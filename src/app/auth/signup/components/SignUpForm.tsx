@@ -110,7 +110,7 @@ export default function SignUpForm() {
         // Tratamento específico para email já existente
         if (response.status === 409) {
           setError(
-            "Este email já está cadastrado. Use a página de login ou tente recuperar sua senha."
+            "Este email já está cadastrado. Use a página de login ou tente recuperar sua senha.",
           );
         } else if (data.details && Array.isArray(data.details)) {
           // Se o erro contém detalhes específicos da validação de senha
@@ -145,10 +145,10 @@ export default function SignUpForm() {
 
       if (result?.error) {
         console.log("Erro OAuth no SignUp:", result.error);
-        
+
         if (result.error === "OAuthAccountNotLinked") {
           setError(
-            "Este email já está cadastrado. Use a senha que você criou ou faça login na página de entrada."
+            "Este email já está cadastrado. Use a senha que você criou ou faça login na página de entrada.",
           );
         } else if (result.error === "AccessDenied") {
           setError("Acesso negado. Tente novamente.");

@@ -6,7 +6,7 @@ const API_KEY = env.henrikdev.apiKey;
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ matchId: string }> }
+  { params }: { params: Promise<{ matchId: string }> },
 ) {
   try {
     const { matchId } = await params;
@@ -18,7 +18,7 @@ export async function GET(
     if (!matchId) {
       return NextResponse.json(
         { error: "ID da partida é obrigatório" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -43,7 +43,7 @@ export async function GET(
       console.log(
         "❌ Erro ao buscar partida:",
         matchResponse.status,
-        matchResponse.statusText
+        matchResponse.statusText,
       );
       const errorText = await matchResponse.text();
       console.log("📝 Erro detalhado:", errorText);
@@ -51,13 +51,13 @@ export async function GET(
       if (matchResponse.status === 404) {
         return NextResponse.json(
           { error: "Partida não encontrada" },
-          { status: 404 }
+          { status: 404 },
         );
       }
 
       return NextResponse.json(
         { error: `Erro na API: ${matchResponse.status}` },
-        { status: matchResponse.status }
+        { status: matchResponse.status },
       );
     }
 
@@ -72,7 +72,7 @@ export async function GET(
     console.error("💥 Erro ao buscar detalhes da partida:", error);
     return NextResponse.json(
       { error: "Erro interno do servidor" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

@@ -2,13 +2,16 @@
 
 import { useState, useEffect } from "react";
 import { DashboardNavSelect } from "@/components/dashboard/DashboardNavSelect";
-import { listLessonCategories, deleteLessonCategory } from "@/server/lessonCategoryActions";
+import {
+  listLessonCategories,
+  deleteLessonCategory,
+} from "@/server/lessonCategoryActions";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { toast } from "@/components/ui/use-toast";
 import LessonCategoryForm from "@/components/forms/LessonCategoryForm";
 import styles from "./scss/CategoriesPage.module.scss";
-import { 
+import {
   Table,
   TableBody,
   TableCell,
@@ -16,7 +19,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { lessonCategory as PrismaCategory, lessons as PrismaLesson } from "@prisma/client";
+import {
+  lessonCategory as PrismaCategory,
+  lessons as PrismaLesson,
+} from "@prisma/client";
 
 type CategoryWithLessons = PrismaCategory & { lessons: PrismaLesson[] };
 
@@ -24,8 +30,9 @@ export default function CategoriesPage() {
   const [categories, setCategories] = useState<CategoryWithLessons[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAddForm, setShowAddForm] = useState(false);
-  const [editingCategory, setEditingCategory] = useState<CategoryWithLessons | null>(null);
-  
+  const [editingCategory, setEditingCategory] =
+    useState<CategoryWithLessons | null>(null);
+
   // Carregar categorias
   const loadCategories = async () => {
     setLoading(true);
@@ -61,7 +68,7 @@ export default function CategoriesPage() {
     if (!confirm("Tem certeza que deseja excluir esta categoria?")) {
       return;
     }
-    
+
     try {
       const result = await deleteLessonCategory(id);
       if (result.success) {
@@ -90,10 +97,10 @@ export default function CategoriesPage() {
   // Mapear nível para texto mais amigável
   const getLevelLabel = (level: string) => {
     const levels: Record<string, string> = {
-      "INICIANTE": "Iniciante",
-      "INTERMEDIARIO": "Intermediário",
-      "AVANCADO": "Avançado",
-      "IMORTAL": "Imortal",
+      INICIANTE: "Iniciante",
+      INTERMEDIARIO: "Intermediário",
+      AVANCADO: "Avançado",
+      IMORTAL: "Imortal",
     };
     return levels[level] || level;
   };
@@ -110,8 +117,8 @@ export default function CategoriesPage() {
   });
 
   return (
-    <div className="w-full max-w-7xl mx-auto p-2 md:p-6">
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 mb-4">
+    <div className="mx-auto w-full max-w-7xl p-2 md:p-6">
+      <div className="mb-4 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
         <DashboardNavSelect currentRoute="/dashboard/categories" />
         <Button onClick={() => setShowAddForm(!showAddForm)}>
           {showAddForm ? "Cancelar" : "Adicionar Categoria"}
@@ -120,23 +127,23 @@ export default function CategoriesPage() {
 
       {showAddForm && (
         <Card className="mb-4">
-          <LessonCategoryForm 
+          <LessonCategoryForm
             onSuccess={() => {
               setShowAddForm(false);
               loadCategories();
-            }} 
+            }}
           />
         </Card>
       )}
 
       {editingCategory && (
         <Card className="mb-4">
-          <LessonCategoryForm 
+          <LessonCategoryForm
             initialData={mapCategoryToFormValues(editingCategory)}
             onSuccess={() => {
               setEditingCategory(null);
               loadCategories();
-            }} 
+            }}
           />
         </Card>
       )}
@@ -155,12 +162,17 @@ export default function CategoriesPage() {
           <TableBody>
             {loading ? (
               <TableRow>
-                <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">Carregando...</TableCell>
+                <TableCell
+                  colSpan={5}
+                  className="py-8 text-center text-muted-foreground"
+                >
+                  Carregando...
+                </TableCell>
               </TableRow>
             ) : categories.length > 0 ? (
               categories.map((category) => (
                 <TableRow key={category.id} className="hover:bg-muted/40">
-                  <TableCell className="font-semibold flex items-center gap-2">
+                  <TableCell className="flex items-center gap-2 font-semibold">
                     {category.icon && (
                       <span className="mr-2 text-xl">{category.icon}</span>
                     )}
@@ -168,26 +180,32 @@ export default function CategoriesPage() {
                   </TableCell>
                   <TableCell>{category.slug}</TableCell>
                   <TableCell>
-                    <span className={`px-2 py-1 rounded text-xs font-bold bg-muted/30 text-muted-foreground`}>
+                    <span
+                      className={`rounded bg-muted/30 px-2 py-1 text-xs font-bold text-muted-foreground`}
+                    >
                       {getLevelLabel(category.level)}
                     </span>
                   </TableCell>
                   <TableCell>{category.lessons?.length || 0}</TableCell>
                   <TableCell>
                     <div className="flex gap-2">
-                      <Button 
-                        variant="outline" 
+                      <Button
+                        variant="outline"
                         size="sm"
                         onClick={() => setEditingCategory(category)}
                       >
                         Editar
                       </Button>
-                      <Button 
-                        variant="destructive" 
+                      <Button
+                        variant="destructive"
                         size="sm"
                         onClick={() => handleDeleteCategory(category.id)}
                         disabled={category.lessons?.length > 0}
-                        title={category.lessons?.length > 0 ? "Categoria possui aulas vinculadas" : ""}
+                        title={
+                          category.lessons?.length > 0
+                            ? "Categoria possui aulas vinculadas"
+                            : ""
+                        }
                       >
                         Excluir
                       </Button>
@@ -197,7 +215,12 @@ export default function CategoriesPage() {
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">Nenhuma categoria encontrada</TableCell>
+                <TableCell
+                  colSpan={5}
+                  className="py-8 text-center text-muted-foreground"
+                >
+                  Nenhuma categoria encontrada
+                </TableCell>
               </TableRow>
             )}
           </TableBody>

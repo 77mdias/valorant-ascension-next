@@ -75,25 +75,25 @@ export default function PricingPage() {
               </span>
             </h1>
             <p className="mx-auto mb-10 max-w-3xl text-lg leading-relaxed text-gray-300 md:text-2xl">
-              Escolha o plano ideal para você e comece a evoluir no Valorant, desde o iniciante até o profissional.
+              Escolha o plano ideal para você e comece a evoluir no Valorant,
+              desde o iniciante até o profissional.
             </p>
-              <div className="flex flex-col items-center justify-center gap-4 pt-4 sm:flex-row">
-                <Button
-                  size="lg"
-                  className={`${styles.bgGradientPrimary} ${styles.buttonPrimary} min-w-[195px] px-8 text-primary-foreground transition-all duration-300 `}
-                >
-                  <BsCash className="mr-2 h-5 w-5" />
-                  Começar agora
-                </Button>
-              
-                <a
-                  href="#pricing"
-                  className="border rounded-md py-2 border-primary/30 min-w-[195px] px-8 transition-all duration-300 hover:border-primary hover:bg-primary/10 bg-black"
-                >
-                  Ver Planos
-                </a>
+            <div className="flex flex-col items-center justify-center gap-4 pt-4 sm:flex-row">
+              <Button
+                size="lg"
+                className={`${styles.bgGradientPrimary} ${styles.buttonPrimary} min-w-[195px] px-8 text-primary-foreground transition-all duration-300`}
+              >
+                <BsCash className="mr-2 h-5 w-5" />
+                Começar agora
+              </Button>
 
-              </div>
+              <a
+                href="#pricing"
+                className="min-w-[195px] rounded-md border border-primary/30 bg-black px-8 py-2 transition-all duration-300 hover:border-primary hover:bg-primary/10"
+              >
+                Ver Planos
+              </a>
+            </div>
           </div>
         </div>
       </section>

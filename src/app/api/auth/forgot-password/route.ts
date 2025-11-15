@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
     if (!email) {
       return NextResponse.json(
         { error: "Email é obrigatório" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
           message:
             "Se o email existir, você receberá um link para redefinir sua senha",
         },
-        { status: 200 }
+        { status: 200 },
       );
     }
 
@@ -64,7 +64,7 @@ export async function POST(request: NextRequest) {
       console.error("Erro ao enviar email de reset:", emailResult.error);
       return NextResponse.json(
         { error: "Erro ao enviar email de redefinição" },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -73,13 +73,13 @@ export async function POST(request: NextRequest) {
         message:
           "Se o email existir, você receberá um link para redefinir sua senha",
       },
-      { status: 200 }
+      { status: 200 },
     );
   } catch (error) {
     console.error("Erro ao processar solicitação de reset de senha:", error);
     return NextResponse.json(
       { error: "Erro interno do servidor" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

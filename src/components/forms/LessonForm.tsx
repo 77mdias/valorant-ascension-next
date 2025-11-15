@@ -10,7 +10,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import { lessonCategory as PrismaCategory } from "@prisma/client";
@@ -21,7 +27,11 @@ interface LessonFormProps {
   onSuccess?: () => void;
 }
 
-export default function LessonForm({ initialData, defaultCategoryId, onSuccess }: LessonFormProps) {
+export default function LessonForm({
+  initialData,
+  defaultCategoryId,
+  onSuccess,
+}: LessonFormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [categories, setCategories] = useState<PrismaCategory[]>([]);
   const isEdit = !!initialData?.id;
@@ -64,10 +74,10 @@ export default function LessonForm({ initialData, defaultCategoryId, onSuccess }
 
   async function onSubmit(data: LessonFormInputType) {
     setIsLoading(true);
-    
+
     try {
       let result;
-      
+
       if (isEdit) {
         result = await updateLesson({ id: initialData!.id, ...data });
       } else {
@@ -75,7 +85,9 @@ export default function LessonForm({ initialData, defaultCategoryId, onSuccess }
       }
 
       if (result.success) {
-        toast.success(isEdit ? "Aula atualizada com sucesso!" : "Aula criada com sucesso!");
+        toast.success(
+          isEdit ? "Aula atualizada com sucesso!" : "Aula criada com sucesso!",
+        );
         onSuccess?.();
       } else {
         toast.error("Erro ao processar solicitação");
@@ -88,8 +100,8 @@ export default function LessonForm({ initialData, defaultCategoryId, onSuccess }
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} >
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <div className="grid grid-cols-1 gap-4 p-4 md:grid-cols-2">
         <div className="space-y-2 md:col-span-2">
           <Label htmlFor="title">Título *</Label>
           <Input
@@ -162,7 +174,9 @@ export default function LessonForm({ initialData, defaultCategoryId, onSuccess }
             disabled={isLoading}
           />
           {errors.thumbnailUrl && (
-            <p className="text-sm text-red-500">{errors.thumbnailUrl.message}</p>
+            <p className="text-sm text-red-500">
+              {errors.thumbnailUrl.message}
+            </p>
           )}
         </div>
 
@@ -183,12 +197,8 @@ export default function LessonForm({ initialData, defaultCategoryId, onSuccess }
       </div>
 
       <div className="flex p-4">
-        <Button
-          type="submit"
-          disabled={isLoading}
-          className="min-w-[120px]"
-        >
-          {isLoading ? "Salvando..." : (isEdit ? "Atualizar" : "Criar")}
+        <Button type="submit" disabled={isLoading} className="min-w-[120px]">
+          {isLoading ? "Salvando..." : isEdit ? "Atualizar" : "Criar"}
         </Button>
       </div>
     </form>

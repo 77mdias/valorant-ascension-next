@@ -3,8 +3,14 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { LessonCategoryFormInput, LessonCategoryFormInputType } from "@/schemas/lessonCategory";
-import { createLessonCategory, updateLessonCategory } from "@/server/lessonCategoryActions";
+import {
+  LessonCategoryFormInput,
+  LessonCategoryFormInputType,
+} from "@/schemas/lessonCategory";
+import {
+  createLessonCategory,
+  updateLessonCategory,
+} from "@/server/lessonCategoryActions";
 import { generateSlug } from "@/lib/prisma";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,7 +24,10 @@ interface LessonCategoryFormProps {
   onSuccess?: () => void;
 }
 
-export default function LessonCategoryForm({ initialData, onSuccess }: LessonCategoryFormProps) {
+export default function LessonCategoryForm({
+  initialData,
+  onSuccess,
+}: LessonCategoryFormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const isEdit = !!initialData?.id;
 
@@ -46,7 +55,7 @@ export default function LessonCategoryForm({ initialData, onSuccess }: LessonCat
   function handleNameChange(e: React.ChangeEvent<HTMLInputElement>) {
     const name = e.target.value;
     setValue("name", name);
-    
+
     if (!isEdit) {
       setValue("slug", generateSlug(name));
     }
@@ -54,10 +63,10 @@ export default function LessonCategoryForm({ initialData, onSuccess }: LessonCat
 
   async function onSubmit(data: LessonCategoryFormInputType) {
     setIsLoading(true);
-    
+
     try {
       let result;
-      
+
       if (isEdit) {
         result = await updateLessonCategory({ id: initialData!.id, ...data });
       } else {
@@ -65,7 +74,11 @@ export default function LessonCategoryForm({ initialData, onSuccess }: LessonCat
       }
 
       if (result.success) {
-        toast.success(isEdit ? "Categoria atualizada com sucesso!" : "Categoria criada com sucesso!");
+        toast.success(
+          isEdit
+            ? "Categoria atualizada com sucesso!"
+            : "Categoria criada com sucesso!",
+        );
         onSuccess?.();
       } else {
         toast.error("Erro ao processar solicitação");
@@ -79,7 +92,7 @@ export default function LessonCategoryForm({ initialData, onSuccess }: LessonCat
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
+      <div className="grid grid-cols-1 gap-4 p-4 md:grid-cols-2">
         <div className="space-y-2">
           <Label htmlFor="name">Nome *</Label>
           <Input
@@ -134,7 +147,7 @@ export default function LessonCategoryForm({ initialData, onSuccess }: LessonCat
           )}
         </div>
 
-        <div className="flex items-end space-y-2 gap-2">
+        <div className="flex items-end gap-2 space-y-2">
           <Label htmlFor="level">Nível: </Label>
           <select
             id="level"
@@ -154,12 +167,8 @@ export default function LessonCategoryForm({ initialData, onSuccess }: LessonCat
       </div>
 
       <div className="flex p-4">
-        <Button
-          type="submit"
-          disabled={isLoading}
-          className="min-w-[120px]"
-        >
-          {isLoading ? "Salvando..." : (isEdit ? "Atualizar" : "Criar")}
+        <Button type="submit" disabled={isLoading} className="min-w-[120px]">
+          {isLoading ? "Salvando..." : isEdit ? "Atualizar" : "Criar"}
         </Button>
       </div>
     </form>

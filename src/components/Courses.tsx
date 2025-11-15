@@ -83,14 +83,14 @@ const Courses = () => {
   return (
     <section id="cursos" className="container mx-auto px-4 py-24">
       <div className="mb-16 text-center">
-        <h2 className="font-poppins mb-6 text-4xl font-bold md:text-5xl">
+        <h2 className="mb-6 font-poppins text-4xl font-bold md:text-5xl">
           Catálogo de
-          <span className="from-secondary to-accent bg-gradient-to-r bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-secondary to-accent bg-clip-text text-transparent">
             {" "}
             Cursos
           </span>
         </h2>
-        <p className="text-muted-foreground mx-auto max-w-3xl text-xl">
+        <p className="mx-auto max-w-3xl text-xl text-muted-foreground">
           Conteúdo estruturado para todas as funções e níveis de habilidade. Do
           Bronze ao Radiant.
         </p>
@@ -100,7 +100,7 @@ const Courses = () => {
         {courses.map((course) => (
           <Card
             key={course.id}
-            className="glass-card hover-card border-border/50 group overflow-hidden"
+            className="glass-card hover-card group overflow-hidden border-border/50"
           >
             <div className="relative">
               <Image
@@ -110,24 +110,24 @@ const Courses = () => {
                 height={192}
                 className="h-48 w-full object-cover transition-transform duration-300 group-hover:scale-105"
               />
-              <div className="from-background/60 absolute inset-0 bg-gradient-to-t to-transparent"></div>
+              <div className="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent"></div>
               <Badge
-                className={`absolute top-4 left-4 ${course.levelColor} border-0 text-white`}
+                className={`absolute left-4 top-4 ${course.levelColor} border-0 text-white`}
               >
                 {course.level}
               </Badge>
             </div>
 
             <CardContent className="p-6">
-              <h3 className="font-poppins text-foreground group-hover:text-primary mb-3 text-xl font-semibold transition-colors">
+              <h3 className="mb-3 font-poppins text-xl font-semibold text-foreground transition-colors group-hover:text-primary">
                 {course.title}
               </h3>
 
-              <p className="text-muted-foreground mb-4 leading-relaxed">
+              <p className="mb-4 leading-relaxed text-muted-foreground">
                 {course.description}
               </p>
 
-              <div className="text-muted-foreground mb-6 flex items-center justify-between text-sm">
+              <div className="mb-6 flex items-center justify-between text-sm text-muted-foreground">
                 <div className="flex items-center">
                   <Clock className="mr-1 h-4 w-4" />
                   {course.duration}
@@ -151,7 +151,7 @@ const Courses = () => {
         <Button
           variant="outline"
           size="lg"
-          className="border-primary/30 hover:border-primary hover:bg-primary/10 rounded-full px-8"
+          className="rounded-full border-primary/30 px-8 hover:border-primary hover:bg-primary/10"
         >
           Ver Todos os Cursos
         </Button>

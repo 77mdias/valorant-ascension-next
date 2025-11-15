@@ -34,7 +34,7 @@ function validatePassword(password: string): {
   // Pelo menos um caractere especial
   if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
     errors.push(
-      "A senha deve conter pelo menos um caractere especial (!@#$%^&*()_+-=[]{}|;':\",./<>?)"
+      "A senha deve conter pelo menos um caractere especial (!@#$%^&*()_+-=[]{}|;':\",./<>?)",
     );
   }
 
@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
     if (!name || !email || !password) {
       return NextResponse.json(
         { message: "Nome, email, senha e CPF são obrigatórios" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -63,7 +63,7 @@ export async function POST(request: NextRequest) {
           message: "Senha não atende aos requisitos de segurança",
           details: passwordValidation.errors,
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -87,13 +87,13 @@ export async function POST(request: NextRequest) {
           {
             message: `Este email já está cadastrado via ${providers}. Use o botão "${providers}" para fazer login.`,
           },
-          { status: 409 }
+          { status: 409 },
         );
       }
 
       return NextResponse.json(
         { message: "Usuário já existe com este email" },
-        { status: 409 }
+        { status: 409 },
       );
     }
 
@@ -134,7 +134,7 @@ export async function POST(request: NextRequest) {
       await db.user.delete({ where: { id: user.id } });
       return NextResponse.json(
         { message: "Erro ao enviar email de verificação. Tente novamente." },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -148,7 +148,7 @@ export async function POST(request: NextRequest) {
     console.error("Erro ao criar usuário:", error);
     return NextResponse.json(
       { message: "Erro interno do servidor" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

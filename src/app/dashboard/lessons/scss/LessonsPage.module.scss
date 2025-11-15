@@ -44,7 +44,7 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  
+
   div {
     display: flex;
     flex-direction: column;
@@ -82,7 +82,7 @@
 .statusLive {
   background-color: #fed7e2;
   color: #b83280;
-  
+
   &::before {
     content: "•";
     display: inline-block;

@@ -1,0 +1,25 @@
+feat(mmr): ✨ Adiciona página de consulta de MMR e histórico de partidas
+
+Este commit introduz uma nova funcionalidade completa para consulta de dados de jogadores de Valorant.
+
+Principais Mudanças:
+
+*   **Página de MMR (`/mmr`):**
+    *   🎮 Formulário para buscar jogadores por `Nome#TAG`.
+    *   📊 Exibição de informações do jogador: card, nível, rank e elo.
+    *   📜 Listagem do histórico de partidas recentes com detalhes (mapa, agente, resultado, KDA).
+    *   🔄 Implementado tratamento de loading e erros para uma melhor UX.
+
+*   **API Route Proxy (`/api/valorant/player`):**
+    *   🛡️ Cria uma rota de API interna que atua como um proxy para a API externa (HenrikDev), resolvendo problemas de CORS.
+    *   ⚡ Adicionado cache (`revalidate`) para otimizar as requisições e evitar rate limiting.
+
+*   **Serviço `ValorantAPI` (`@/lib/valorant-api`):**
+    *   🛠️ Abstrai a lógica de comunicação com a API de Valorant.
+    *   🎭 Inclui um sistema de mock de dados (`USE_MOCK_DATA`) para facilitar o desenvolvimento e testes offline.
+    *   ⚙️ Funções auxiliares para processar e formatar os dados recebidos da API.
+
+Outras Alterações:
+
+*   **Refatoração (SCSS):** Pequenos ajustes de formatação e remoção de seletores globais nos arquivos SCSS para melhor modularização.
+*   **Correção (Schema):** Adicionada uma vírgula faltante no schema de `LessonCategory`.

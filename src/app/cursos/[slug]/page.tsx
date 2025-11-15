@@ -9,8 +9,8 @@ import LessonCard from "@/components/LessonCard";
 import { LessonCategory, lessons } from "@prisma/client";
 import { useState, useEffect } from "react";
 import styles from "./page.module.scss";
-import stylesVideo from "@/components/scss/VideoPlayer.module.scss";
-import VideoPlayer from "@/components/VideoPlayer";
+import stylesVideo from "@/components/ui/VideoPlayer.module.scss";
+import VideoPlayer from "@/components/ui/VideoPlayer";
 import CourseDetailLoading from "@/components/CourseDetailLoading";
 
 interface CategoryPageProps {
@@ -62,9 +62,12 @@ export default function CategoryPage({ params }: CategoryPageProps) {
     notFound();
   }
 
-  const currentLesson = category.lessons.find(
+  const currentLessonIndex = category.lessons.findIndex(
     (lesson: { id: string }) => lesson.id === activeLesson,
   );
+
+  const currentLesson =
+    currentLessonIndex >= 0 ? category.lessons[currentLessonIndex] : null;
 
   const handlePreviousLesson = () => {
     const currentIndex = category.lessons.findIndex(
@@ -222,11 +225,11 @@ export default function CategoryPage({ params }: CategoryPageProps) {
               description="Nesta aula, você aprenderá técnicas avançadas utilizadas pelos melhores jogadores de Valorant. Vamos cobrir conceitos fundamentais de posicionamento, timing e tomada de decisão que farão a diferença no seu gameplay. Prepare-se para elevar seu jogo ao próximo nível!"
               onPrevious={handlePreviousLesson}
               onNext={handleNextLesson}
-              hasPrevious={!!activeLesson && Number(activeLesson) > 1}
+              hasPrevious={currentLessonIndex > 0}
               hasNext={
-                !!activeLesson &&
-                Number(activeLesson) < category.lessons.length &&
-                !category.lessons[Number(activeLesson)]?.isLocked
+                currentLessonIndex >= 0 &&
+                currentLessonIndex < category.lessons.length - 1 &&
+                !category.lessons[currentLessonIndex + 1]?.isLocked
               }
               videoUrl={currentLesson?.videoUrl}
               thumbnailUrl={currentLesson?.thumbnailUrl}

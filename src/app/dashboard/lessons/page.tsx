@@ -11,7 +11,7 @@ import LessonForm from "@/components/forms/LessonForm";
 import styles from "./scss/LessonsPage.module.scss";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { 
+import {
   Table,
   TableBody,
   TableCell,
@@ -19,7 +19,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { lessons as PrismaLesson, lessonCategory as PrismaCategory } from "@prisma/client";
+import {
+  lessons as PrismaLesson,
+  lessonCategory as PrismaCategory,
+} from "@prisma/client";
 
 export default function LessonsPage() {
   const [lessons, setLessons] = useState<PrismaLesson[]>([]);
@@ -27,14 +30,14 @@ export default function LessonsPage() {
   const [loading, setLoading] = useState(true);
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingLesson, setEditingLesson] = useState<PrismaLesson | null>(null);
-  
+
   // Carregar dados
   const loadData = async () => {
     setLoading(true);
     try {
       const lessonsRes = await listLessons();
       const categoriesRes = await listLessonCategories();
-      
+
       if (lessonsRes.success && categoriesRes.success) {
         setLessons(lessonsRes.data || []);
         setCategories(categoriesRes.data || []);
@@ -66,7 +69,7 @@ export default function LessonsPage() {
     if (!confirm("Tem certeza que deseja excluir esta aula?")) {
       return;
     }
-    
+
     try {
       const result = await deleteLesson(id);
       if (result.success) {
@@ -129,8 +132,8 @@ export default function LessonsPage() {
   });
 
   return (
-    <div className="w-full max-w-7xl mx-auto p-2 md:p-6">
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 mb-4">
+    <div className="mx-auto w-full max-w-7xl p-2 md:p-6">
+      <div className="mb-4 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
         <DashboardNavSelect currentRoute="/dashboard/lessons" />
         <Button onClick={() => setShowAddForm(!showAddForm)}>
           {showAddForm ? "Cancelar" : "Adicionar Aula"}
@@ -139,23 +142,23 @@ export default function LessonsPage() {
 
       {showAddForm && (
         <Card className="mb-4">
-          <LessonForm 
+          <LessonForm
             onSuccess={() => {
               setShowAddForm(false);
               loadData();
-            }} 
+            }}
           />
         </Card>
       )}
 
       {editingLesson && (
         <Card className="mb-4">
-          <LessonForm 
+          <LessonForm
             initialData={mapLessonToFormValues(editingLesson)}
             onSuccess={() => {
               setEditingLesson(null);
               loadData();
-            }} 
+            }}
           />
         </Card>
       )}
@@ -175,12 +178,17 @@ export default function LessonsPage() {
           <TableBody>
             {loading ? (
               <TableRow>
-                <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">Carregando...</TableCell>
+                <TableCell
+                  colSpan={6}
+                  className="py-8 text-center text-muted-foreground"
+                >
+                  Carregando...
+                </TableCell>
               </TableRow>
             ) : lessons.length > 0 ? (
               lessons.map((lesson) => (
                 <TableRow key={lesson.id} className="hover:bg-muted/40">
-                  <TableCell className="font-semibold flex items-center gap-2">
+                  <TableCell className="flex items-center gap-2 font-semibold">
                     {/* SEÇÃO COMENTADA PARA EVITAR ERRO DE RENDERIZAÇÃO e também não faz muito sentido carregar imagem aqui.}
                     {lesson.thumbnailUrl && (
                       <img 
@@ -191,28 +199,32 @@ export default function LessonsPage() {
                     )} */}
                     <span>{lesson.title}</span>
                     {lesson.isLocked && (
-                      <span className="ml-2 px-2 py-1 rounded bg-destructive/20 text-destructive text-xs font-bold">Bloqueada</span>
+                      <span className="ml-2 rounded bg-destructive/20 px-2 py-1 text-xs font-bold text-destructive">
+                        Bloqueada
+                      </span>
                     )}
                   </TableCell>
                   <TableCell>{getCategoryName(lesson.categoryId)}</TableCell>
                   <TableCell>{formatDuration(lesson.duration)}</TableCell>
                   <TableCell>
-                    <span className={`px-2 py-1 rounded text-xs font-bold ${lesson.isLive ? "bg-green-500/20 text-green-600" : "bg-muted/30 text-muted-foreground"}`}>
+                    <span
+                      className={`rounded px-2 py-1 text-xs font-bold ${lesson.isLive ? "bg-green-500/20 text-green-600" : "bg-muted/30 text-muted-foreground"}`}
+                    >
                       {lesson.isLive ? "Ao vivo" : "Gravada"}
                     </span>
                   </TableCell>
                   <TableCell>{formatDate(lesson.createdAt)}</TableCell>
                   <TableCell>
                     <div className="flex gap-2">
-                      <Button 
-                        variant="outline" 
+                      <Button
+                        variant="outline"
                         size="sm"
                         onClick={() => setEditingLesson(lesson)}
                       >
                         Editar
                       </Button>
-                      <Button 
-                        variant="destructive" 
+                      <Button
+                        variant="destructive"
                         size="sm"
                         onClick={() => handleDeleteLesson(lesson.id)}
                       >
@@ -224,7 +236,12 @@ export default function LessonsPage() {
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">Nenhuma aula encontrada</TableCell>
+                <TableCell
+                  colSpan={6}
+                  className="py-8 text-center text-muted-foreground"
+                >
+                  Nenhuma aula encontrada
+                </TableCell>
               </TableRow>
             )}
           </TableBody>

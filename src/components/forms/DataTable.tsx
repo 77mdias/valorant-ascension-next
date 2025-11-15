@@ -3,13 +3,13 @@
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Search, Filter } from "lucide-react";
@@ -44,13 +44,14 @@ export default function DataTable<T extends { id: string }>({
   const [searchQuery, setSearchQuery] = useState("");
 
   // Filtrar dados baseado na busca
-  const filteredData = searchable && searchQuery
-    ? data.filter((row) =>
-        Object.values(row).some((value) =>
-          String(value).toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredData =
+    searchable && searchQuery
+      ? data.filter((row) =>
+          Object.values(row).some((value) =>
+            String(value).toLowerCase().includes(searchQuery.toLowerCase()),
+          ),
         )
-      )
-    : data;
+      : data;
 
   if (isLoading) {
     return (
@@ -72,12 +73,12 @@ export default function DataTable<T extends { id: string }>({
                 <TableRow key={index}>
                   {columns.map((_, colIndex) => (
                     <TableCell key={colIndex}>
-                      <div className="h-4 bg-muted animate-pulse rounded" />
+                      <div className="h-4 animate-pulse rounded bg-muted" />
                     </TableCell>
                   ))}
                   {actions && (
                     <TableCell>
-                      <div className="h-4 bg-muted animate-pulse rounded" />
+                      <div className="h-4 animate-pulse rounded bg-muted" />
                     </TableCell>
                   )}
                 </TableRow>
@@ -93,7 +94,7 @@ export default function DataTable<T extends { id: string }>({
     <div className="w-full space-y-4">
       {searchable && (
         <div className="flex items-center space-x-2">
-          <div className="relative flex-1 max-w-sm">
+          <div className="relative max-w-sm flex-1">
             <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder={searchPlaceholder}
@@ -123,23 +124,20 @@ export default function DataTable<T extends { id: string }>({
                 <TableRow key={row.id}>
                   {columns.map((column, index) => (
                     <TableCell key={index} className={column.className}>
-                      {column.render 
+                      {column.render
                         ? column.render(row)
-                        : String((row as any)[column.key] || "—")
-                      }
+                        : String((row as any)[column.key] || "—")}
                     </TableCell>
                   ))}
                   {actions && (
-                    <TableCell className="text-right">
-                      {actions(row)}
-                    </TableCell>
+                    <TableCell className="text-right">{actions(row)}</TableCell>
                   )}
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell 
-                  colSpan={columns.length + (actions ? 1 : 0)} 
+                <TableCell
+                  colSpan={columns.length + (actions ? 1 : 0)}
                   className="h-24 text-center text-muted-foreground"
                 >
                   {emptyMessage}
@@ -162,11 +160,11 @@ export default function DataTable<T extends { id: string }>({
 }
 
 // Componentes de utilidade para células comuns
-export function StatusBadge({ 
-  status, 
-  variant = "secondary" 
-}: { 
-  status: boolean; 
+export function StatusBadge({
+  status,
+  variant = "secondary",
+}: {
+  status: boolean;
   variant?: "default" | "secondary" | "destructive" | "outline";
 }) {
   return (

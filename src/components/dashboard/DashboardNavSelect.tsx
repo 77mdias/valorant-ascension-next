@@ -1,6 +1,12 @@
 "use client";
 import { useState, useEffect } from "react";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export type DashboardNavRoute = {
   label: string;
@@ -40,7 +46,7 @@ export function DashboardNavSelect({
         <SelectValue placeholder="Selecione uma rota" />
       </SelectTrigger>
       <SelectContent>
-        {routes.map(route => (
+        {routes.map((route) => (
           <SelectItem key={route.value} value={route.value}>
             {route.label}
           </SelectItem>
@@ -49,4 +55,3 @@ export function DashboardNavSelect({
     </Select>
   );
 }
-

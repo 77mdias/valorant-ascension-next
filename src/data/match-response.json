@@ -284,9 +284,7 @@
         "rounds_won": 13,
         "rounds_lost": 10,
         "roaster": {
-          "members": [
-            "text"
-          ],
+          "members": ["text"],
           "name": "text",
           "tag": "text",
           "customization": {
@@ -303,9 +301,7 @@
         "rounds_won": 13,
         "rounds_lost": 10,
         "roaster": {
-          "members": [
-            "text"
-          ],
+          "members": ["text"],
           "name": "text",
           "tag": "text",
           "customization": {

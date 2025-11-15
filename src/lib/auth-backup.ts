@@ -59,7 +59,7 @@ export const authOptions: NextAuthOptions = {
 
         const isPasswordValid = await bcrypt.compare(
           credentials.password,
-          user.password
+          user.password,
         );
 
         if (!isPasswordValid) {
@@ -155,7 +155,7 @@ export const authOptions: NextAuthOptions = {
 
             // Verificar se já tem conta OAuth vinculada
             const hasOAuthAccount = existingUser.accounts.some(
-              (acc) => acc.provider === account?.provider
+              (acc) => acc.provider === account?.provider,
             );
 
             if (!hasOAuthAccount) {
@@ -237,7 +237,7 @@ export const authOptions: NextAuthOptions = {
             : callbackUrl;
           console.log(
             "🔍 CallbackUrl encontrada, redirecionando para:",
-            finalUrl
+            finalUrl,
           );
           return finalUrl;
         }

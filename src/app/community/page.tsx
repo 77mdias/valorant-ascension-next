@@ -1,15 +1,15 @@
 import React from "react";
-import { 
-  Users, 
-  MessageCircle, 
-  Trophy, 
-  Target, 
-  Gamepad2, 
+import {
+  Users,
+  MessageCircle,
+  Trophy,
+  Target,
+  Gamepad2,
   Star,
   Crown,
   Zap,
   Shield,
-  Flame
+  Flame,
 } from "lucide-react";
 import { BsDiscord, BsYoutube, BsTwitch } from "react-icons/bs";
 import Link from "next/link";
@@ -23,33 +23,39 @@ const communityFeatures = [
   {
     icon: MessageCircle,
     title: "Chat em Tempo Real",
-    description: "Converse com outros jogadores, tire dúvidas e compartilhe estratégias 24/7 no nosso Discord."
+    description:
+      "Converse com outros jogadores, tire dúvidas e compartilhe estratégias 24/7 no nosso Discord.",
   },
   {
     icon: Users,
     title: "Grupos de Treino",
-    description: "Participe de grupos organizados por rank e horário para treinar de forma consistente."
+    description:
+      "Participe de grupos organizados por rank e horário para treinar de forma consistente.",
   },
   {
     icon: Trophy,
     title: "Competições Semanais",
-    description: "Disputas internas com prêmios exclusivos para os melhores desempenhos."
+    description:
+      "Disputas internas com prêmios exclusivos para os melhores desempenhos.",
   },
   {
     icon: Target,
     title: "Análise de Gameplay",
-    description: "Receba feedback personalizado dos nossos coaches profissionais sobre suas partidas."
+    description:
+      "Receba feedback personalizado dos nossos coaches profissionais sobre suas partidas.",
   },
   {
     icon: Gamepad2,
     title: "Lobbies Personalizados",
-    description: "Salas exclusivas para treinar estratégias específicas com a comunidade."
+    description:
+      "Salas exclusivas para treinar estratégias específicas com a comunidade.",
   },
   {
     icon: Star,
     title: "Sistema de Rankings",
-    description: "Acompanhe seu progresso e compare com outros membros da academia."
-  }
+    description:
+      "Acompanhe seu progresso e compare com outros membros da academia.",
+  },
 ];
 
 // Mock data for community stats
@@ -57,7 +63,7 @@ const communityStats = [
   { number: "2.5K+", label: "Membros Ativos" },
   { number: "150+", label: "Coaches Certificados" },
   { number: "500+", label: "Competições Realizadas" },
-  { number: "98%", label: "Taxa de Melhoria" }
+  { number: "98%", label: "Taxa de Melhoria" },
 ];
 
 // Mock data for top instructors
@@ -68,7 +74,7 @@ const topInstructors = [
     role: "Head Coach",
     rank: "Radiante #1 BR",
     avatar: "CS",
-    specialties: ["Aim Training", "Game Sense"]
+    specialties: ["Aim Training", "Game Sense"],
   },
   {
     id: 2,
@@ -76,7 +82,7 @@ const topInstructors = [
     role: "Estrategista",
     rank: "Imortal 3",
     avatar: "AS",
-    specialties: ["Map Control", "Team Play"]
+    specialties: ["Map Control", "Team Play"],
   },
   {
     id: 3,
@@ -84,7 +90,7 @@ const topInstructors = [
     role: "Mental Coach",
     rank: "Radiante",
     avatar: "PC",
-    specialties: ["Psychology", "Consistency"]
+    specialties: ["Psychology", "Consistency"],
   },
   {
     id: 4,
@@ -92,7 +98,7 @@ const topInstructors = [
     role: "Duelist Specialist",
     rank: "Imortal 3",
     avatar: "JL",
-    specialties: ["Entry Fragging", "Mechanics"]
+    specialties: ["Entry Fragging", "Mechanics"],
   },
   {
     id: 5,
@@ -100,7 +106,7 @@ const topInstructors = [
     role: "Controller Expert",
     rank: "Radiante",
     avatar: "BR",
-    specialties: ["Smokes", "Utility Usage"]
+    specialties: ["Smokes", "Utility Usage"],
   },
   {
     id: 6,
@@ -108,8 +114,8 @@ const topInstructors = [
     role: "Sentinel Coach",
     rank: "Imortal 2",
     avatar: "MA",
-    specialties: ["Site Defense", "Utility"]
-  }
+    specialties: ["Site Defense", "Utility"],
+  },
 ];
 
 const Community = () => {
@@ -119,15 +125,15 @@ const Community = () => {
       <section className={styles.heroSection}>
         <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-blue-900/20 to-indigo-900/20"></div>
         <div className="absolute inset-0 bg-[url('https://placehold.co/1920x1080/1a1a1a/333333?text=Valorant+Training')] bg-cover bg-center opacity-30"></div>
-        
+
         <div className={styles.heroContent}>
           <h1 className={styles.heroTitle}>
             <span>Comunidade</span>
             <span className={styles.gradientText}> Valorant NeXT</span>
           </h1>
           <p className={styles.heroSubtitle}>
-            Conecte-se com milhares de jogadores, 
-            participe de treinos exclusivos e acelere seu crescimento no game.
+            Conecte-se com milhares de jogadores, participe de treinos
+            exclusivos e acelere seu crescimento no game.
           </p>
           <div className={styles.heroButtons}>
             <Button
@@ -143,12 +149,10 @@ const Community = () => {
             <Button
               size="lg"
               variant="outline"
-              className="border-primary/30 min-w-[212px] px-8 transition-all duration-300 hover:border-primary hover:bg-primary/10"
+              className="min-w-[212px] border-primary/30 px-8 transition-all duration-300 hover:border-primary hover:bg-primary/10"
               asChild
             >
-              <Link href="/auth/register">
-                Seja um Instrutor
-              </Link>
+              <Link href="/auth/register">Seja um Instrutor</Link>
             </Button>
           </div>
         </div>
@@ -158,20 +162,24 @@ const Community = () => {
       <section className={styles.featuresSection}>
         <div className={styles.sectionContainer}>
           <h2 className={styles.sectionTitle}>
-            Por que nossa <span className={styles.gradientText}>comunidade</span> é especial?
+            Por que nossa{" "}
+            <span className={styles.gradientText}>comunidade</span> é especial?
           </h2>
           <p className={styles.sectionSubtitle}>
-            Recursos exclusivos pensados para acelerar seu desenvolvimento no Valorant
+            Recursos exclusivos pensados para acelerar seu desenvolvimento no
+            Valorant
           </p>
-          
+
           <div className={styles.featuresGrid}>
             {communityFeatures.map((feature, index) => (
               <div key={index} className={styles.featureCard}>
                 <div className={styles.featureIcon}>
-                  <feature.icon className="w-6 h-6 text-white" />
+                  <feature.icon className="h-6 w-6 text-white" />
                 </div>
                 <h3 className={styles.featureTitle}>{feature.title}</h3>
-                <p className={styles.featureDescription}>{feature.description}</p>
+                <p className={styles.featureDescription}>
+                  {feature.description}
+                </p>
               </div>
             ))}
           </div>
@@ -182,9 +190,10 @@ const Community = () => {
       <section className={styles.statsSection}>
         <div className={styles.sectionContainer}>
           <h2 className={styles.sectionTitle}>
-            Números que <span className={styles.gradientText}>impressionam</span>
+            Números que{" "}
+            <span className={styles.gradientText}>impressionam</span>
           </h2>
-          
+
           <div className={styles.statsGrid}>
             {communityStats.map((stat, index) => (
               <div key={index} className={styles.statCard}>
@@ -205,7 +214,7 @@ const Community = () => {
           <p className={styles.sectionSubtitle}>
             Aprenda com os melhores jogadores e coaches do cenário brasileiro
           </p>
-          
+
           <div className={styles.instructorsGrid}>
             {topInstructors.map((instructor) => (
               <div key={instructor.id} className={styles.instructorCard}>
@@ -215,12 +224,12 @@ const Community = () => {
                 <h3 className={styles.instructorName}>{instructor.name}</h3>
                 <div className={styles.instructorRole}>{instructor.role}</div>
                 <div className={styles.instructorRank}>{instructor.rank}</div>
-                <div className="flex flex-wrap gap-1 justify-center mt-2">
+                <div className="mt-2 flex flex-wrap justify-center gap-1">
                   {instructor.specialties.map((specialty) => (
-                    <Badge 
-                      key={specialty} 
-                      variant="secondary" 
-                      className="text-xs bg-purple-500/20 text-purple-300 border-purple-500/30"
+                    <Badge
+                      key={specialty}
+                      variant="secondary"
+                      className="border-purple-500/30 bg-purple-500/20 text-xs text-purple-300"
                     >
                       {specialty}
                     </Badge>
@@ -237,25 +246,30 @@ const Community = () => {
         <div className={styles.sectionContainer}>
           <div className={styles.ctaContent}>
             <h2 className={styles.ctaTitle}>
-              Pronto para <span className={styles.gradientText}>evoluir</span> no Valorant?
+              Pronto para <span className={styles.gradientText}>evoluir</span>{" "}
+              no Valorant?
             </h2>
             <p className={styles.ctaDescription}>
-              Junte-se à nossa comunidade hoje mesmo e comece sua jornada rumo ao próximo rank. 
-              Coaching profissional, treinos organizados e uma comunidade que vai te apoiar em cada partida.
+              Junte-se à nossa comunidade hoje mesmo e comece sua jornada rumo
+              ao próximo rank. Coaching profissional, treinos organizados e uma
+              comunidade que vai te apoiar em cada partida.
             </p>
-            
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+
+            <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Button
                 size="lg"
                 className={`${globalStyles.bgGradientPrimary} ${globalStyles.buttonPrimary} px-8 text-lg ${styles.pulseAnimation}`}
                 asChild
               >
-                <Link href="https://discord.gg/valorant-academy" target="_blank">
+                <Link
+                  href="https://discord.gg/valorant-academy"
+                  target="_blank"
+                >
                   <BsDiscord className="mr-2 h-5 w-5" />
                   Entrar Agora no Discord
                 </Link>
               </Button>
-              
+
               <div className="flex gap-3">
                 <Button
                   size="sm"
@@ -263,7 +277,10 @@ const Community = () => {
                   className="border-red-500/50 text-red-400 hover:bg-red-500/10"
                   asChild
                 >
-                  <Link href="https://youtube.com/@valorantacademy" target="_blank">
+                  <Link
+                    href="https://youtube.com/@valorantacademy"
+                    target="_blank"
+                  >
                     <BsYoutube className="h-4 w-4" />
                   </Link>
                 </Button>
@@ -273,7 +290,10 @@ const Community = () => {
                   className="border-purple-500/50 text-purple-400 hover:bg-purple-500/10"
                   asChild
                 >
-                  <Link href="https://twitch.tv/valorantacademy" target="_blank">
+                  <Link
+                    href="https://twitch.tv/valorantacademy"
+                    target="_blank"
+                  >
                     <BsTwitch className="h-4 w-4" />
                   </Link>
                 </Button>

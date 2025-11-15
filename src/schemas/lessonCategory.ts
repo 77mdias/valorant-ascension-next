@@ -39,7 +39,7 @@ export const LessonCategoryFormInput = z.object({
 export const UpdateLessonCategorySchema = LessonCategorySchema.partial().extend(
   {
     id: z.string().uuid(),
-  }
+  },
 );
 
 export const LessonCategoryFilterSchema = z.object({

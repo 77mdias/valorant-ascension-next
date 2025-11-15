@@ -1,0 +1,185 @@
+.playerContainer {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1.5rem;
+  border: 1px solid hsl(var(--primary) / 0.2);
+  background:
+    radial-gradient(
+      circle at 20% 20%,
+      hsl(var(--primary) / 0.25),
+      transparent 60%
+    ),
+    radial-gradient(
+      circle at 80% 0%,
+      hsl(var(--secondary) / 0.15),
+      transparent 55%
+    ),
+    #05050a;
+  box-shadow:
+    0 20px 45px hsl(var(--primary) / 0.1),
+    inset 0 0 0 1px hsl(var(--primary) / 0.2);
+  transition:
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.playerContainer:focus-visible {
+  outline: none;
+  border-color: hsl(var(--primary));
+  box-shadow:
+    0 25px 50px hsl(var(--primary) / 0.15),
+    inset 0 0 0 1px hsl(var(--primary));
+}
+
+.playerSurface {
+  position: relative;
+  padding-top: 56.25%;
+  background: linear-gradient(160deg, #0b0b16 0%, #05050a 60%);
+}
+
+.playerInstance {
+  position: absolute;
+  inset: 0;
+}
+
+.controlsOverlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  background: linear-gradient(180deg, rgba(5, 5, 15, 0), rgba(5, 5, 15, 0.9));
+  opacity: 1;
+  transition: opacity 0.2s ease;
+}
+
+.playerContainer:hover .controlsOverlay,
+.playerContainer:focus-visible .controlsOverlay {
+  opacity: 1;
+}
+
+.controlsPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1.25rem;
+}
+
+.controlRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.controlButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 999px;
+  background: hsl(var(--primary) / 0.18);
+  border: 1px solid transparent;
+  color: white;
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+
+.controlButton:hover {
+  transform: translateY(-1px) scale(1.02);
+  border-color: hsl(var(--primary));
+  background: hsl(var(--primary) / 0.25);
+}
+
+.controlButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.range {
+  flex: 1;
+  appearance: none;
+  height: 0.3rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.2);
+  outline: none;
+  transition: background 0.3s ease;
+}
+
+.range::-webkit-slider-thumb {
+  appearance: none;
+  width: 0.95rem;
+  height: 0.95rem;
+  border-radius: 999px;
+  background: white;
+  border: 2px solid hsl(var(--primary));
+  box-shadow: 0 0 0 6px hsl(var(--primary) / 0.35);
+}
+
+.range::-moz-range-thumb {
+  width: 0.95rem;
+  height: 0.95rem;
+  border-radius: 999px;
+  background: white;
+  border: 2px solid hsl(var(--primary));
+  box-shadow: 0 0 0 6px hsl(var(--primary) / 0.35);
+}
+
+.range::-webkit-slider-runnable-track {
+  height: 0.3rem;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    hsl(var(--primary)),
+    hsl(var(--secondary))
+  );
+}
+
+.range::-moz-range-track {
+  height: 0.3rem;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    hsl(var(--primary)),
+    hsl(var(--secondary))
+  );
+}
+
+.gamingButton {
+  @apply relative overflow-hidden transition-all duration-300;
+  background: linear-gradient(
+    135deg,
+    hsl(var(--primary) / 0.1),
+    hsl(var(--secondary) / 0.1)
+  );
+  border: 1px solid hsl(var(--primary) / 0.5);
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 40px hsl(var(--primary) / 0.3);
+    border-color: hsl(var(--primary));
+  }
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      hsl(var(--primary) / 0.3),
+      transparent
+    );
+    transition: left 0.5s;
+  }
+
+  &:hover::before {
+    left: 100%;
+  }
+}

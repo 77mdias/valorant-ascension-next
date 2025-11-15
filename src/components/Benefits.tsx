@@ -57,14 +57,14 @@ const Benefits = () => {
   return (
     <section className="container mx-auto px-4 py-24">
       <div className="mb-16 text-center">
-        <h2 className="font-poppins mb-6 text-4xl font-bold md:text-5xl">
+        <h2 className="mb-6 font-poppins text-4xl font-bold md:text-5xl">
           Por que escolher a
-          <span className="from-primary to-secondary bg-gradient-to-r bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
             {" "}
             Academy?
           </span>
         </h2>
-        <p className="text-muted-foreground mx-auto max-w-3xl text-xl">
+        <p className="mx-auto max-w-3xl text-xl text-muted-foreground">
           Nossa metodologia comprovada já ajudou centenas de players brasileiros
           a alcançarem seus objetivos no Valorant.
         </p>
@@ -76,7 +76,7 @@ const Benefits = () => {
           return (
             <Card
               key={index}
-              className="glass-card hover-card border-border/50 group p-8"
+              className="glass-card hover-card group border-border/50 p-8"
             >
               <CardContent className="p-0">
                 <div
@@ -95,11 +95,11 @@ const Benefits = () => {
                   <Icon className={`h-8 w-8 ${benefit.color}`} />
                 </div>
 
-                <h3 className="font-poppins text-foreground mb-4 text-xl font-semibold">
+                <h3 className="mb-4 font-poppins text-xl font-semibold text-foreground">
                   {benefit.title}
                 </h3>
 
-                <p className="text-muted-foreground leading-relaxed">
+                <p className="leading-relaxed text-muted-foreground">
                   {benefit.description}
                 </p>
               </CardContent>

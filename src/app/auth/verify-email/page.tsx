@@ -33,33 +33,36 @@ function VerifyEmailContent() {
     }
   }, [emailParam]);
 
-  const verifyEmail = useCallback(async (verificationToken: string) => {
-    setIsVerifying(true);
-    try {
-      const response = await fetch(
-        `/api/auth/verify-email?token=${verificationToken}`,
-      );
-      const data = await response.json();
+  const verifyEmail = useCallback(
+    async (verificationToken: string) => {
+      setIsVerifying(true);
+      try {
+        const response = await fetch(
+          `/api/auth/verify-email?token=${verificationToken}`,
+        );
+        const data = await response.json();
 
-      if (response.ok) {
-        setVerificationStatus("success");
-        toast.success("Email verificado com sucesso!");
-        setTimeout(() => {
-          // Redirecionar para página de agradecimento
-          const thankYouUrl = `/auth/thank-you?verified=true&email=${encodeURIComponent(email)}`;
-          router.push(thankYouUrl);
-        }, 3000);
-      } else {
+        if (response.ok) {
+          setVerificationStatus("success");
+          toast.success("Email verificado com sucesso!");
+          setTimeout(() => {
+            // Redirecionar para página de agradecimento
+            const thankYouUrl = `/auth/thank-you?verified=true&email=${encodeURIComponent(email)}`;
+            router.push(thankYouUrl);
+          }, 3000);
+        } else {
+          setVerificationStatus("error");
+          toast.error(data.message || "Erro ao verificar email");
+        }
+      } catch (error) {
         setVerificationStatus("error");
-        toast.error(data.message || "Erro ao verificar email");
+        toast.error("Erro ao verificar email");
+      } finally {
+        setIsVerifying(false);
       }
-    } catch (error) {
-      setVerificationStatus("error");
-      toast.error("Erro ao verificar email");
-    } finally {
-      setIsVerifying(false);
-    }
-  }, [email, router]);
+    },
+    [email, router],
+  );
 
   useEffect(() => {
     if (token) {

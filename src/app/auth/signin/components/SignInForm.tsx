@@ -74,8 +74,6 @@ export default function SignInForm() {
     setOauthError(null);
   };
 
-  
-
   return (
     <div className="mb-12 mt-16 flex justify-center bg-[var(--all-black)] px-4">
       <div className="w-full max-w-md space-y-8">
@@ -195,8 +193,6 @@ export default function SignInForm() {
           </div>
 
           <ButtonLogin isLoading={isLoading} />
-
-        
         </form>
       </div>
 

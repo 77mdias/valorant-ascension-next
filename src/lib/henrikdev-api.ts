@@ -482,7 +482,7 @@ export class HenrikDevAPI {
         const errorText = await response.text();
         console.error("❌ Erro na API:", response.status, errorText);
         throw new Error(
-          `HTTP error! status: ${response.status} - ${errorText}`
+          `HTTP error! status: ${response.status} - ${errorText}`,
         );
       }
 
@@ -496,7 +496,7 @@ export class HenrikDevAPI {
       if (error instanceof TypeError && error.message.includes("fetch")) {
         console.error("🔍 Detalhes do erro de rede:", error.message);
         throw new Error(
-          "Erro de conexão. Verifique sua internet ou tente novamente."
+          "Erro de conexão. Verifique sua internet ou tente novamente.",
         );
       }
 
@@ -513,7 +513,7 @@ export class HenrikDevAPI {
   static async getPlayer(
     name: string,
     tag: string,
-    region: string = "na"
+    region: string = "na",
   ): Promise<HenrikDevPlayer> {
     if (USE_MOCK_DATA) {
       console.log("🎭 Usando dados mockados para jogador");
@@ -541,7 +541,7 @@ export class HenrikDevAPI {
     try {
       // Usar API route para evitar CORS
       const url = `/api/valorant/player?name=${encodeURIComponent(
-        name
+        name,
       )}&tag=${encodeURIComponent(tag)}&region=${region}`;
       console.log("🎯 URL da API route:", url);
       console.log("📝 Parâmetros:", { name, tag, region });
@@ -554,7 +554,7 @@ export class HenrikDevAPI {
 
         if (response.status === 404) {
           throw new Error(
-            `Jogador ${name}#${tag} não encontrado. Verifique o nome e tag.`
+            `Jogador ${name}#${tag} não encontrado. Verifique o nome e tag.`,
           );
         }
 
@@ -578,7 +578,7 @@ export class HenrikDevAPI {
   static async getMMR(
     name: string,
     tag: string,
-    region: string = "na"
+    region: string = "na",
   ): Promise<HenrikDevMMR> {
     if (USE_MOCK_DATA) {
       console.log("🎭 Usando dados mockados para MMR");
@@ -610,7 +610,7 @@ export class HenrikDevAPI {
     try {
       // Usar API route para evitar CORS
       const url = `/api/valorant/player?name=${encodeURIComponent(
-        name
+        name,
       )}&tag=${encodeURIComponent(tag)}&region=${region}`;
       console.log("🎯 URL da API route (MMR):", url);
       console.log("📝 Parâmetros:", { name, tag, region });
@@ -622,12 +622,12 @@ export class HenrikDevAPI {
         console.error(
           "❌ Erro na API route (MMR):",
           response.status,
-          errorText
+          errorText,
         );
 
         if (response.status === 404) {
           throw new Error(
-            `Jogador ${name}#${tag} não encontrado. Verifique o nome e tag.`
+            `Jogador ${name}#${tag} não encontrado. Verifique o nome e tag.`,
           );
         }
 
@@ -638,7 +638,7 @@ export class HenrikDevAPI {
 
       if (!data.mmr) {
         throw new Error(
-          "Dados de MMR não encontrados. O jogador pode não ter jogado partidas competitivas."
+          "Dados de MMR não encontrados. O jogador pode não ter jogado partidas competitivas.",
         );
       }
 
@@ -655,7 +655,7 @@ export class HenrikDevAPI {
     tag: string,
     region: string = "na",
     mode: string = "competitive",
-    size: number = 10
+    size: number = 10,
   ): Promise<HenrikDevMatch[]> {
     if (USE_MOCK_DATA) {
       console.log("🎭 Usando dados mockados para partidas");
@@ -812,7 +812,7 @@ export class HenrikDevAPI {
     try {
       // Usar API route para evitar CORS
       const url = `/api/valorant/player?name=${encodeURIComponent(
-        name
+        name,
       )}&tag=${encodeURIComponent(tag)}&region=${region}`;
       console.log("🎯 URL da API route (Matches):", url);
       console.log("📝 Parâmetros:", { name, tag, region, mode, size });
@@ -824,12 +824,12 @@ export class HenrikDevAPI {
         console.error(
           "❌ Erro na API route (Matches):",
           response.status,
-          errorText
+          errorText,
         );
 
         if (response.status === 404) {
           throw new Error(
-            `Jogador ${name}#${tag} não encontrado. Verifique o nome e tag.`
+            `Jogador ${name}#${tag} não encontrado. Verifique o nome e tag.`,
           );
         }
 
@@ -859,7 +859,7 @@ export class HenrikDevAPI {
   static async getPlayerStats(
     name: string,
     tag: string,
-    region: string = "na"
+    region: string = "na",
   ): Promise<unknown> {
     const url = `${HENRIKDEV_BASE_URL}/stats/${region}/${name}/${tag}`;
     return this.fetchWithError(url);
@@ -868,7 +868,7 @@ export class HenrikDevAPI {
   // Buscar dados de leaderboard
   static async getLeaderboard(
     region: string = "na",
-    act: string = "current"
+    act: string = "current",
   ): Promise<unknown> {
     const url = `${HENRIKDEV_BASE_URL}/leaderboard/${region}?act=${act}`;
     return this.fetchWithError(url);
@@ -878,7 +878,7 @@ export class HenrikDevAPI {
 // Funções utilitárias para processar dados
 export function processPlayerData(
   playerData: HenrikDevPlayer,
-  mmrData: HenrikDevMMR
+  mmrData: HenrikDevMMR,
 ) {
   return {
     name: playerData.data.name,
@@ -903,7 +903,7 @@ export function processMatchData(match: any, playerName: string) {
   // Na API v3, os dados do jogador podem estar em uma estrutura diferente
   // Vamos procurar o jogador nos dados disponíveis
   const player = match.players?.all_players?.find(
-    (p: any) => p.name.toLowerCase().trim() === playerName.toLowerCase().trim()
+    (p: any) => p.name.toLowerCase().trim() === playerName.toLowerCase().trim(),
   );
 
   if (!player) {
@@ -921,8 +921,8 @@ export function processMatchData(match: any, playerName: string) {
         ? "win"
         : "loss"
       : player.team === "Blue"
-      ? "win"
-      : "loss",
+        ? "win"
+        : "loss",
     score: match.teams
       ? `${match.teams.red?.rounds_won || 0}-${
           match.teams.blue?.rounds_won || 0
@@ -935,7 +935,7 @@ export function processMatchData(match: any, playerName: string) {
     damage: player.damage_made || 0,
     rounds_played: match.metadata.rounds_played || 0,
     date: new Date(
-      (match.metadata.game_start || match.metadata.game_start_patched) * 1000
+      (match.metadata.game_start || match.metadata.game_start_patched) * 1000,
     ),
     duration: Math.round((match.metadata.game_length || 0) / 60),
   };

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { 
+import {
   Table,
   TableBody,
   TableCell,
@@ -38,22 +38,24 @@ export function DataTable<T extends { id: string }>({
   onAdd,
   onEdit,
   onDelete,
-  addButtonText = "Adicionar"
+  addButtonText = "Adicionar",
 }: DataTableProps<T>) {
   const [searchTerm, setSearchTerm] = useState("");
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
-  
+
   // Filter data based on search term (across all fields)
   const filteredData = data.filter((item) => {
-    return Object.entries(item).some(([_, value]) => 
-      value && value.toString().toLowerCase().includes(searchTerm.toLowerCase())
+    return Object.entries(item).some(
+      ([_, value]) =>
+        value &&
+        value.toString().toLowerCase().includes(searchTerm.toLowerCase()),
     );
   });
 
   // Handle delete with confirmation
   const handleDelete = async (item: T) => {
     if (!onDelete) return;
-    
+
     try {
       setIsDeleting(item.id);
       await onDelete(item);
@@ -73,7 +75,7 @@ export function DataTable<T extends { id: string }>({
       setIsDeleting(null);
     }
   };
-  
+
   return (
     <Card className={styles.dataTableCard}>
       <div className={styles.header}>
@@ -94,7 +96,7 @@ export function DataTable<T extends { id: string }>({
           )}
         </div>
       </div>
-      
+
       <div className={styles.tableContainer}>
         <Table>
           <TableHeader>
@@ -113,27 +115,30 @@ export function DataTable<T extends { id: string }>({
                 <TableRow key={item.id}>
                   {columns.map((column) => (
                     <TableCell key={`${item.id}-${column.key}`}>
-                      {column.render ? column.render(item) : 
-                        // Acesso seguro aos valores dinâmicos
-                        (() => {
-                          const value = typeof column.key === 'string' && column.key in item 
-                            ? item[column.key as keyof T] 
-                            : undefined;
-                          
-                          if (value === null || value === undefined) {
-                            return "-";
-                          }
-                          
-                          if (typeof value === 'boolean') {
-                            return value ? 'Sim' : 'Não';
-                          }
-                          
-                          if (value instanceof Date) {
-                            return value.toLocaleDateString('pt-BR');
-                          }
-                          
-                          return String(value);
-                        })()}
+                      {column.render
+                        ? column.render(item)
+                        : // Acesso seguro aos valores dinâmicos
+                          (() => {
+                            const value =
+                              typeof column.key === "string" &&
+                              column.key in item
+                                ? item[column.key as keyof T]
+                                : undefined;
+
+                            if (value === null || value === undefined) {
+                              return "-";
+                            }
+
+                            if (typeof value === "boolean") {
+                              return value ? "Sim" : "Não";
+                            }
+
+                            if (value instanceof Date) {
+                              return value.toLocaleDateString("pt-BR");
+                            }
+
+                            return String(value);
+                          })()}
                     </TableCell>
                   ))}
                   {(onEdit || onDelete) && (
@@ -155,7 +160,9 @@ export function DataTable<T extends { id: string }>({
                             onClick={() => handleDelete(item)}
                             disabled={isDeleting === item.id}
                           >
-                            {isDeleting === item.id ? "Excluindo..." : "Excluir"}
+                            {isDeleting === item.id
+                              ? "Excluindo..."
+                              : "Excluir"}
                           </Button>
                         )}
                       </div>
@@ -165,11 +172,13 @@ export function DataTable<T extends { id: string }>({
               ))
             ) : (
               <TableRow>
-                <TableCell 
-                  colSpan={columns.length + (onEdit || onDelete ? 1 : 0)} 
+                <TableCell
+                  colSpan={columns.length + (onEdit || onDelete ? 1 : 0)}
                   className={styles.emptyState}
                 >
-                  {searchTerm ? "Nenhum resultado encontrado" : "Nenhum dado disponível"}
+                  {searchTerm
+                    ? "Nenhum resultado encontrado"
+                    : "Nenhum dado disponível"}
                 </TableCell>
               </TableRow>
             )}

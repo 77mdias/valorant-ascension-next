@@ -4,7 +4,7 @@ import Header from "@/components/Header";
 import CourseCard from "@/components/CourseCard";
 
 // Força a página a ser dinâmica para evitar problemas no build
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 // import TestimonialCarousel from "@/components/TestimonialCarousel";
 import { Button } from "@/components/ui/button";
@@ -70,7 +70,7 @@ const Courses = async () => {
             </p>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col items-center justify-center gap-4 pt-4 sm:flex-row text-lg">
+            <div className="flex flex-col items-center justify-center gap-4 pt-4 text-lg sm:flex-row">
               <Button
                 size="lg"
                 className={`${styles.bgGradientPrimary} ${styles.buttonPrimary} min-w-[195px] px-8 text-primary-foreground transition-all duration-300`}
@@ -81,7 +81,7 @@ const Courses = async () => {
               <Button
                 size="lg"
                 variant="outline"
-                className="border-primary/30 px-8 transition-all min-w-[195px] duration-300 hover:border-primary hover:bg-primary/10"
+                className="min-w-[195px] border-primary/30 px-8 transition-all duration-300 hover:border-primary hover:bg-primary/10"
               >
                 Ver Cursos
               </Button>

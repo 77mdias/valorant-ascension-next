@@ -539,7 +539,7 @@ export default function PlayerSearch() {
                               style={{ cursor: "pointer" }}
                             >
                               <td className={styles.matchInfo}>
-                                <div className="flex flex-row gap-4 items-center">
+                                <div className="flex flex-row items-center gap-4">
                                   <div className={styles.agent}>
                                     <Image
                                       src={`/agents/${match.agent.toLowerCase().replace(" ", "-").replace("/", "-")}.png`}

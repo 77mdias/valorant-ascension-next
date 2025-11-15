@@ -46,7 +46,13 @@ export function PlanCard({
       {isHighlighted && (
         <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-pink-500/10"></div>
       )}
-      <div className={isHighlighted ? "relative z-10 grid h-full grid-rows-[auto_1fr_auto] gap-4" : "relative z-10 grid h-full grid-rows-[auto_1fr_auto] gap-4"}>
+      <div
+        className={
+          isHighlighted
+            ? "relative z-10 grid h-full grid-rows-[auto_1fr_auto] gap-4"
+            : "relative z-10 grid h-full grid-rows-[auto_1fr_auto] gap-4"
+        }
+      >
         {/* Plano Atual Badge */}
         {isCurrentPlan && (
           <div className="mb-4 flex items-center justify-center rounded-full bg-green-600/20 py-1 text-sm text-green-400">

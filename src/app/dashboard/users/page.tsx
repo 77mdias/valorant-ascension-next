@@ -11,7 +11,7 @@ import UserForm from "@/components/forms/UserForm";
 import styles from "./scss/UsersPage.module.scss";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { 
+import {
   Table,
   TableBody,
   TableCell,
@@ -33,7 +33,7 @@ export default function UsersPage() {
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingUser, setEditingUser] = useState<DashboardUser | null>(null);
   const router = useRouter();
-  
+
   // Carregar usuários
   const loadUsers = async () => {
     setLoading(true);
@@ -69,7 +69,7 @@ export default function UsersPage() {
     if (!confirm("Tem certeza que deseja excluir este usuário?")) {
       return;
     }
-    
+
     try {
       await deleteUser(id);
       toast({
@@ -104,8 +104,8 @@ export default function UsersPage() {
   });
 
   return (
-    <div className="w-full max-w-7xl mx-auto p-2 md:p-6">
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 mb-4">
+    <div className="mx-auto w-full max-w-7xl p-2 md:p-6">
+      <div className="mb-4 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
         <DashboardNavSelect currentRoute="/dashboard/users" />
         <Button onClick={() => setShowAddForm(!showAddForm)}>
           {showAddForm ? "Cancelar" : "Adicionar Usuário"}
@@ -114,23 +114,23 @@ export default function UsersPage() {
 
       {showAddForm && (
         <Card className="mb-4">
-          <UserForm 
+          <UserForm
             onSuccess={() => {
               setShowAddForm(false);
               loadUsers();
-            }} 
+            }}
           />
         </Card>
       )}
 
       {editingUser && (
         <Card className="mb-4">
-          <UserForm 
+          <UserForm
             initialData={mapUserToFormValues(editingUser)}
             onSuccess={() => {
               setEditingUser(null);
               loadUsers();
-            }} 
+            }}
           />
         </Card>
       )}
@@ -150,31 +150,40 @@ export default function UsersPage() {
           <TableBody>
             {loading ? (
               <TableRow>
-                <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">Carregando...</TableCell>
+                <TableCell
+                  colSpan={6}
+                  className="py-8 text-center text-muted-foreground"
+                >
+                  Carregando...
+                </TableCell>
               </TableRow>
             ) : users.length > 0 ? (
               users.map((user) => (
                 <TableRow key={user.id} className="hover:bg-muted/40">
-                  <TableCell className="font-semibold">{user.nickname}</TableCell>
+                  <TableCell className="font-semibold">
+                    {user.nickname}
+                  </TableCell>
                   <TableCell>{user.email}</TableCell>
                   <TableCell>{user.role}</TableCell>
                   <TableCell>
-                    <span className={`px-2 py-1 rounded text-xs font-bold ${user.isActive ? "bg-green-500/20 text-green-600" : "bg-muted/30 text-muted-foreground"}`}>
+                    <span
+                      className={`rounded px-2 py-1 text-xs font-bold ${user.isActive ? "bg-green-500/20 text-green-600" : "bg-muted/30 text-muted-foreground"}`}
+                    >
                       {user.isActive ? "Ativo" : "Inativo"}
                     </span>
                   </TableCell>
                   <TableCell>{formatDate(user.createdAt)}</TableCell>
                   <TableCell>
                     <div className="flex gap-2">
-                      <Button 
-                        variant="outline" 
+                      <Button
+                        variant="outline"
                         size="sm"
                         onClick={() => setEditingUser(user)}
                       >
                         Editar
                       </Button>
-                      <Button 
-                        variant="destructive" 
+                      <Button
+                        variant="destructive"
                         size="sm"
                         onClick={() => handleDeleteUser(user.id)}
                       >
@@ -186,7 +195,12 @@ export default function UsersPage() {
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">Nenhum usuário encontrado</TableCell>
+                <TableCell
+                  colSpan={6}
+                  className="py-8 text-center text-muted-foreground"
+                >
+                  Nenhum usuário encontrado
+                </TableCell>
               </TableRow>
             )}
           </TableBody>

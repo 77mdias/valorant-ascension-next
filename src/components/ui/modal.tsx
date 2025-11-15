@@ -89,7 +89,7 @@ export function Modal({
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* Backdrop */}
       <div
-        className="bg-opacity-50 absolute inset-0 bg-black backdrop-blur-sm"
+        className="absolute inset-0 bg-black bg-opacity-50 backdrop-blur-sm"
         onClick={onClose}
       />
 
@@ -145,7 +145,7 @@ export function Modal({
           </div>
 
           {/* Actions */}
-          <div className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-2">
+          <div className="flex flex-col space-y-2 sm:flex-row sm:space-x-2 sm:space-y-0">
             {actions ? (
               actions.map((action, index) => (
                 <Button

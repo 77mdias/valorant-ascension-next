@@ -157,8 +157,8 @@ const Header = () => {
             {user?.role === "ADMIN" && (
               <Link
                 href="/dashboard"
-                  className="py-2 text-foreground/80 transition-colors hover:text-primary"
-                  onClick={() => setIsMenuOpen(false)}
+                className="py-2 text-foreground/80 transition-colors hover:text-primary"
+                onClick={() => setIsMenuOpen(false)}
               >
                 Dashboard
               </Link>
