@@ -2,6 +2,7 @@ import { Card, CardContent } from "./ui/card";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { Clock, Users, ArrowRight } from "lucide-react";
+import Image from "next/image";
 
 const courses = [
   {
@@ -102,9 +103,11 @@ const Courses = () => {
             className="glass-card hover-card border-border/50 group overflow-hidden"
           >
             <div className="relative">
-              <img
+              <Image
                 src={course.thumbnail}
                 alt={course.title}
+                width={400}
+                height={192}
                 className="h-48 w-full object-cover transition-transform duration-300 group-hover:scale-105"
               />
               <div className="from-background/60 absolute inset-0 bg-gradient-to-t to-transparent"></div>

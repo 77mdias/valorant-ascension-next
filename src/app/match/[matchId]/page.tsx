@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useParams, useSearchParams } from "next/navigation";
+import Image from "next/image";
 import styles from "./page.module.scss";
 import { calculateFKandFD, calculateMK } from "@/utils/matchCalculations";
 
@@ -239,7 +240,6 @@ export default function MatchDetailsPage() {
 
   // Busca os detalhes da partida
   useEffect(() => {
-    console.log("matchDetails:", matchDetails);
     const fetchMatchDetails = async () => {
       try {
         setLoading(true);
@@ -691,9 +691,11 @@ export default function MatchDetailsPage() {
                             style={{ cursor: "pointer" }}
                           >
                             <div className={styles.playerInfo}>
-                              <img
+                              <Image
                                 src={`https://media.valorant-api.com/agents/${player.agent?.id}/displayicon.png`}
-                                alt={player.agent?.name}
+                                alt={player.agent?.name || "Agent"}
+                                width={40}
+                                height={40}
                                 className={styles.agentIcon}
                               />
                               <div>
@@ -781,9 +783,11 @@ export default function MatchDetailsPage() {
                                 style={{ cursor: "pointer" }}
                               >
                                 <div className={styles.playerInfo}>
-                                  <img
+                                  <Image
                                     src={`https://media.valorant-api.com/agents/${player.agent?.id}/displayicon.png`}
-                                    alt={player.agent?.name}
+                                    alt={player.agent?.name || "Agent"}
+                                    width={40}
+                                    height={40}
                                     className={styles.agentIcon}
                                   />
                                   <div>
@@ -864,9 +868,11 @@ export default function MatchDetailsPage() {
                                 style={{ cursor: "pointer" }}
                               >
                                 <div className={styles.playerInfo}>
-                                  <img
+                                  <Image
                                     src={`https://media.valorant-api.com/agents/${player.agent?.id}/displayicon.png`}
-                                    alt={player.agent?.name}
+                                    alt={player.agent?.name || "Agent"}
+                                    width={40}
+                                    height={40}
                                     className={styles.agentIcon}
                                   />
                                   <div>

@@ -13,6 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
+import { lessonCategory as PrismaCategory } from "@prisma/client";
 
 interface LessonFormProps {
   initialData?: Partial<LessonFormInputType> & { id?: string };
@@ -22,7 +23,7 @@ interface LessonFormProps {
 
 export default function LessonForm({ initialData, defaultCategoryId, onSuccess }: LessonFormProps) {
   const [isLoading, setIsLoading] = useState(false);
-  const [categories, setCategories] = useState<any[]>([]);
+  const [categories, setCategories] = useState<PrismaCategory[]>([]);
   const isEdit = !!initialData?.id;
 
   const {

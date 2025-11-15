@@ -16,12 +16,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { lessonCategory as PrismaCategory } from "@prisma/client";
 
 export default function CategoriesPage() {
-  const [categories, setCategories] = useState<any[]>([]);
+  const [categories, setCategories] = useState<PrismaCategory[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAddForm, setShowAddForm] = useState(false);
-  const [editingCategory, setEditingCategory] = useState<any>(null);
+  const [editingCategory, setEditingCategory] = useState<PrismaCategory | null>(null);
   
   // Carregar categorias
   const loadCategories = async () => {

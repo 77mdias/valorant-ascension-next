@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Image from "next/image";
 import {
   HenrikDevAPI,
   processPlayerData,
@@ -154,6 +155,7 @@ export default function PlayerSearch() {
       setSearchInput(`${nameParam}#${tagParam}`);
 
       // Atualizar a região se fornecida
+      const effectiveRegion = regionParam || region;
       if (regionParam) {
         setRegion(regionParam);
       }
@@ -162,7 +164,7 @@ export default function PlayerSearch() {
       const cachedData = valorantCache.getPlayerData(
         nameParam,
         tagParam,
-        regionParam || region,
+        effectiveRegion,
       );
 
       if (cachedData) {
@@ -184,12 +186,13 @@ export default function PlayerSearch() {
       } else {
         // Se não há cache, fazer busca na API após um pequeno delay
         const timer = setTimeout(() => {
-          performSearch(nameParam, tagParam, regionParam || region);
+          performSearch(nameParam, tagParam, effectiveRegion);
         }, 500);
 
         return () => clearTimeout(timer);
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Executar apenas uma vez ao montar o componente
 
   const handleSearch = async () => {
@@ -411,9 +414,11 @@ export default function PlayerSearch() {
       {playerData && (
         <div className={styles.playerCard}>
           <div className={styles.playerHeader}>
-            <img
+            <Image
               src={playerData.cardImage}
               alt="Player Card"
+              width={300}
+              height={200}
               className={styles.playerCardImage}
             />
             <div className={styles.playerInfo}>
@@ -428,9 +433,11 @@ export default function PlayerSearch() {
               </p>
             </div>
             <div className={styles.rankInfo}>
-              <img
+              <Image
                 src={playerData.rankImage}
                 alt="Rank"
+                width={100}
+                height={100}
                 className={styles.rankImage}
               />
               <h3>{playerData.rank}</h3>
@@ -534,9 +541,11 @@ export default function PlayerSearch() {
                               <td className={styles.matchInfo}>
                                 <div className="flex flex-row gap-4 items-center">
                                   <div className={styles.agent}>
-                                    <img
+                                    <Image
                                       src={`/agents/${match.agent.toLowerCase().replace(" ", "-").replace("/", "-")}.png`}
                                       alt={match.agent}
+                                      width={60}
+                                      height={60}
                                       className={styles.agentImage}
                                     />
                                   </div>
@@ -549,9 +558,11 @@ export default function PlayerSearch() {
                                   </div>
                                   <div className="flex flex-row items-center justify-center gap-2">
                                     <div className="size-10">
-                                      <img
+                                      <Image
                                         src={playerData.rankImage}
                                         alt="Rank"
+                                        width={40}
+                                        height={40}
                                         className={`object-contain`}
                                       />
                                     </div>

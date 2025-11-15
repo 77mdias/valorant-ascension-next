@@ -3,6 +3,7 @@ import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 import { Twitch, Youtube, Instagram } from "lucide-react";
 import styles from "@/scss/components/CourseCard.module.scss";
+import Image from "next/image";
 
 const instructors = [
   {
@@ -119,9 +120,11 @@ const Instructors = () => {
             <CardContent className="p-6">
               {/* Avatar & Rank */}
               <div className="relative mb-6 text-center">
-                <img
+                <Image
                   src={instructor.avatar}
                   alt={instructor.name}
+                  width={80}
+                  height={80}
                   className="ring-primary/20 group-hover:ring-primary/40 mx-auto mb-4 h-20 w-20 rounded-full object-cover ring-4 transition-all"
                 />
                 <Badge

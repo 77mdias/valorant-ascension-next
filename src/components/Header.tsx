@@ -42,7 +42,7 @@ const Header = () => {
 
         {/* Desktop Navigation */}
         <nav className="hidden items-center space-x-8 md:flex">
-          <a
+          <Link
             href="/cursos"
             className="group relative text-foreground/80 transition-colors duration-200 hover:text-primary"
           >
@@ -50,7 +50,7 @@ const Header = () => {
             <span
               className={`${styles.bgGradient} absolute -bottom-1 left-0 h-0.5 w-0 transition-all duration-300 group-hover:w-full`}
             ></span>
-          </a>
+          </Link>
           <a
             href="/instrutores"
             className="group relative text-foreground/80 transition-colors duration-200 hover:text-primary"

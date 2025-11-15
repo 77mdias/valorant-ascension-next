@@ -123,7 +123,7 @@ function ThankYouContent() {
                 <span className="mt-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-blue-500 text-xs text-white">
                   2
                 </span>
-                <span>Clique no botão "Verificar Email"</span>
+                <span>Clique no botão &ldquo;Verificar Email&rdquo;</span>
               </div>
               <div className="flex items-start gap-2">
                 <span className="mt-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-blue-500 text-xs text-white">

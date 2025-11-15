@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, Suspense } from "react";
+import { useEffect, useState, useCallback, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
@@ -33,13 +33,7 @@ function VerifyEmailContent() {
     }
   }, [emailParam]);
 
-  useEffect(() => {
-    if (token) {
-      verifyEmail(token);
-    }
-  }, [token]);
-
-  const verifyEmail = async (verificationToken: string) => {
+  const verifyEmail = useCallback(async (verificationToken: string) => {
     setIsVerifying(true);
     try {
       const response = await fetch(
@@ -65,7 +59,13 @@ function VerifyEmailContent() {
     } finally {
       setIsVerifying(false);
     }
-  };
+  }, [email, router]);
+
+  useEffect(() => {
+    if (token) {
+      verifyEmail(token);
+    }
+  }, [token, verifyEmail]);
 
   const resendVerificationEmail = async () => {
     if (!email) {

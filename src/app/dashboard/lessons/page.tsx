@@ -19,13 +19,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { lessons as PrismaLesson, lessonCategory as PrismaCategory } from "@prisma/client";
 
 export default function LessonsPage() {
-  const [lessons, setLessons] = useState<any[]>([]);
-  const [categories, setCategories] = useState<any[]>([]);
+  const [lessons, setLessons] = useState<PrismaLesson[]>([]);
+  const [categories, setCategories] = useState<PrismaCategory[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAddForm, setShowAddForm] = useState(false);
-  const [editingLesson, setEditingLesson] = useState<any>(null);
+  const [editingLesson, setEditingLesson] = useState<PrismaLesson | null>(null);
   
   // Carregar dados
   const loadData = async () => {

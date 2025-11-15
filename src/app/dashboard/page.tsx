@@ -19,11 +19,11 @@ export const metadata: Metadata = {
 
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions);
-  
+
   if (!session) redirect('/auth/signin');
 
   // Verificar se o usuário é ADMIN
-  const user = session.user as any;
+  const user = session.user;
   if (user?.role !== UserRole.ADMIN) {
     redirect('/auth/signin?error=AccessDenied');
   }

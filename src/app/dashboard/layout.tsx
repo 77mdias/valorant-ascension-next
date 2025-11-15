@@ -1,5 +1,6 @@
 
 import Link from "next/link";
+import Image from "next/image";
 import { ReactNode, useState } from "react";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
@@ -12,7 +13,7 @@ import ProjectInfo from "@/components/ProjectInfo";
 export default async function DashboardLayout({ children }: { children: ReactNode }) {
   const session = await getServerSession(authOptions);
   if (!session) redirect("/auth/signin");
-  const user = session.user as any;
+  const user = session.user;
   if (user?.role !== UserRole.ADMIN) redirect("/auth/signin?error=AccessDenied");
 
   // Mobile sidebar state (SSR workaround: always closed)
@@ -35,7 +36,7 @@ export default async function DashboardLayout({ children }: { children: ReactNod
               </div>
               <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-pink-500 items-center justify-center text-white font-bold text-lg hidden md:flex ">
                 {session.user?.image ? (
-                  <img src={session.user.image} alt="Avatar" className="w-full h-full object-cover rounded-full" />
+                  <Image src={session.user.image} alt="Avatar" width={40} height={40} className="w-full h-full object-cover rounded-full" />
                 ) : (
                   (session.user?.name || "U")[0]
                 )}
