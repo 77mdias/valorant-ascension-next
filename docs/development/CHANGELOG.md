@@ -8,6 +8,13 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 ## [Não Lançado]
 
 ### ✨ Adicionado
+- VID-003: Controle de velocidade de reprodução
+  - Hook `usePlaybackSpeed` para gerenciar estado e persistência de velocidade no localStorage
+  - Componente `SpeedControl` com dropdown interativo para seleção de velocidade (0.5x, 0.75x, 1x, 1.25x, 1.5x, 2x)
+  - Badge visual no player quando velocidade diferente de 1x (normal)
+  - Navegação completa por teclado (Tab, Enter, Esc, Setas) e mouse
+  - Integração com ReactPlayer através da propriedade `playbackRate`
+  - Estilos SCSS seguindo design system do projeto (cores primary/secondary, animações suaves)
 - VID-002: Sistema de marcação de timestamps
   - Novo modelo Prisma `VideoTimestamp`, schemas Zod e server actions para criar/editar/excluir registros com validação de duração
   - Tela `/dashboard/lessons/[id]` com gerenciador completo de timestamps para administradores

@@ -5,7 +5,7 @@
 **Status:** 🟡 EM ANDAMENTO
 **Última atualização:** 2025-11-15
 **Sprint Atual:** Novembro-Dezembro 2025
-**Status Geral:** 🟡 6% concluído (2/32 tarefas completas) – FASE ATIVA
+**Status Geral:** 🟡 9% concluído (3/32 tarefas completas) – FASE ATIVA
 **ETA:** 2025-12-01
 **Pré-requisito:** v0.1.0 - MVP (✅ Concluído)
 
@@ -15,12 +15,12 @@
 
 | Categoria                     | Total | Concluído | Em Andamento | Pendente | Bloqueado |
 | ----------------------------- | ----- | --------- | ------------ | -------- | --------- |
-| Sistema de Vídeos Avançado    | 7     | 2         | 0            | 5        | 0         |
+| Sistema de Vídeos Avançado    | 7     | 3         | 0            | 4        | 0         |
 | Dashboard de Progresso        | 7     | 0         | 0            | 7        | 0         |
 | Sistema de Conquistas         | 6     | 0         | 0            | 6        | 0         |
 | Busca e Filtros               | 6     | 0         | 0            | 6        | 0         |
 | Sistema de Comentários        | 6     | 0         | 0            | 6        | 0         |
-| **TOTAL**                     | **32** | **2**    | **0**        | **30**   | **0**     |
+| **TOTAL**                     | **32** | **3**    | **0**        | **29**   | **0**     |
 
 ### 🎯 Principais Indicadores
 - ✅ v0.1.0 MVP concluído com sucesso
@@ -148,7 +148,7 @@ Transformar o player de vídeo básico em uma experiência premium, com controle
 
 ---
 
-- [ ] **VID-003** - Controle de velocidade de reprodução
+- [x] **VID-003** - Controle de velocidade de reprodução ✅
 
   **Descrição curta:**
   - Adicionar seletor de velocidade (0.5x, 0.75x, 1x, 1.25x, 1.5x, 2x)
@@ -165,18 +165,30 @@ Transformar o player de vídeo básico em uma experiência premium, com controle
   - `src/components/ui/VideoPlayer.tsx` (atualizar)
   - `src/hooks/usePlaybackSpeed.ts` (novo)
   - `src/components/VideoPlayer/SpeedControl.tsx` (novo)
+  - `src/components/VideoPlayer/SpeedControl.module.scss` (novo)
 
   **Critérios de aceitação:**
-  - [ ] Todas as velocidades funcionam corretamente
-  - [ ] Preferência persiste entre sessões
-  - [ ] UI acessível via teclado e mouse
-  - [ ] Indicador visual claro da velocidade atual
-  - [ ] Funciona em todos os navegadores suportados
+  - [x] Todas as velocidades funcionam corretamente
+  - [x] Preferência persiste entre sessões
+  - [x] UI acessível via teclado e mouse
+  - [x] Indicador visual claro da velocidade atual
+  - [x] Funciona em todos os navegadores suportados
+
+  **Notas de validação (2025-11-15):**
+  - Hook `usePlaybackSpeed` implementado em `src/hooks/usePlaybackSpeed.ts` com gerenciamento completo de estado e persistência em localStorage.
+  - Velocidades disponíveis: [0.5, 0.75, 1, 1.25, 1.5, 2] com validação e funções auxiliares (nextSpeed, previousSpeed, resetSpeed).
+  - Componente `SpeedControl` criado em `src/components/VideoPlayer/SpeedControl.tsx` com dropdown acessível via teclado (Tab, Enter, Esc, Setas).
+  - Estilos SCSS em `src/components/VideoPlayer/SpeedControl.module.scss` seguindo design system do projeto (cores primary/secondary, animações suaves).
+  - Badge visual exibido quando velocidade diferente de 1x (padrão normal), aparecendo no botão trigger.
+  - Integração completa no `VideoPlayer.tsx` com propriedade `playbackRate` do ReactPlayer.
+  - Dropdown fecha automaticamente ao clicar fora (click outside) e ao selecionar velocidade.
+  - Navegação por teclado: Esc fecha dropdown, Enter/Click seleciona velocidade, Tab navega entre opções.
+  - Build e type-check passaram sem erros, código lint-compliant.
 
   **Prioridade:** 🟢 Média
   **Estimativa:** 3h
   **Dependências:** VID-001
-  **Status:** 🔴 Pendente
+  **Status:** 🟢 Concluído (2025-11-15) ✅
 
 ---
 

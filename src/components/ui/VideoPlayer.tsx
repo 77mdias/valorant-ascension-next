@@ -23,7 +23,9 @@ import ReactPlayer from "react-player";
 import styles from "./VideoPlayer.module.scss";
 import { cn } from "@/lib/utils";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
+import { usePlaybackSpeed } from "@/hooks/usePlaybackSpeed";
 import TimestampList from "@/components/VideoPlayer/TimestampList";
+import SpeedControl from "@/components/VideoPlayer/SpeedControl";
 import { formatSeconds } from "@/lib/time";
 
 interface VideoPlayerProps {
@@ -64,6 +66,9 @@ const VideoPlayer = ({
   const [previousVolume, setPreviousVolume] = useState(0.8);
   const [duration, setDuration] = useState(0);
   const [playedSeconds, setPlayedSeconds] = useState(0);
+
+  // Hook de controle de velocidade de reprodução
+  const { speed, setSpeed, isNormalSpeed } = usePlaybackSpeed();
 
   const hasVideo = Boolean(videoUrl);
 
@@ -246,6 +251,7 @@ const VideoPlayer = ({
                 playing={isPlaying}
                 muted={isMuted}
                 volume={volume}
+                playbackRate={speed}
                 playsInline
                 onReady={() => setIsBuffering(false)}
                 onPlay={() => setIsPlaying(true)}
@@ -342,6 +348,8 @@ const VideoPlayer = ({
                       className={styles.range}
                     />
                   </div>
+
+                  <SpeedControl currentSpeed={speed} onSpeedChange={setSpeed} />
 
                   <div className="flex flex-1 items-center justify-end gap-2 text-xs text-white/60">
                     <span className="hidden md:inline">
