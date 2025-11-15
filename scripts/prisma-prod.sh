@@ -16,29 +16,39 @@ if [ "$confirm" != "PRODUCAO" ]; then
     exit 1
 fi
 
-# Carrega variáveis do .env de forma segura
+# Carrega variáveis do .env de forma segura, com fallback para env vars
 if [ -f ".env" ]; then
-    echo "🔧 Carregando variáveis de ambiente..."
-    
+    echo "🔧 Carregando variáveis de ambiente do arquivo .env..."
+
     # Lê cada linha do .env, ignora comentários e linhas vazias
     while IFS= read -r line || [ -n "$line" ]; do
         # Remove espaços em branco
         line=$(echo "$line" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
-        
+
         # Ignora linhas vazias e comentários
         if [[ -n "$line" && ! "$line" =~ ^[[:space:]]*# ]]; then
             # Exporta a variável de forma segura
             export "$line"
         fi
     done < ".env"
-    
-    echo "✅ Variáveis carregadas com sucesso!"
-    echo "📊 DATABASE_URL_PROD: ${DATABASE_URL_PROD:0:50}..."
-    echo "📊 DIRECT_URL_PROD: ${DIRECT_URL_PROD:0:50}..."
+
+    echo "✅ Arquivo .env carregado com sucesso"
+elif [ -n "$DATABASE_URL_PROD" ]; then
+    echo "✅ Usando variáveis de ambiente já definidas (CI/CD mode)"
 else
-    echo "❌ Arquivo .env não encontrado!"
+    echo "❌ Arquivo .env não encontrado e DATABASE_URL_PROD não está definida!"
+    echo "💡 Crie um arquivo .env ou defina DATABASE_URL_PROD como variável de ambiente"
     exit 1
 fi
+
+# Exibir informações sobre as variáveis (se disponíveis)
+if [ -n "$DATABASE_URL_PROD" ]; then
+    echo "📊 DATABASE_URL_PROD: ✅ Definida"
+fi
+if [ -n "$DIRECT_URL_PROD" ]; then
+    echo "📊 DIRECT_URL_PROD: ✅ Definida"
+fi
+echo ""
 
 # Função para executar comando com retry para databases serverless (como Neon)
 execute_with_retry() {

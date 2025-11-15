@@ -42,11 +42,13 @@ jobs:
         env:
           # Usar DATABASE_URL fake para geração do cliente (não precisa de DB real)
           DATABASE_URL: postgresql://user:pass@localhost:5432/db?schema=public
+          DIRECT_URL: postgresql://user:pass@localhost:5432/db?schema=public
 
       - name: Validate Prisma Schema
         run: npm run prisma:validate
         env:
           DATABASE_URL: postgresql://user:pass@localhost:5432/db?schema=public
+          DIRECT_URL: postgresql://user:pass@localhost:5432/db?schema=public
 
       - name: Type Check
         run: npm run type-check
