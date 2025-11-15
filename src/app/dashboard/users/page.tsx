@@ -22,11 +22,16 @@ import {
 import { useRouter } from "next/navigation";
 import { user as PrismaUser } from "@prisma/client";
 
+type DashboardUser = Pick<
+  PrismaUser,
+  "id" | "branchId" | "nickname" | "role" | "email" | "isActive" | "createdAt"
+>;
+
 export default function UsersPage() {
-  const [users, setUsers] = useState<PrismaUser[]>([]);
+  const [users, setUsers] = useState<DashboardUser[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAddForm, setShowAddForm] = useState(false);
-  const [editingUser, setEditingUser] = useState<PrismaUser | null>(null);
+  const [editingUser, setEditingUser] = useState<DashboardUser | null>(null);
   const router = useRouter();
   
   // Carregar usuários
@@ -89,6 +94,15 @@ export default function UsersPage() {
 
   // Rotas do dashboard para navegação
 
+  const mapUserToFormValues = (user: DashboardUser) => ({
+    id: user.id,
+    branchId: user.branchId ?? "",
+    nickname: user.nickname ?? "",
+    email: user.email,
+    role: user.role,
+    isActive: user.isActive,
+  });
+
   return (
     <div className="w-full max-w-7xl mx-auto p-2 md:p-6">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 mb-4">
@@ -112,7 +126,7 @@ export default function UsersPage() {
       {editingUser && (
         <Card className="mb-4">
           <UserForm 
-            initialData={editingUser}
+            initialData={mapUserToFormValues(editingUser)}
             onSuccess={() => {
               setEditingUser(null);
               loadUsers();

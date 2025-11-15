@@ -99,7 +99,7 @@ export default function LessonsPage() {
   };
 
   // Formatar duração
-  const formatDuration = (seconds: number) => {
+  const formatDuration = (seconds?: number | null) => {
     if (!seconds) return "N/A";
     const minutes = Math.floor(seconds / 60);
     return `${minutes} min`;
@@ -112,6 +112,21 @@ export default function LessonsPage() {
   };
 
   // Rotas do dashboard para navegação
+
+  const mapLessonToFormValues = (lesson: PrismaLesson) => ({
+    id: lesson.id,
+    title: lesson.title,
+    description: lesson.description ?? undefined,
+    videoUrl: lesson.videoUrl ?? undefined,
+    thumbnailUrl: lesson.thumbnailUrl ?? undefined,
+    duration: lesson.duration ?? undefined,
+    categoryId: lesson.categoryId,
+    createdById: lesson.createdById,
+    isLive: lesson.isLive,
+    isCompleted: lesson.isCompleted,
+    isLocked: lesson.isLocked,
+    number: lesson.number ?? undefined,
+  });
 
   return (
     <div className="w-full max-w-7xl mx-auto p-2 md:p-6">
@@ -136,7 +151,7 @@ export default function LessonsPage() {
       {editingLesson && (
         <Card className="mb-4">
           <LessonForm 
-            initialData={editingLesson}
+            initialData={mapLessonToFormValues(editingLesson)}
             onSuccess={() => {
               setEditingLesson(null);
               loadData();

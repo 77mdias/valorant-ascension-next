@@ -16,13 +16,15 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { lessonCategory as PrismaCategory } from "@prisma/client";
+import { lessonCategory as PrismaCategory, lessons as PrismaLesson } from "@prisma/client";
+
+type CategoryWithLessons = PrismaCategory & { lessons: PrismaLesson[] };
 
 export default function CategoriesPage() {
-  const [categories, setCategories] = useState<PrismaCategory[]>([]);
+  const [categories, setCategories] = useState<CategoryWithLessons[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAddForm, setShowAddForm] = useState(false);
-  const [editingCategory, setEditingCategory] = useState<PrismaCategory | null>(null);
+  const [editingCategory, setEditingCategory] = useState<CategoryWithLessons | null>(null);
   
   // Carregar categorias
   const loadCategories = async () => {
@@ -98,6 +100,15 @@ export default function CategoriesPage() {
 
   // Rotas do dashboard para navegação
 
+  const mapCategoryToFormValues = (category: CategoryWithLessons) => ({
+    id: category.id,
+    name: category.name,
+    slug: category.slug,
+    description: category.description ?? undefined,
+    icon: category.icon ?? undefined,
+    level: category.level,
+  });
+
   return (
     <div className="w-full max-w-7xl mx-auto p-2 md:p-6">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 mb-4">
@@ -121,7 +132,7 @@ export default function CategoriesPage() {
       {editingCategory && (
         <Card className="mb-4">
           <LessonCategoryForm 
-            initialData={editingCategory}
+            initialData={mapCategoryToFormValues(editingCategory)}
             onSuccess={() => {
               setEditingCategory(null);
               loadCategories();
