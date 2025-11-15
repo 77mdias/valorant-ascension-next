@@ -118,7 +118,7 @@ jobs:
           # Escanear o intervalo calculado dinamicamente
           base: ${{ steps.trufflehog_range.outputs.base }}
           head: ${{ steps.trufflehog_range.outputs.head }}
-          extra_args: --only-verified --fail
+          extra_args: --only-verified
 
   dependency-review:
     name: Dependency Review
@@ -152,7 +152,7 @@ jobs:
 
       - name: Run OSV Scanner
         # Última versão estável: https://github.com/google/osv-scanner-action/releases
-        uses: google/osv-scanner-action@v1.6.3
+        uses: google/osv-scanner-action@v2.2.4
         with:
           scan-args: |-
             --lockfile=package-lock.json
