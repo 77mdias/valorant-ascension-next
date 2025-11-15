@@ -70,7 +70,7 @@ jobs:
 
       - name: Upload audit results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: npm-audit-results
           path: audit-results.json
@@ -150,7 +150,7 @@ jobs:
 
       - name: Upload OSV results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: osv-scan-results
           path: osv-results.json
