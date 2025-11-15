@@ -17,20 +17,38 @@ export default function ViewControls({
 }: ViewControlsProps) {
   return (
     <div className={styles.viewControls}>
-      <div className={styles.viewToggle}>
+      <div className={styles.labelBlock}>
+        <p className={styles.eyebrow}>Visualização</p>
+        <p className={styles.helper}>
+          Altere entre a visão geral consolidada ou separe por times.
+        </p>
+      </div>
+      <div
+        className={styles.viewToggle}
+        role="group"
+        aria-label="Seleção de visualização do placar"
+      >
         <button
           className={`${styles.viewButton} ${tableView === "total" ? styles.active : ""}`}
           onClick={() => onViewChange("total")}
+          aria-pressed={tableView === "total"}
         >
           <span className={styles.viewIcon}>📊</span>
-          Scoreboard Geral
+          <span className={styles.buttonLabel}>
+            Scoreboard Geral
+            <small>Todos os jogadores juntos</small>
+          </span>
         </button>
         <button
           className={`${styles.viewButton} ${tableView === "teams" ? styles.active : ""}`}
           onClick={() => onViewChange("teams")}
+          aria-pressed={tableView === "teams"}
         >
           <span className={styles.viewIcon}>🏆</span>
-          Por Times
+          <span className={styles.buttonLabel}>
+            Por Times
+            <small>Comparação lado a lado</small>
+          </span>
         </button>
       </div>
     </div>

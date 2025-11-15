@@ -32,11 +32,18 @@ export default function TabNavigation({
   tabs = defaultTabs,
 }: TabNavigationProps) {
   return (
-    <div className={styles.tabs}>
+    <div
+      className={styles.tabs}
+      role="tablist"
+      aria-label="Navegação dos detalhes da partida"
+    >
       {tabs.map((tab) => (
         <button
           key={tab.id}
           className={`${styles.tab} ${activeTab === tab.id ? styles.active : ""} ${tab.disabled ? styles.disabled : ""}`}
+          type="button"
+          role="tab"
+          aria-selected={activeTab === tab.id}
           onClick={() => !tab.disabled && onTabChange(tab.id)}
           disabled={tab.disabled}
         >

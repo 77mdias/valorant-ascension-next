@@ -1,57 +1,114 @@
 .sortControls {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.labelBlock {
   display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.eyebrow {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.6);
+  margin: 0;
+}
+
+.helper {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 0.95rem;
+}
+
+.sortGroup {
+  display: grid;
+  align-items: center;
+  gap: 0.35rem;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 0.75rem 0.85rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  min-width: 260px;
+}
+
+.selectRow {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.65rem;
+  align-items: center;
+}
+
+.sortGroup label {
+  color: rgba(255, 255, 255, 0.72);
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.sortSelect {
+  padding: 0.65rem 0.9rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  color: white;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 160px;
+
+  &:hover,
+  &:focus {
+    background: rgba(236, 23, 107, 0.12);
+    border-color: rgba(236, 23, 107, 0.35);
+    outline: none;
+    box-shadow: 0 10px 30px rgba(236, 23, 107, 0.15);
+  }
+
+  option {
+    background: #0f131b;
+  }
+}
+
+.sortButton {
+  width: 38px;
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
   justify-content: center;
-  margin-bottom: 2rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  color: white;
+  font-size: 1rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: rgba(236, 23, 107, 0.15);
+    border-color: rgba(236, 23, 107, 0.35);
+    transform: translateY(-1px);
+  }
+}
+
+@media (max-width: 900px) {
+  .sortControls {
+    grid-template-columns: 1fr;
+  }
 
   .sortGroup {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    background: rgba(20, 25, 35, 0.7);
-    padding: 1rem 2rem;
-    border-radius: 12px;
-    border: 1px solid rgba(236, 23, 107, 0.2);
+    width: 100%;
+  }
 
-    label {
-      color: rgba(255, 255, 255, 0.8);
-      font-weight: 600;
-    }
-
-    .sortSelect {
-      padding: 0.5rem 1rem;
-      background: rgba(15, 20, 25, 0.8);
-      border: 1px solid rgba(236, 23, 107, 0.2);
-      border-radius: 8px;
-      color: white;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: all 0.3s ease;
-
-      &:hover {
-        border-color: rgba(236, 23, 107, 0.4);
-      }
-
-      &:focus {
-        outline: none;
-        border-color: #ec176b;
-      }
-    }
-
-    .sortButton {
-      padding: 0.5rem 1rem;
-      background: rgba(236, 23, 107, 0.1);
-      border: 1px solid rgba(236, 23, 107, 0.2);
-      border-radius: 8px;
-      color: white;
-      font-size: 1.2rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-
-      &:hover {
-        background: rgba(236, 23, 107, 0.2);
-        transform: scale(1.1);
-      }
-    }
+  .selectRow {
+    grid-template-columns: 1fr 44px;
   }
 }

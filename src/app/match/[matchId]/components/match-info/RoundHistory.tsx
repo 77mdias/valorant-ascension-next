@@ -11,12 +11,29 @@ interface RoundHistoryProps {
 }
 
 export default function RoundHistory({ rounds }: RoundHistoryProps) {
+  const totalRounds = rounds.length;
+
   return (
-    <div className={styles.roundHistory}>
+    <section
+      className={styles.roundHistory}
+      aria-label="Histórico de rounds entre os times"
+    >
       <div className={styles.roundHistoryHeader}>
-        <h4>Histórico de Rounds</h4>
-        <span className={styles.roundCount}>{rounds.length} rounds</span>
+        <div>
+          <p className={styles.eyebrow}>Progressão</p>
+          <div className={styles.titleRow}>
+            <h4>Histórico de Rounds</h4>
+            <span className={styles.roundCount}>{totalRounds} rounds</span>
+          </div>
+        </div>
+        <div className={styles.legend} aria-hidden="true">
+          <span className={`${styles.legendDot} ${styles.win}`} />
+          <span>Vitória</span>
+          <span className={`${styles.legendDot} ${styles.loss}`} />
+          <span>Derrota</span>
+        </div>
       </div>
+
       <div className={styles.roundHistoryGrid}>
         {/* Team A Row */}
         <div className={styles.roundHistoryRow}>
@@ -28,7 +45,7 @@ export default function RoundHistory({ rounds }: RoundHistoryProps) {
                 <div
                   key={i}
                   className={`${styles.roundIcon} ${isWin ? styles.win : styles.loss}`}
-                  title={`Round ${i + 1}: ${isWin ? "Vitória" : "Derrota"}`}
+                  aria-label={`Round ${i + 1}: ${isWin ? "Vitória" : "Derrota"}`}
                 >
                   {isWin ? "✓" : "✗"}
                 </div>
@@ -38,7 +55,7 @@ export default function RoundHistory({ rounds }: RoundHistoryProps) {
         </div>
 
         {/* Round Numbers Row */}
-        <div className={styles.roundHistoryRow}>
+        <div className={styles.roundHistoryRow} aria-hidden="true">
           <div className={styles.teamLabel}></div>
           <div className={styles.roundNumbersContainer}>
             {rounds.map((_, i) => (
@@ -59,7 +76,7 @@ export default function RoundHistory({ rounds }: RoundHistoryProps) {
                 <div
                   key={i}
                   className={`${styles.roundIcon} ${isWin ? styles.win : styles.loss}`}
-                  title={`Round ${i + 1}: ${isWin ? "Vitória" : "Derrota"}`}
+                  aria-label={`Round ${i + 1}: ${isWin ? "Vitória" : "Derrota"}`}
                 >
                   {isWin ? "✓" : "✗"}
                 </div>
@@ -68,6 +85,6 @@ export default function RoundHistory({ rounds }: RoundHistoryProps) {
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 }

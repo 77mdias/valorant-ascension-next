@@ -24,39 +24,41 @@ export default function ScoreboardTable({
 }: ScoreboardTableProps) {
   return (
     <div className={styles.scoreboardTable}>
-      <div className={styles.tableContainer}>
-        {/* Header Row */}
-        <div className={styles.headerRow}>
-          <div className={`${styles.headerCell} ${styles.playerCol}`}>Player</div>
-          <div className={`${styles.headerCell} ${styles.rankBadgeCol}`}>Rank</div>
-          <div className={`${styles.headerCell} ${styles.trsCol}`}>TRS</div>
-          <div className={`${styles.headerCell} ${styles.scoreCol}`}>Score</div>
-          <div className={`${styles.headerCell} ${styles.statCol}`}>K</div>
-          <div className={`${styles.headerCell} ${styles.statCol}`}>D</div>
-          <div className={`${styles.headerCell} ${styles.statCol}`}>A</div>
-          <div className={`${styles.headerCell} ${styles.statCol}`}>+/-</div>
-          <div className={`${styles.headerCell} ${styles.kdCol}`}>K/D</div>
-          <div className={`${styles.headerCell} ${styles.adrCol}`}>ADR</div>
-          <div className={`${styles.headerCell} ${styles.hsCol}`}>HS%</div>
-          <div className={`${styles.headerCell} ${styles.statCol}`}>FK</div>
-          <div className={`${styles.headerCell} ${styles.statCol}`}>FD</div>
-          <div className={`${styles.headerCell} ${styles.statCol}`}>MK</div>
-        </div>
+      <div className={styles.scrollWrapper}>
+        <div className={styles.tableContainer}>
+          {/* Header Row */}
+          <div className={styles.headerRow}>
+            <div className={`${styles.headerCell} ${styles.playerCol}`}>Player</div>
+            <div className={`${styles.headerCell} ${styles.rankBadgeCol}`}>Rank</div>
+            <div className={`${styles.headerCell} ${styles.trsCol}`}>TRS</div>
+            <div className={`${styles.headerCell} ${styles.scoreCol}`}>Score</div>
+            <div className={`${styles.headerCell} ${styles.statCol}`}>K</div>
+            <div className={`${styles.headerCell} ${styles.statCol}`}>D</div>
+            <div className={`${styles.headerCell} ${styles.statCol}`}>A</div>
+            <div className={`${styles.headerCell} ${styles.statCol}`}>+/-</div>
+            <div className={`${styles.headerCell} ${styles.kdCol}`}>K/D</div>
+            <div className={`${styles.headerCell} ${styles.adrCol}`}>ADR</div>
+            <div className={`${styles.headerCell} ${styles.hsCol}`}>HS%</div>
+            <div className={`${styles.headerCell} ${styles.statCol}`}>FK</div>
+            <div className={`${styles.headerCell} ${styles.statCol}`}>FD</div>
+            <div className={`${styles.headerCell} ${styles.statCol}`}>MK</div>
+          </div>
 
-        {/* Player Rows */}
-        {players.map((player, index) => (
-          <PlayerRow
-            key={player.puuid}
-            player={player}
-            index={index}
-            onPlayerClick={onPlayerClick}
-            calculatePlayerStats={calculatePlayerStats}
-            fkAndFD={fkAndFD}
-            mk={mk}
-            showAllColumns={true}
-            styles={styles}
-          />
-        ))}
+          {/* Player Rows */}
+          {players.map((player, index) => (
+            <PlayerRow
+              key={player.puuid}
+              player={player}
+              index={index}
+              onPlayerClick={onPlayerClick}
+              calculatePlayerStats={calculatePlayerStats}
+              fkAndFD={fkAndFD}
+              mk={mk}
+              showAllColumns={true}
+              styles={styles}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );

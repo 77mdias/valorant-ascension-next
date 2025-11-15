@@ -1,98 +1,147 @@
 .roundHistory {
-  background: rgba(20, 25, 35, 0.7);
-  border-radius: 24px;
-  padding: 2rem;
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(236, 23, 107, 0.2);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-  margin-bottom: 2rem;
+  background: linear-gradient(135deg, rgba(18, 22, 32, 0.9), rgba(14, 16, 26, 0.95));
+  border-radius: 18px;
+  padding: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+  margin-bottom: 1.5rem;
+}
 
-  .roundHistoryHeader {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1.5rem;
+.roundHistoryHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
 
-    h4 {
-      font-size: 1.2rem;
-      font-weight: 700;
-      color: white;
-    }
+  h4 {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: white;
+    margin: 0;
+  }
+}
 
-    .roundCount {
-      color: rgba(255, 255, 255, 0.6);
-      font-size: 1rem;
-    }
+.eyebrow {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.55);
+  margin: 0 0 0.25rem 0;
+}
+
+.titleRow {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.roundCount {
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.9rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.legend {
+  display: grid;
+  grid-auto-flow: column;
+  gap: 0.5rem;
+  align-items: center;
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 0.95rem;
+  background: rgba(255, 255, 255, 0.02);
+  padding: 0.5rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+
+  .legendDot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-flex;
   }
 
-  .roundHistoryGrid {
-    display: grid;
-    gap: 1rem;
-
-    .roundHistoryRow {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-
-      .teamLabel {
-        width: 80px;
-        color: rgba(255, 255, 255, 0.7);
-        font-weight: 600;
-      }
-
-      .roundIconsContainer {
-        display: flex;
-        gap: 0.5rem;
-        flex-wrap: wrap;
-
-        .roundIcon {
-          width: 2rem;
-          height: 2rem;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          border-radius: 6px;
-          font-size: 0.9rem;
-          font-weight: 600;
-          transition: all 0.3s ease;
-
-          &.win {
-            background: rgba(74, 222, 128, 0.1);
-            color: #4ade80;
-            border: 1px solid rgba(74, 222, 128, 0.2);
-
-            &:hover {
-              background: rgba(74, 222, 128, 0.2);
-            }
-          }
-
-          &.loss {
-            background: rgba(236, 23, 107, 0.1);
-            color: #ec176b;
-            border: 1px solid rgba(236, 23, 107, 0.2);
-
-            &:hover {
-              background: rgba(236, 23, 107, 0.2);
-            }
-          }
-        }
-      }
-
-      .roundNumbersContainer {
-        display: flex;
-        gap: 0.5rem;
-        flex-wrap: wrap;
-
-        .roundNumber {
-          width: 2rem;
-          height: 2rem;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          color: rgba(255, 255, 255, 0.4);
-          font-size: 0.8rem;
-        }
-      }
-    }
+  .win {
+    background: #4ade80;
+    box-shadow: 0 0 0 4px rgba(74, 222, 128, 0.12);
   }
+
+  .loss {
+    background: #ec176b;
+    box-shadow: 0 0 0 4px rgba(236, 23, 107, 0.12);
+  }
+}
+
+.roundHistoryGrid {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.roundHistoryRow {
+  display: grid;
+  grid-template-columns: 90px 1fr;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.teamLabel {
+  color: rgba(255, 255, 255, 0.75);
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.roundIconsContainer,
+.roundNumbersContainer {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.roundIcon {
+  width: 2.1rem;
+  height: 2.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+  border: 1px solid transparent;
+  color: #0f131b;
+
+  &.win {
+    background: rgba(74, 222, 128, 0.16);
+    border-color: rgba(74, 222, 128, 0.35);
+    color: #c9f7d8;
+  }
+
+  &.loss {
+    background: rgba(236, 23, 107, 0.16);
+    border-color: rgba(236, 23, 107, 0.35);
+    color: #ffd3e4;
+  }
+
+  &:hover {
+    transform: translateY(-1px);
+  }
+}
+
+.roundNumber {
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 0.85rem;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }

@@ -21,24 +21,37 @@ export default function SortControls({
 }: SortControlsProps) {
   return (
     <div className={styles.sortControls}>
+      <div className={styles.labelBlock}>
+        <p className={styles.eyebrow}>Ordenação</p>
+        <p className={styles.helper}>Reordene as estatísticas sem perder o foco.</p>
+      </div>
       <div className={styles.sortGroup}>
-        <label>Ordenar por:</label>
-        <select
-          value={sortBy}
-          onChange={(e) => onSortByChange(e.target.value as SortField)}
-          className={styles.sortSelect}
-        >
-          <option value="score">Score</option>
-          <option value="kills">Kills</option>
-          <option value="deaths">Deaths</option>
-          <option value="assists">Assists</option>
-          <option value="kd">K/D</option>
-          <option value="hs">HS%</option>
-          <option value="adr">ADR</option>
-        </select>
-        <button onClick={onToggleSortOrder} className={styles.sortButton}>
-          {sortOrder === "desc" ? "↓" : "↑"}
-        </button>
+        <label htmlFor="sortBy">Ordenar por</label>
+        <div className={styles.selectRow}>
+          <select
+            id="sortBy"
+            value={sortBy}
+            onChange={(e) => onSortByChange(e.target.value as SortField)}
+            className={styles.sortSelect}
+          >
+            <option value="score">Score</option>
+            <option value="kills">Kills</option>
+            <option value="deaths">Deaths</option>
+            <option value="assists">Assists</option>
+            <option value="kd">K/D</option>
+            <option value="hs">HS%</option>
+            <option value="adr">ADR</option>
+          </select>
+          <button
+            onClick={onToggleSortOrder}
+            className={styles.sortButton}
+            aria-label={
+              sortOrder === "desc" ? "Ordenar de forma crescente" : "Ordenar de forma decrescente"
+            }
+          >
+            {sortOrder === "desc" ? "↓" : "↑"}
+          </button>
+        </div>
       </div>
     </div>
   );
