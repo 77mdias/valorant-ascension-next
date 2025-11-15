@@ -115,6 +115,19 @@ model lessons {
   category     lessonCategory      @relation(fields: [categoryId], references: [id])
   createdBy    user                @relation(fields: [createdById], references: [id])
   classes      classes[]           @relation("classesTolessons")
+  timestamps   VideoTimestamp[]
+}
+
+model VideoTimestamp {
+  id        String   @id @default(uuid())
+  lessonId  String
+  time      Int
+  label     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  lesson    lessons  @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@index([lessonId, time])
 }
 
 model lessonEnrollments {

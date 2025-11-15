@@ -14,6 +14,11 @@ export async function GET(
       include: {
         lessons: {
           orderBy: { createdAt: "asc" },
+          include: {
+            timestamps: {
+              orderBy: { time: "asc" },
+            },
+          },
         },
       },
     });

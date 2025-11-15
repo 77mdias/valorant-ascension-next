@@ -5,7 +5,7 @@
 **Status:** 🟡 EM ANDAMENTO
 **Última atualização:** 2025-11-15
 **Sprint Atual:** Novembro-Dezembro 2025
-**Status Geral:** 🟡 0% concluído (0/32 tarefas completas) – FASE ATIVA
+**Status Geral:** 🟡 6% concluído (2/32 tarefas completas) – FASE ATIVA
 **ETA:** 2025-12-01
 **Pré-requisito:** v0.1.0 - MVP (✅ Concluído)
 
@@ -15,12 +15,12 @@
 
 | Categoria                     | Total | Concluído | Em Andamento | Pendente | Bloqueado |
 | ----------------------------- | ----- | --------- | ------------ | -------- | --------- |
-| Sistema de Vídeos Avançado    | 7     | 0         | 0            | 7        | 0         |
+| Sistema de Vídeos Avançado    | 7     | 2         | 0            | 5        | 0         |
 | Dashboard de Progresso        | 7     | 0         | 0            | 7        | 0         |
 | Sistema de Conquistas         | 6     | 0         | 0            | 6        | 0         |
 | Busca e Filtros               | 6     | 0         | 0            | 6        | 0         |
 | Sistema de Comentários        | 6     | 0         | 0            | 6        | 0         |
-| **TOTAL**                     | **32** | **0**    | **0**        | **32**   | **0**     |
+| **TOTAL**                     | **32** | **2**    | **0**        | **30**   | **0**     |
 
 ### 🎯 Principais Indicadores
 - ✅ v0.1.0 MVP concluído com sucesso
@@ -52,9 +52,9 @@ Esta fase tem como objetivo elevar a experiência do usuário e expandir o conte
 #### Objetivo
 Transformar o player de vídeo básico em uma experiência premium, com controles avançados, acessibilidade e recursos que facilitam o aprendizado (timestamps, velocidade ajustável, legendas).
 
-#### VID.1 - Player Customizado e Controles
+#### VID.1 - Player Customizado e Controles ✅
 
-- [ ] **VID-001** - Implementar player de vídeo customizado
+- [x] **VID-001** - Implementar player de vídeo customizado ✅
 
   **Descrição curta:**
   - Substituir player nativo por solução customizada (react-player ou plyr)
@@ -76,20 +76,27 @@ Transformar o player de vídeo básico em uma experiência premium, com controle
   - `package.json` (adicionar react-player)
 
   **Critérios de aceitação:**
-  - [ ] Player renderiza vídeos de URL externa (YouTube, Vimeo, direto)
-  - [ ] Controles responsivos funcionam em mobile e desktop
-  - [ ] Hotkeys funcionam quando player está focado
-  - [ ] Design consistente com design system da aplicação
-  - [ ] Sem erros de console ou warnings
+  - [x] Player renderiza vídeos de URL externa (YouTube, Vimeo, direto)
+  - [x] Controles responsivos funcionam em mobile e desktop
+  - [x] Hotkeys funcionam quando player está focado
+  - [x] Design consistente com design system da aplicação
+  - [x] Sem erros de console ou warnings
+
+  **Notas de validação (2025-11-15):**
+  - `src/components/ui/VideoPlayer.tsx` usa `react-player@3.3.x` com estado controlado (`playing`, `volume`, `muted`) para carregar URLs externas de aulas e tratar buffering/erros.
+  - Controles customizados (seek, volume, fullscreen e botões de navegação) e estilos responsivos residem em `src/components/ui/VideoPlayer.module.scss`, cobrindo tamanhos mobile/desktop.
+  - Atalhos de teclado (espaço, setas, F) são habilitados via `src/hooks/useKeyboardShortcuts.ts`, limitado ao foco do container para obedecer acessibilidade.
+  - O player substitui o componente antigo na rota `src/app/cursos/[slug]/page.tsx`, mantendo o visual neon/tailwind do design system e aplicação dos botões `gamingButton`.
+  - A implementação evita warnings: eventos críticos são tratados (ex.: fallback do fullscreen) e não há logs extras além do `console.error` controlado em falhas reais.
 
   **Prioridade:** 🔴 Crítica
   **Estimativa:** 8h
   **Dependências:** Nenhuma
-  **Status:** 🔴 Pendente
+  **Status:** 🟢 Concluído (2025-11-15) ✅
 
 ---
 
-- [ ] **VID-002** - Sistema de marcação de timestamps
+- [x] **VID-002** - Sistema de marcação de timestamps
 
   **Descrição curta:**
   - Permitir que administradores/profissionais marquem timestamps importantes em vídeos
@@ -121,16 +128,23 @@ Transformar o player de vídeo básico em uma experiência premium, com controle
   - `src/app/dashboard/lessons/[id]/components/TimestampManager.tsx` (novo)
 
   **Critérios de aceitação:**
-  - [ ] Admins podem criar/editar/deletar timestamps em aulas
-  - [ ] Timestamps aparecem ordenados cronologicamente
-  - [ ] Clicar em timestamp navega para o momento correto do vídeo
-  - [ ] Validação impede timestamps negativos ou maiores que duração
-  - [ ] Migration aplicada sem erros
+  - [x] Admins podem criar/editar/deletar timestamps em aulas
+  - [x] Timestamps aparecem ordenados cronologicamente
+  - [x] Clicar em timestamp navega para o momento correto do vídeo
+  - [x] Validação impede timestamps negativos ou maiores que duração
+  - [x] Migration aplicada sem erros
+
+  **Notas de validação (2025-11-15):**
+  - Prisma atualizado com o modelo `VideoTimestamp` (migration `20251115155616_vid_002_video_timestamps`) e relação com `lessons` em `prisma/schema.prisma`.
+  - Schemas/server actions (`src/schemas/videoTimestamp.ts`, `src/server/videoTimestampActions.ts`) executam validações de duração e revalidam `/dashboard/lessons` e rotas públicas ao criar/editar/deletar.
+  - Dashboard ganhou a rota `/dashboard/lessons/[id]` com `TimestampManager` (componentes em `src/app/dashboard/lessons/[id]/components/TimestampManager.tsx`) permitindo CRUD completo com feedback visual.
+  - API `/api/categories/[slug]` agora entrega timestamps; o player (`src/components/ui/VideoPlayer.tsx`) usa `TimestampList` para exibição e navegação, consumido em `src/app/cursos/[slug]/page.tsx`.
+  - A lista lateral dispara `seekTo` no ReactPlayer com validação preventiva de tempo, garantindo navegação sem ultrapassar a duração definida.
 
   **Prioridade:** 🟡 Alta
   **Estimativa:** 6h
   **Dependências:** VID-001
-  **Status:** 🔴 Pendente
+  **Status:** 🟢 Concluído (2025-11-15) ✅
 
 ---
 
@@ -1490,4 +1504,3 @@ make ci
 **Última atualização:** 2025-11-15
 **Responsável:** Equipe Valorant Ascension
 **Status:** 🟡 FASE ATIVA - Iniciando implementação
-

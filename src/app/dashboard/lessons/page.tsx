@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import { DashboardNavSelect } from "@/components/dashboard/DashboardNavSelect";
 import { listLessons, deleteLesson } from "@/server/lessonsActions";
 import { listLessonCategories } from "@/server/lessonCategoryActions";
@@ -216,6 +217,11 @@ export default function LessonsPage() {
                   <TableCell>{formatDate(lesson.createdAt)}</TableCell>
                   <TableCell>
                     <div className="flex gap-2">
+                      <Button variant="secondary" size="sm" asChild>
+                        <Link href={`/dashboard/lessons/${lesson.id}`}>
+                          Timestamps
+                        </Link>
+                      </Button>
                       <Button
                         variant="outline"
                         size="sm"

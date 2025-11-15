@@ -7,6 +7,12 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 
 ## [Não Lançado]
 
+### ✨ Adicionado
+- VID-002: Sistema de marcação de timestamps
+  - Novo modelo Prisma `VideoTimestamp`, schemas Zod e server actions para criar/editar/excluir registros com validação de duração
+  - Tela `/dashboard/lessons/[id]` com gerenciador completo de timestamps para administradores
+  - Lista clicável de timestamps integrada ao `VideoPlayer`, permitindo navegar rapidamente pelo conteúdo
+
 ### 📚 Documentação
 - Estrutura completa de documentação em `/docs`
   - `/docs/architecture` - Diagramas e arquitetura do sistema

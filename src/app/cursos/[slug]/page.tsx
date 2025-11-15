@@ -233,6 +233,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
               }
               videoUrl={currentLesson?.videoUrl}
               thumbnailUrl={currentLesson?.thumbnailUrl}
+              timestamps={currentLesson?.timestamps ?? []}
             />
           </main>
         </div>

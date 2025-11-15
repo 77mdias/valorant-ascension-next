@@ -127,7 +127,7 @@ class ValorantCache {
   // Limpar cache expirado
   cleanupExpiredCache(): void {
     try {
-      const keys = Object.keys(localStorage);
+      const keys = this.getCacheKeys();
       const now = Date.now();
 
       keys.forEach((key) => {
@@ -156,7 +156,7 @@ class ValorantCache {
   // Limpar todo o cache
   clearAllCache(): void {
     try {
-      const keys = Object.keys(localStorage);
+      const keys = this.getCacheKeys();
       keys.forEach((key) => {
         if (key.startsWith("valorant_")) {
           localStorage.removeItem(key);
@@ -175,7 +175,7 @@ class ValorantCache {
     totalSize: number;
   } {
     try {
-      const keys = Object.keys(localStorage);
+      const keys = this.getCacheKeys();
       let playerCount = 0;
       let matchCount = 0;
       let totalSize = 0;
@@ -210,13 +210,34 @@ class ValorantCache {
   private getMatchCacheKey(matchId: string, region: string): string {
     return `${this.MATCH_CACHE_KEY}_${matchId}_${region}`;
   }
+
+  private getCacheKeys(): string[] {
+    if (typeof localStorage === "undefined") {
+      return [];
+    }
+
+    const keys: string[] = [];
+    let index = 0;
+    while (true) {
+      const key = localStorage.key(index);
+      if (!key) {
+        break;
+      }
+      keys.push(key);
+      index += 1;
+    }
+    return keys;
+  }
 }
 
 // Instância singleton do cache
 export const valorantCache = new ValorantCache();
 
-// Limpar cache expirado a cada 5 minutos
-if (typeof window !== "undefined") {
+// Limpar cache expirado a cada 5 minutos (ignorar durante testes)
+if (
+  typeof window !== "undefined" &&
+  (typeof process === "undefined" || process.env.NODE_ENV !== "test")
+) {
   setInterval(
     () => {
       valorantCache.cleanupExpiredCache();

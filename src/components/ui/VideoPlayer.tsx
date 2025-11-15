@@ -15,6 +15,7 @@ import {
   type SyntheticEvent,
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from "react";
@@ -22,6 +23,8 @@ import ReactPlayer from "react-player";
 import styles from "./VideoPlayer.module.scss";
 import { cn } from "@/lib/utils";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
+import TimestampList from "@/components/VideoPlayer/TimestampList";
+import { formatSeconds } from "@/lib/time";
 
 interface VideoPlayerProps {
   videoUrl?: string | null;
@@ -33,27 +36,11 @@ interface VideoPlayerProps {
   hasPrevious?: boolean;
   hasNext?: boolean;
   className?: string;
+  timestamps?: Array<{ id: string; time: number; label: string }>;
 }
 
 const clamp = (value: number, min: number, max: number) =>
   Math.min(Math.max(value, min), max);
-
-const formatTime = (seconds: number) => {
-  if (!Number.isFinite(seconds) || seconds < 0) {
-    return "00:00";
-  }
-
-  const rounded = Math.floor(seconds);
-  const hrs = Math.floor(rounded / 3600);
-  const mins = Math.floor((rounded % 3600) / 60);
-  const secs = rounded % 60;
-
-  if (hrs > 0) {
-    return `${hrs}:${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
-  }
-
-  return `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
-};
 
 const VideoPlayer = ({
   videoUrl,
@@ -65,6 +52,7 @@ const VideoPlayer = ({
   hasPrevious = false,
   hasNext = false,
   className,
+  timestamps,
 }: VideoPlayerProps) => {
   const playerRef = useRef<HTMLVideoElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -79,16 +67,36 @@ const VideoPlayer = ({
 
   const hasVideo = Boolean(videoUrl);
 
-  const updateCurrentTime = useCallback(
+  const sortedTimestamps = useMemo(
+    () => [...(timestamps ?? [])].sort((a, b) => a.time - b.time),
+    [timestamps],
+  );
+
+  const activeTimestampId = useMemo(() => {
+    if (!sortedTimestamps.length) {
+      return null;
+    }
+    let currentId: string | null = null;
+    for (const timestamp of sortedTimestamps) {
+      if (playedSeconds + 0.5 >= timestamp.time) {
+        currentId = timestamp.id;
+      } else {
+        break;
+      }
+    }
+    return currentId;
+  }, [sortedTimestamps, playedSeconds]);
+
+  const handleSeekTo = useCallback(
     (nextTime: number) => {
-      const media = playerRef.current;
-      if (!media) {
+      const instance = playerRef.current;
+      if (!instance) {
         return;
       }
-
-      const safeDuration = duration || media.duration || 0;
-      const safeTime = clamp(nextTime, 0, safeDuration || 0);
-      media.currentTime = safeTime;
+      const effectiveDuration =
+        duration || instance.duration || Math.max(nextTime, 0);
+      const safeTime = clamp(nextTime, 0, effectiveDuration || 0);
+      instance.currentTime = safeTime;
       setPlayedSeconds(safeTime);
     },
     [duration],
@@ -96,14 +104,10 @@ const VideoPlayer = ({
 
   const handleSeekBy = useCallback(
     (deltaSeconds: number) => {
-      const media = playerRef.current;
-      if (!media) {
-        return;
-      }
-      const target = media.currentTime + deltaSeconds;
-      updateCurrentTime(target);
+      const current = playerRef.current?.currentTime ?? playedSeconds;
+      handleSeekTo(current + deltaSeconds);
     },
-    [updateCurrentTime],
+    [handleSeekTo, playedSeconds],
   );
 
   const handleTogglePlay = useCallback(() => {
@@ -250,7 +254,8 @@ const VideoPlayer = ({
                 onDurationChange={handleDurationChange}
                 onWaiting={() => setIsBuffering(true)}
                 onPlaying={() => setIsBuffering(false)}
-                onError={() => {
+                onError={(error) => {
+                  console.error("Erro ao reproduzir vídeo", error);
                   setIsPlaying(false);
                   setIsBuffering(false);
                 }}
@@ -260,7 +265,9 @@ const VideoPlayer = ({
             <div className={styles.controlsOverlay}>
               <div className={styles.controlsPanel}>
                 <div className="flex items-center gap-3 text-xs text-white/70">
-                  <span className="font-mono">{formatTime(playedSeconds)}</span>
+                  <span className="font-mono">
+                    {formatSeconds(playedSeconds)}
+                  </span>
                   <input
                     type="range"
                     min={0}
@@ -268,13 +275,15 @@ const VideoPlayer = ({
                     step={0.1}
                     value={playedSeconds}
                     onChange={(event) =>
-                      updateCurrentTime(Number(event.target.value))
+                      handleSeekTo(Number(event.target.value))
                     }
                     aria-label="Linha do tempo do vídeo"
                     className={styles.range}
                     disabled={!duration}
                   />
-                  <span className="font-mono">{formatTime(duration)}</span>
+                  <span className="font-mono">
+                    {formatSeconds(duration)}
+                  </span>
                 </div>
 
                 <div className={styles.controlRow}>
@@ -396,6 +405,13 @@ const VideoPlayer = ({
           Dica: utilize os atalhos do teclado para controlar a reprodução sem
           tirar as mãos do mouse.
         </div>
+        {sortedTimestamps.length > 0 && (
+          <TimestampList
+            timestamps={sortedTimestamps}
+            activeId={activeTimestampId}
+            onSeek={handleSeekTo}
+          />
+        )}
       </div>
 
       <div className="flex flex-col gap-4 sm:flex-row">

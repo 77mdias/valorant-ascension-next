@@ -42,7 +42,7 @@ Este documento apresenta o planejamento de curto, médio e longo prazo para o pr
 
 ##### 📹 Sistema de Vídeos Avançado
 - [ ] Player customizado com controles avançados
-- [ ] Marcação de timestamps importantes
+- [x] Marcação de timestamps importantes (VID-002)
 - [ ] Velocidade de reprodução ajustável
 - [ ] Qualidade de vídeo adaptativa
 - [ ] Legendas/closed captions
