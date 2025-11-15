@@ -21,7 +21,7 @@ A pipeline está dividida em 4 workflows principais:
 - Manualmente via workflow_dispatch
 
 **O que faz:**
-- ✅ Instala dependências (pnpm)
+- ✅ Instala dependências (npm)
 - ✅ Gera Prisma Client
 - ✅ Valida schema do Prisma
 - ✅ Type-checking com TypeScript
@@ -169,60 +169,60 @@ Configure as seguintes regras no GitHub (Settings > Branches > main):
 ### Testes
 ```bash
 # Rodar todos os testes
-pnpm test
+npm test
 
 # Watch mode (desenvolvimento)
-pnpm test:watch
+npm run test:watch
 
 # Com coverage
-pnpm test:coverage
+npm run test:coverage
 
 # CI mode (como na pipeline)
-pnpm test:ci
+npm run test:ci
 ```
 
 ### Type-checking
 ```bash
-pnpm type-check
+npm run type-check
 ```
 
 ### Lint
 ```bash
 # Verificar problemas
-pnpm lint
+npm run lint
 
 # Auto-fix
-pnpm lint --fix
+npm run lint -- --fix
 ```
 
 ### Prisma
 ```bash
 # Validar schema
-pnpm prisma:validate
+npm run prisma:validate
 
 # Gerar client
-pnpm prisma:generate
+npm run prisma:generate
 ```
 
 ### Build
 ```bash
 # Build completo
-pnpm build
+npm run build
 
 # Iniciar produção
-pnpm start
+npm start
 ```
 
 ### Security Checks
 ```bash
 # npm audit
-pnpm audit
+npm audit
 
 # Corrigir vulnerabilidades (quando possível)
-pnpm audit fix
+npm audit fix
 
 # Audit com nível específico
-pnpm audit --audit-level=moderate
+npm audit --audit-level=moderate
 ```
 
 ---
@@ -294,10 +294,10 @@ As dependências já estão no `package.json`, mas se precisar adicionar mais:
 
 ```bash
 # Testing Library (opcional, para testes de componentes)
-pnpm add -D @testing-library/react @testing-library/jest-dom @testing-library/user-event
+npm install -D @testing-library/react @testing-library/jest-dom @testing-library/user-event
 
 # Jest environment
-pnpm add -D jest jest-environment-jsdom
+npm install -D jest jest-environment-jsdom
 ```
 
 ---
@@ -307,7 +307,7 @@ pnpm add -D jest jest-environment-jsdom
 ### CI falhando no type-check
 ```bash
 # Rodar localmente para ver erros
-pnpm type-check
+npm run type-check
 
 # Corrigir erros de tipo
 # Verificar tsconfig.json
@@ -319,19 +319,19 @@ pnpm type-check
 # Ver .env.example
 
 # Testar build localmente
-pnpm build
+npm run build
 ```
 
 ### Testes falhando
 ```bash
 # Rodar testes localmente
-pnpm test
+npm test
 
 # Ver output detalhado
-pnpm test --verbose
+npm test -- --verbose
 
 # Atualizar snapshots (se necessário)
-pnpm test -u
+npm test -- -u
 ```
 
 ### Dependabot PRs não mergeando

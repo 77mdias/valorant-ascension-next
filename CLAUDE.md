@@ -42,40 +42,40 @@ make ci                     # = Full CI simulation
 
 **See:** `MAKEFILE_GUIDE.md` for complete Makefile reference
 
-### Using pnpm Directly
+### Using npm Directly
 
 ```bash
 # Development
-pnpm dev                    # Start dev server at localhost:3000
-pnpm build                  # Production build
-pnpm start                  # Start production server
-pnpm lint                   # Run ESLint
+npm run dev                 # Start dev server at localhost:3000
+npm run build               # Production build
+npm start                   # Start production server
+npm run lint                # Run ESLint
 
 # Prisma - Development Database
-pnpm prisma:validate        # Validate schema
-pnpm prisma:generate        # Generate Prisma client
-pnpm prisma:studio          # Open Prisma Studio GUI
-pnpm prisma:push            # Push schema changes (dev only)
-pnpm prisma:migrate         # Create and apply migration
-pnpm prisma:status          # Check migration status
+npm run prisma:validate     # Validate schema
+npm run prisma:generate     # Generate Prisma client
+npm run prisma:studio       # Open Prisma Studio GUI
+npm run prisma:push         # Push schema changes (dev only)
+npm run prisma:migrate      # Create and apply migration
+npm run prisma:status       # Check migration status
 
 # Prisma - Production Database
-pnpm prisma:prod:validate   # Validate prod schema
-pnpm prisma:prod:generate   # Generate client for prod
-pnpm prisma:prod:studio     # Open Studio for prod DB
-pnpm prisma:prod:deploy     # Deploy migrations to prod
-pnpm prisma:prod:status     # Check prod migration status
-pnpm prisma:prod:introspect # Introspect prod database
+npm run prisma:prod:validate   # Validate prod schema
+npm run prisma:prod:generate   # Generate client for prod
+npm run prisma:prod:studio     # Open Studio for prod DB
+npm run prisma:prod:deploy     # Deploy migrations to prod
+npm run prisma:prod:status     # Check prod migration status
+npm run prisma:prod:introspect # Introspect prod database
 
 # Database Seeding
-pnpm prisma db seed         # Run seed (prisma/seed.ts)
+npm run prisma db seed      # Run seed (prisma/seed.ts)
 
 # Testing
-pnpm test                   # Run tests with Jest
-pnpm test:watch             # Run tests in watch mode
-pnpm test:coverage          # Run tests with coverage report
-pnpm test:ci                # Run tests in CI mode
-pnpm type-check             # TypeScript type checking
+npm test                    # Run tests with Jest
+npm run test:watch          # Run tests in watch mode
+npm run test:coverage       # Run tests with coverage report
+npm run test:ci             # Run tests in CI mode
+npm run type-check          # TypeScript type checking
 ```
 
 **Note:** The project uses separate Prisma scripts (`./scripts/prisma-dev.sh` and `./scripts/prisma-prod.sh`) to manage development and production databases independently via `DATABASE_URL` and `DATABASE_URL_PROD` environment variables.
@@ -302,8 +302,8 @@ model lessons {
 
 ### Database Scripts Behavior
 
-- **Development scripts** (`pnpm prisma:*`) use `DATABASE_URL`
-- **Production scripts** (`pnpm prisma:prod:*`) use `DATABASE_URL_PROD`
+- **Development scripts** (`npm run prisma:*`) use `DATABASE_URL`
+- **Production scripts** (`npm run prisma:prod:*`) use `DATABASE_URL_PROD`
 - Scripts located in `./scripts/` directory manage environment switching
 
 ## Code Style & Best Practices
@@ -473,8 +473,8 @@ When troubleshooting:
 
 ## Testing & Deployment
 
-- **Build:** `pnpm build` verifies TypeScript, runs ESLint
-- **Migrations:** Run `pnpm prisma:prod:deploy` in production before deploying app
+- **Build:** `npm run build` verifies TypeScript, runs ESLint
+- **Migrations:** Run `npm run prisma:prod:deploy` in production before deploying app
 - **Environment:** Ensure all `.env` variables are set in deployment platform (Vercel)
 - **Webhooks:** Configure Stripe webhook endpoint to point to `https://yourdomain.com/api/webhooks`
 

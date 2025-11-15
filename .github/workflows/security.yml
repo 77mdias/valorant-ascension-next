@@ -25,24 +25,19 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 8
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20.x
-          cache: 'pnpm'
+          cache: 'npm'
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: npm ci
 
       - name: Run npm audit
         run: |
           echo "Running security audit..."
-          pnpm audit --audit-level=moderate --json > audit-results.json || true
+          npm audit --audit-level=moderate --json > audit-results.json || true
 
           # Analisar resultados
           if [ -s audit-results.json ]; then
@@ -58,7 +53,7 @@ jobs:
 
               if [ "$CRITICAL" -gt 0 ] || [ "$HIGH" -gt 0 ]; then
                 echo "::error::Found $CRITICAL critical and $HIGH high severity vulnerabilities"
-                echo "Run 'pnpm audit' locally and fix them with 'pnpm audit fix'"
+                echo "Run 'npm audit' locally and fix them with 'npm audit fix'"
                 exit 1
               else
                 echo "::warning::Found moderate/low vulnerabilities. Consider fixing them."
@@ -129,7 +124,7 @@ jobs:
         uses: google/osv-scanner-action@v1
         with:
           scan-args: |-
-            --lockfile=pnpm-lock.yaml
+            --lockfile=package-lock.json
             --format=json
             --output=osv-results.json
         continue-on-error: true
