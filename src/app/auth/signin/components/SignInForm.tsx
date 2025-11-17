@@ -61,7 +61,8 @@ export default function SignInForm() {
           setError("Email ou senha inválidos");
         }
       } else {
-        router.push("/");
+        // Redirecionar para o perfil após login bem-sucedido
+        router.push("/perfil");
       }
     } catch (error) {
       setError("Erro ao fazer login. Tente novamente.");
