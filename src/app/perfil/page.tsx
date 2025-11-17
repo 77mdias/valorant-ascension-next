@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { getCurrentUserProfile } from "@/server/profileActions";
+import Link from "next/link";
 import ProfileHeader from "./components/ProfileHeader";
 import ProfileForm from "./components/ProfileForm";
 import SubscriptionInfo from "./components/SubscriptionInfo";
@@ -104,12 +105,12 @@ export default async function ProfilePage() {
             Ocorreu um erro ao carregar suas informações. Tente novamente mais
             tarde.
           </p>
-          <a
+          <Link
             href="/"
             className="inline-block px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
           >
             Voltar para Home
-          </a>
+          </Link>
         </div>
       </div>
     );

@@ -61,7 +61,7 @@ export default function ProfileForm({ currentData }: ProfileFormProps) {
           message: result.error || "Erro ao atualizar perfil",
         });
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error("Erro ao atualizar perfil:", error);
       showNotification({
         type: "error",
@@ -135,6 +135,7 @@ export default function ProfileForm({ currentData }: ProfileFormProps) {
               {imageUrl && (
                 <div className="relative w-12 h-12 rounded-lg border border-gray-600 overflow-hidden bg-gray-800 flex items-center justify-center">
                   {imageUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element
                     <img
                       src={imageUrl}
                       alt="Preview"

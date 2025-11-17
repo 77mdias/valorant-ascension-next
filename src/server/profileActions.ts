@@ -78,7 +78,11 @@ export async function updateCurrentUserProfile(raw: unknown) {
   const validatedData = ProfileUpdateSchema.parse(raw);
 
   // Remove campos vazios (undefined) para não sobrescrever
-  const updateData: any = {};
+  const updateData: {
+    name?: string | null;
+    nickname?: string | null;
+    image?: string | null;
+  } = {};
   if (validatedData.name !== undefined) {
     updateData.name = validatedData.name || null;
   }
@@ -121,11 +125,11 @@ export async function updateCurrentUserProfile(raw: unknown) {
       data: updatedUser,
       message: "Perfil atualizado com sucesso!",
     };
-  } catch (error: any) {
+  } catch (error) {
     console.error("Erro ao atualizar perfil:", error);
 
     // Tratar erros específicos do Prisma
-    if (error.code === "P2002") {
+    if (error && typeof error === "object" && "code" in error && error.code === "P2002") {
       return {
         success: false,
         error: "Este nickname já está em uso",
