@@ -187,9 +187,10 @@ export const authOptions: NextAuthOptions = {
         return url;
       }
 
-      // Se não, volta para o baseUrl
-      console.log("🔍 Redirecionando para baseUrl:", baseUrl);
-      return baseUrl;
+      // Se não, redireciona para o perfil do usuário
+      const profileUrl = `${baseUrl}/perfil`;
+      console.log("🔍 Redirecionando para perfil:", profileUrl);
+      return profileUrl;
     },
   },
   pages: {

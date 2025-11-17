@@ -1,14 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X, AlertCircle, Mail, Shield } from "lucide-react";
+import { X, AlertCircle, Mail, Shield, CheckCircle, XCircle } from "lucide-react";
 import { Button } from "./button";
 
 interface NotificationProps {
   isVisible: boolean;
   onClose: () => void;
-  type: "email_exists" | "oauth_error" | "general";
-  title: string;
+  type: "email_exists" | "oauth_error" | "general" | "success" | "error";
+  title?: string;
   message: string;
   actions?: {
     label: string;
@@ -24,6 +24,7 @@ const notificationStyles = {
     iconColor: "text-amber-600",
     titleColor: "text-amber-900",
     messageColor: "text-amber-700",
+    defaultTitle: "Email já cadastrado",
   },
   oauth_error: {
     bg: "bg-red-50 border-red-200",
@@ -31,6 +32,7 @@ const notificationStyles = {
     iconColor: "text-red-600",
     titleColor: "text-red-900",
     messageColor: "text-red-700",
+    defaultTitle: "Erro de autenticação",
   },
   general: {
     bg: "bg-blue-50 border-blue-200",
@@ -38,6 +40,23 @@ const notificationStyles = {
     iconColor: "text-blue-600",
     titleColor: "text-blue-900",
     messageColor: "text-blue-700",
+    defaultTitle: "Informação",
+  },
+  success: {
+    bg: "bg-green-50 border-green-200",
+    icon: CheckCircle,
+    iconColor: "text-green-600",
+    titleColor: "text-green-900",
+    messageColor: "text-green-700",
+    defaultTitle: "Sucesso",
+  },
+  error: {
+    bg: "bg-red-50 border-red-200",
+    icon: XCircle,
+    iconColor: "text-red-600",
+    titleColor: "text-red-900",
+    messageColor: "text-red-700",
+    defaultTitle: "Erro",
   },
 };
 
@@ -52,6 +71,7 @@ export function Notification({
   const [isAnimating, setIsAnimating] = useState(false);
   const styles = notificationStyles[type];
   const Icon = styles.icon;
+  const displayTitle = title || styles.defaultTitle;
 
   useEffect(() => {
     if (isVisible) {
@@ -92,7 +112,7 @@ export function Notification({
                 <Icon className={`h-6 w-6 ${styles.iconColor}`} />
               </div>
               <h3 className={`text-lg font-semibold ${styles.titleColor}`}>
-                {title}
+                {displayTitle}
               </h3>
             </div>
             <Button
