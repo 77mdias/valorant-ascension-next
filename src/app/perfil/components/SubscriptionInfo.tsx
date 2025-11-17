@@ -1,5 +1,5 @@
 import { Badge } from "@/components/ui/badge";
-import { getSubscriptionPlanName } from "@/server/profileActions";
+import { getSubscriptionPlanName } from "@/lib/subscription-utils";
 import { Calendar, CreditCard, AlertCircle } from "lucide-react";
 
 interface SubscriptionInfoProps {

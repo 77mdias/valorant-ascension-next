@@ -138,18 +138,3 @@ export async function updateCurrentUserProfile(raw: unknown) {
     };
   }
 }
-
-/**
- * Busca o plano de assinatura do usuário baseado no stripePriceId
- */
-export function getSubscriptionPlanName(stripePriceId: string | null): string {
-  if (!stripePriceId) return "Nenhum";
-
-  const priceIds = {
-    [process.env.NEXT_PUBLIC_STRIPE_PRICE_BASICO || ""]: "Básico",
-    [process.env.NEXT_PUBLIC_STRIPE_PRICE_INTERMEDIARIO || ""]: "Intermediário",
-    [process.env.NEXT_PUBLIC_STRIPE_PRICE_AVANCADO || ""]: "Avançado",
-  };
-
-  return priceIds[stripePriceId] || "Desconhecido";
-}
