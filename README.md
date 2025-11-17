@@ -69,17 +69,38 @@ Aplicação full‑stack construída com Next.js (App Router) para oferecer cont
 
 ## ✨ Funcionalidades
 
+### 🔐 Autenticação & Autorização
 - 🔑 Autenticação segura (signin/signup) com Auth.js (NextAuth.js) e RBAC
 - � **OAuth Google implementado** — Login/cadastro com Google funcionando
-- �🛡️ Controle de acesso por roles: ADMIN, CUSTOMER, PROFESSIONAL
+- 🛡️ Controle de acesso por roles: ADMIN, CUSTOMER, PROFESSIONAL
+- 🛡️ Proteção multi-camadas: Middleware, Layout/Page, Server Actions, UI
+
+### 💳 Pagamentos & Assinaturas
 - 🧾 Assinaturas Stripe (checkout, upgrade/downgrade, cancelamento agendado)
 - 🔁 Sincronização por Webhook com fallback de Polling (resiliente a falhas)
 - 🧭 Página de preços com feedback do plano atual e ações contextuais
+
+### 🎓 Sistema de Aulas
 - 🎬 Catálogo de Aulas com Categorias, Progresso e Conteúdo Relacionado
+- 🎥 Player de vídeo customizado com controles avançados
+- ⏱️ Sistema de timestamps clicáveis para navegação rápida
+- ⚡ Controle de velocidade de reprodução (0.5x - 2x) com persistência
+- 📊 Tracking de progresso de visualização
+
+### 🎮 Integração Valorant (HenrikDev API)
+- 🔍 **Busca de jogadores** por Riot ID (Nome#TAG) e região
+- 📈 **Visualização de MMR e Rank** atual do jogador
+- 🎯 **Histórico de partidas** com estatísticas detalhadas (K/D/A, HS%, ADR, ACS)
+- 🗺️ **Informações de mapas e agentes** utilizados
+- 💾 **Sistema de cache inteligente** para otimizar requisições à API
+- 🔄 **Atualização manual** de dados com botão de refresh
+- 🌍 **Suporte multi-região** (NA, EU, BR, LATAM, AP, KR)
+- 📊 **Análise de performance** por partida com navegação detalhada
+
+### 🛠️ Administração
+- 🗄️ CRUD completo para usuários, aulas e categorias no dashboard
 - 🧩 Componentes reutilizáveis (Status de Pagamento, Banner de Plano, Cards)
 - 🧹 Tipagens fortes em TypeScript e validações com Zod
-- 🗄️ CRUD completo para usuários, aulas e categorias no dashboard
-- 🛡️ Proteção multi-camadas: Middleware, Layout/Page, Server Actions, UI
 
 
 ## 🧱 Arquitetura
