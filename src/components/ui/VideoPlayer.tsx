@@ -24,8 +24,10 @@ import styles from "./VideoPlayer.module.scss";
 import { cn } from "@/lib/utils";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 import { usePlaybackSpeed } from "@/hooks/usePlaybackSpeed";
+import { useNetworkSpeed, VideoQuality } from "@/hooks/useNetworkSpeed";
 import TimestampList from "@/components/VideoPlayer/TimestampList";
 import SpeedControl from "@/components/VideoPlayer/SpeedControl";
+import QualitySelector from "@/components/VideoPlayer/QualitySelector";
 import { formatSeconds } from "@/lib/time";
 
 interface VideoPlayerProps {
@@ -69,6 +71,60 @@ const VideoPlayer = ({
 
   // Hook de controle de velocidade de reprodução
   const { speed, setSpeed, isNormalSpeed } = usePlaybackSpeed();
+
+  // AIDEV-NOTE: Hook de detecção de velocidade de rede
+  // Detecta conexão e sugere qualidade apropriada
+  const { suggestedQuality, connectionSpeed, isSupported } = useNetworkSpeed();
+
+  // Estado de qualidade de vídeo com persistência
+  const [quality, setQualityState] = useState<VideoQuality>("auto");
+  const [isQualityLoaded, setIsQualityLoaded] = useState(false);
+
+  // Carregar qualidade do localStorage na montagem
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    try {
+      const stored = localStorage.getItem("videoPlayerQuality");
+      if (stored) {
+        setQualityState(stored as VideoQuality);
+      }
+    } catch (error) {
+      console.error("Erro ao carregar qualidade do localStorage:", error);
+    } finally {
+      setIsQualityLoaded(true);
+    }
+  }, []);
+
+  // Atualizar qualidade quando modo auto e sugestão mudar
+  useEffect(() => {
+    if (quality === "auto" && isQualityLoaded) {
+      // Em modo auto, a qualidade efetiva é a sugerida pela rede
+      // AIDEV-NOTE: react-player não suporta controle direto de qualidade
+      // para vídeos MP4. Esta lógica está preparada para futuras integrações
+      // com HLS/DASH ou para vídeos do YouTube/Vimeo que já possuem
+      // múltiplas qualidades embutidas
+    }
+  }, [quality, suggestedQuality, isQualityLoaded]);
+
+  // Função para atualizar qualidade e persistir
+  const setQuality = useCallback((newQuality: VideoQuality) => {
+    setQualityState(newQuality);
+
+    // Persistir no localStorage
+    if (typeof window !== "undefined") {
+      try {
+        localStorage.setItem("videoPlayerQuality", newQuality);
+      } catch (error) {
+        console.error("Erro ao salvar qualidade no localStorage:", error);
+      }
+    }
+  }, []);
+
+  // Determinar qualidade efetiva (auto usa sugestão da rede)
+  const effectiveQuality = quality === "auto" ? suggestedQuality : quality;
 
   const hasVideo = Boolean(videoUrl);
 
@@ -350,6 +406,12 @@ const VideoPlayer = ({
                   </div>
 
                   <SpeedControl currentSpeed={speed} onSpeedChange={setSpeed} />
+
+                  <QualitySelector
+                    currentQuality={quality}
+                    onQualityChange={setQuality}
+                    isAutoMode={quality === "auto"}
+                  />
 
                   <div className="flex flex-1 items-center justify-end gap-2 text-xs text-white/60">
                     <span className="hidden md:inline">
