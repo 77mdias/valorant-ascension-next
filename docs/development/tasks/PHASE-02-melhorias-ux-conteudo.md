@@ -5,7 +5,7 @@
 **Status:** 🟡 EM ANDAMENTO
 **Última atualização:** 2026-01-16
 **Sprint Atual:** Novembro-Dezembro 2025
-**Status Geral:** 🟡 16% concluído (5/32 tarefas completas) – FASE ATIVA
+**Status Geral:** 🟡 19% concluído (6/32 tarefas completas) – FASE ATIVA
 **ETA:** 2025-12-01
 **Pré-requisito:** v0.1.0 - MVP (✅ Concluído)
 
@@ -15,12 +15,12 @@
 
 | Categoria                  | Total  | Concluído | Em Andamento | Pendente | Bloqueado |
 | -------------------------- | ------ | --------- | ------------ | -------- | --------- |
-| Sistema de Vídeos Avançado | 7      | 5         | 0            | 2        | 0         |
+| Sistema de Vídeos Avançado | 7      | 6         | 0            | 1        | 0         |
 | Dashboard de Progresso     | 7      | 0         | 0            | 7        | 0         |
 | Sistema de Conquistas      | 6      | 0         | 0            | 6        | 0         |
 | Busca e Filtros            | 6      | 0         | 0            | 6        | 0         |
 | Sistema de Comentários     | 6      | 0         | 0            | 6        | 0         |
-| **TOTAL**                  | **32** | **5**     | **0**        | **27**   | **0**     |
+| **TOTAL**                  | **32** | **6**     | **0**        | **26**   | **0**     |
 
 ### 🎯 Principais Indicadores
 
@@ -291,7 +291,7 @@ Transformar o player de vídeo básico em uma experiência premium, com controle
 
 ---
 
-- [ ] **VID-006** - Registro de progresso de visualização
+- [x] **VID-006** - Registro de progresso de visualização
 
   **Descrição curta:**
   - Salvar timestamp atual do vídeo a cada 5 segundos
@@ -321,26 +321,32 @@ Transformar o player de vídeo básico em uma experiência premium, com controle
   5. Exibir badge "Assistido" em aulas concluídas
 
   **Arquivos/áreas afetadas:**
-  - `prisma/schema.prisma` (adicionar modelo)
-  - `src/server/lessonProgressActions.ts` (novo)
+  - `prisma/schema.prisma` (campos de tracking em `lessonProgress`)
+  - `prisma/migrations/20260116190000_vid_006_lesson_progress/` (novo)
   - `src/schemas/lessonProgress.ts` (novo)
+  - `src/app/api/lessons/[lessonId]/progress/route.ts` (novo)
+  - `src/app/api/categories/[slug]/route.ts` (enriquecimento com progresso do usuário)
   - `src/hooks/useVideoProgress.ts` (novo)
-  - `src/components/ui/VideoPlayer.tsx` (atualizar)
-  - `src/app/cursos/[id]/page.tsx` (carregar progresso inicial)
+  - `src/components/ui/VideoPlayer.tsx` (atualizar tracking, badge e retomada)
+  - `src/app/cursos/[slug]/page.tsx` (consumir progresso e exibir conclusão)
 
   **Critérios de aceitação:**
-  - [ ] Progresso salvo automaticamente a cada 5 segundos
-  - [ ] Vídeo retoma de onde parou ao reabrir
-  - [ ] Aula marcada como concluída automaticamente aos 90%
-  - [ ] Sem race conditions ou perda de dados
-  - [ ] Performance não impactada (debounce correto)
+  - [x] Progresso salvo automaticamente a cada 5 segundos
+  - [x] Vídeo retoma de onde parou ao reabrir
+  - [x] Aula marcada como concluída automaticamente aos 90%
+  - [x] Sem race conditions ou perda de dados
+  - [x] Performance não impactada (debounce correto)
 
   **Prioridade:** 🔴 Crítica
   **Estimativa:** 6h
   **Dependências:** VID-001
-  **Status:** 🔴 Pendente
-  **Notas adicionais:**
-  - Esta tarefa é pré-requisito para PRG-001 (Dashboard de Progresso)
+  **Status:** 🟢 Concluído (2026-01-16) ✅
+  **Notas de validação (2026-01-16):**
+  - Prisma `lessonProgress` agora registra `lastPosition`, `totalDuration`, `completedAt` e `progress` obrigatório; migration `20260116190000_vid_006_lesson_progress` adicionada
+  - Rota autenticada `/api/lessons/[lessonId]/progress` (GET/PUT) com validação Zod, cálculo automático de completion ≥90% e upsert idempotente sem regressão de progresso
+  - Hook `useVideoProgress` salva a cada 5s, força flush em pause/end, evita race conditions, retoma posição após hydration e mantém debounce para não afetar performance
+  - `VideoPlayer` exibe badge Assistido/Em andamento, retoma tempo salvo e envia progresso em eventos críticos; `LessonCard` e página de cursos agora exibem conclusão real
+  - API `/api/categories/[slug]` devolve progresso do usuário autenticado por aula, com fallback seguro para visitantes e serialização pronta para o player
 
 ---
 

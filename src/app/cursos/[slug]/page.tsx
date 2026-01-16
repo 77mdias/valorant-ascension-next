@@ -147,13 +147,17 @@ export default function CategoryPage({ params }: CategoryPageProps) {
                         title: string;
                         duration: number | null;
                         isLocked: boolean;
+                        isCompleted?: boolean;
+                        progress?: { completed?: boolean };
                       }) => (
                         <LessonCard
                           key={lesson.id}
                           number={lesson.number ?? 0}
                           title={lesson.title}
                           duration={lesson.duration ?? 0}
-                          isCompleted={false}
+                          isCompleted={Boolean(
+                            lesson.progress?.completed ?? lesson.isCompleted,
+                          )}
                           isActive={lesson.id === activeLesson}
                           isLocked={lesson.isLocked}
                           onClick={() =>
@@ -195,13 +199,16 @@ export default function CategoryPage({ params }: CategoryPageProps) {
                       duration: number | null;
                       isLocked: boolean;
                       isCompleted: boolean;
+                      progress?: { completed?: boolean };
                     }) => (
                       <LessonCard
                         key={lesson.id}
                         number={lesson.number ?? 0}
                         title={lesson.title}
                         duration={lesson.duration ?? 0}
-                        isCompleted={lesson.isCompleted}
+                        isCompleted={Boolean(
+                          lesson.progress?.completed ?? lesson.isCompleted,
+                        )}
                         isActive={lesson.id === activeLesson}
                         isLocked={lesson.isLocked}
                         onClick={() => {
@@ -222,7 +229,10 @@ export default function CategoryPage({ params }: CategoryPageProps) {
           <main>
             <VideoPlayer
               title={currentLesson.title}
-              description="Nesta aula, você aprenderá técnicas avançadas utilizadas pelos melhores jogadores de Valorant. Vamos cobrir conceitos fundamentais de posicionamento, timing e tomada de decisão que farão a diferença no seu gameplay. Prepare-se para elevar seu jogo ao próximo nível!"
+              description={
+                currentLesson.description ??
+                "Nesta aula, você aprenderá técnicas avançadas utilizadas pelos melhores jogadores de Valorant. Vamos cobrir conceitos fundamentais de posicionamento, timing e tomada de decisão que farão a diferença no seu gameplay. Prepare-se para elevar seu jogo ao próximo nível!"
+              }
               onPrevious={handlePreviousLesson}
               onNext={handleNextLesson}
               hasPrevious={currentLessonIndex > 0}
@@ -235,6 +245,8 @@ export default function CategoryPage({ params }: CategoryPageProps) {
               thumbnailUrl={currentLesson?.thumbnailUrl}
               timestamps={currentLesson?.timestamps ?? []}
               subtitles={currentLesson?.subtitles ?? []}
+              lessonId={currentLesson?.id}
+              lessonProgress={currentLesson?.progress ?? null}
             />
           </main>
         </div>

@@ -19,6 +19,10 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
   - Dashboard `/dashboard/lessons/[id]` ganhou `SubtitleManager` para CRUD completo (upload, edição, definição de padrão, exclusão)
   - Player `VideoPlayer` agora suporta trilhas WebVTT com seletor de legendas, persistência de preferência em `localStorage` e modo OFF
   - API `/api/categories/[slug]` entrega legendas ordenadas para SSR/CSR sem warnings
+- VID-006: Registro de progresso de visualização
+  - `lessonProgress` agora armazena `lastPosition`, `totalDuration`, `progress` obrigatório e `completedAt` (migration `20260116190000_vid_006_lesson_progress`)
+  - Rota autenticada `/api/lessons/[lessonId]/progress` (GET/PUT) com validação Zod, cálculo automático de conclusão ≥90% e upsert idempotente
+  - Hook `useVideoProgress` + `VideoPlayer` salvam a cada 5s, forçam flush em pause/end, retomam posição e exibem badge de conclusão; `/api/categories/[slug]` e `LessonCard` exibem status real das aulas
 - VID-003: Controle de velocidade de reprodução
   - Hook `usePlaybackSpeed` para gerenciar estado e persistência de velocidade no localStorage
   - Componente `SpeedControl` com dropdown interativo para seleção de velocidade (0.5x, 0.75x, 1x, 1.25x, 1.5x, 2x)

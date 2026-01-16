@@ -195,7 +195,10 @@ model lessonProgress {
   userId    String
   lessonId  String
   completed Boolean  @default(false)
-  progress  Float?
+  progress  Float    @default(0)
+  lastPosition Int   @default(0)
+  totalDuration Int  @default(0)
+  completedAt DateTime?
   updatedAt DateTime @updatedAt
   lesson    lessons  @relation(fields: [lessonId], references: [id])
   user      user     @relation(fields: [userId], references: [id])

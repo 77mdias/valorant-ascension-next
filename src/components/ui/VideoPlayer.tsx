@@ -20,11 +20,24 @@ import { cn } from "@/lib/utils";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 import { usePlaybackSpeed } from "@/hooks/usePlaybackSpeed";
 import { useNetworkSpeed, VideoQuality } from "@/hooks/useNetworkSpeed";
+import { useVideoProgress } from "@/hooks/useVideoProgress";
 import TimestampList from "@/components/VideoPlayer/TimestampList";
 import SpeedControl from "@/components/VideoPlayer/SpeedControl";
 import QualitySelector from "@/components/VideoPlayer/QualitySelector";
 import SubtitleSelector from "@/components/VideoPlayer/SubtitleSelector";
 import { formatSeconds } from "@/lib/time";
+
+type LessonProgressState = {
+  id: string;
+  userId: string;
+  lessonId: string;
+  completed: boolean;
+  completedAt: string | null;
+  progress: number;
+  lastPosition: number;
+  totalDuration: number;
+  updatedAt: string;
+};
 
 interface VideoPlayerProps {
   videoUrl?: string | null;
@@ -45,6 +58,8 @@ interface VideoPlayerProps {
     fileUrl: string;
     isDefault?: boolean;
   }>;
+  lessonId?: string;
+  lessonProgress?: LessonProgressState | null;
 }
 
 const clamp = (value: number, min: number, max: number) =>
@@ -112,6 +127,8 @@ const VideoPlayer = ({
   className,
   timestamps,
   subtitles,
+  lessonId,
+  lessonProgress,
 }: VideoPlayerProps) => {
   const playerRef = useRef<ReactPlayer | null>(null);
   const pendingSeekRef = useRef<number | null>(null);
@@ -125,6 +142,7 @@ const VideoPlayer = ({
   const [duration, setDuration] = useState(0);
   const [playedSeconds, setPlayedSeconds] = useState(0);
   const [playerReady, setPlayerReady] = useState(false);
+  const [hasAppliedResume, setHasAppliedResume] = useState(false);
   const [currentSourceUrl, setCurrentSourceUrl] = useState<string | undefined>(
     videoUrl ?? undefined,
   );
@@ -158,6 +176,18 @@ const VideoPlayer = ({
       ),
     [qualitySources],
   );
+
+  const {
+    resumeFrom,
+    isCompleted: isLessonCompleted,
+    handleProgressTick,
+    handleDurationChange,
+    flushProgress,
+    hasHydratedInitial,
+  } = useVideoProgress({
+    lessonId,
+    initialProgress: lessonProgress,
+  });
 
   useEffect(() => {
     setAvailableQualities(dedupeQualities(["auto", ...manualQualities]));
@@ -205,6 +235,18 @@ const VideoPlayer = ({
     subtitleSelection,
     subtitlePreferenceWasStored,
   ]);
+
+  useEffect(() => {
+    setIsPlaying(false);
+    setIsBuffering(false);
+    setDuration(0);
+    setPlayedSeconds(0);
+    setHasAppliedResume(false);
+  }, [lessonId, videoUrl]);
+
+  useEffect(() => {
+    flushProgress();
+  }, [flushProgress, lessonId]);
 
   useEffect(() => {
     setCurrentSourceUrl(videoUrl ?? undefined);
@@ -474,6 +516,29 @@ const VideoPlayer = ({
     [duration],
   );
 
+  useEffect(() => {
+    if (!playerReady || hasAppliedResume) {
+      return;
+    }
+
+    if (!hasHydratedInitial && resumeFrom === null) {
+      return;
+    }
+
+    if (resumeFrom !== null && resumeFrom > 0) {
+      handleSeekTo(resumeFrom);
+      setPlayedSeconds(resumeFrom);
+    }
+
+    setHasAppliedResume(true);
+  }, [
+    handleSeekTo,
+    hasAppliedResume,
+    hasHydratedInitial,
+    playerReady,
+    resumeFrom,
+  ]);
+
   const handleSeekBy = useCallback(
     (deltaSeconds: number) => {
       const current = playerRef.current?.getCurrentTime?.() ?? playedSeconds;
@@ -489,13 +554,24 @@ const VideoPlayer = ({
     setIsPlaying((prev) => !prev);
   }, [hasVideo]);
 
-  const handleProgress = useCallback((progress: OnProgressProps) => {
-    setPlayedSeconds(progress.playedSeconds);
-  }, []);
+  const handleProgress = useCallback(
+    (progress: OnProgressProps) => {
+      setPlayedSeconds(progress.playedSeconds);
+      handleProgressTick(
+        progress.playedSeconds,
+        duration || progress.loadedSeconds || progress.playedSeconds,
+      );
+    },
+    [duration, handleProgressTick],
+  );
 
-  const handleDuration = useCallback((mediaDuration: number) => {
-    setDuration(mediaDuration);
-  }, []);
+  const handleDuration = useCallback(
+    (mediaDuration: number) => {
+      setDuration(mediaDuration);
+      handleDurationChange(mediaDuration);
+    },
+    [handleDurationChange],
+  );
 
   const handleVolumeChange = useCallback((value: number) => {
     const newVolume = clamp(value, 0, 1);
@@ -579,6 +655,13 @@ const VideoPlayer = ({
     { enabled: hasVideo },
   );
 
+  useEffect(
+    () => () => {
+      flushProgress();
+    },
+    [flushProgress],
+  );
+
   return (
     <section className={cn("space-y-6", className)}>
       <div
@@ -636,11 +719,28 @@ const VideoPlayer = ({
                   updateHlsQualities();
                 }}
                 onPlay={() => setIsPlaying(true)}
-                onPause={() => setIsPlaying(false)}
+                onPause={() => {
+                  setIsPlaying(false);
+                  const currentTime =
+                    playerRef.current?.getCurrentTime?.() ?? playedSeconds;
+                  const total =
+                    playerRef.current?.getDuration?.() ?? duration ?? 0;
+
+                  handleProgressTick(currentTime, total, { immediate: true });
+                }}
                 onProgress={handleProgress}
                 onDuration={handleDuration}
                 onBuffer={() => setIsBuffering(true)}
                 onBufferEnd={() => setIsBuffering(false)}
+                onEnded={() => {
+                  const total =
+                    playerRef.current?.getDuration?.() ?? duration ?? 0;
+                  const finalPosition = total || playedSeconds;
+
+                  handleProgressTick(finalPosition, total, { immediate: true });
+                  setIsPlaying(false);
+                  setPlayedSeconds(finalPosition);
+                }}
                 onError={(error) => {
                   console.error("Erro ao reproduzir vídeo", error);
                   setIsPlaying(false);
@@ -800,6 +900,25 @@ const VideoPlayer = ({
             Aula ativa
           </p>
           <h2 className="text-3xl font-bold text-foreground">{title}</h2>
+        </div>
+        <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+          {lessonId && (
+            <span
+              className={cn(
+                "rounded-full px-3 py-1 font-semibold",
+                isLessonCompleted
+                  ? "bg-emerald-500/10 text-emerald-400"
+                  : "bg-white/5 text-white/70",
+              )}
+            >
+              {isLessonCompleted ? "Assistido" : "Em andamento"}
+            </span>
+          )}
+          {resumeFrom !== null && resumeFrom > 0 && (
+            <span className="rounded-full bg-white/5 px-3 py-1 font-mono text-[11px] text-muted-foreground">
+              Retomando em {formatSeconds(resumeFrom)}
+            </span>
+          )}
         </div>
         <p className="text-base leading-relaxed text-muted-foreground">
           {description}
