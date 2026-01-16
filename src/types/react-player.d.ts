@@ -13,6 +13,13 @@ declare module "react-player" {
       forceHLS?: boolean;
       hlsOptions?: Record<string, unknown>;
       attributes?: Record<string, string | boolean>;
+      tracks?: Array<{
+        kind: string;
+        src: string;
+        srcLang?: string;
+        label?: string;
+        default?: boolean;
+      }>;
     };
     [key: string]: unknown;
   };

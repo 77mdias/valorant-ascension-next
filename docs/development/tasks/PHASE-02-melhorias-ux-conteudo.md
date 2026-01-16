@@ -5,7 +5,7 @@
 **Status:** 🟡 EM ANDAMENTO
 **Última atualização:** 2026-01-16
 **Sprint Atual:** Novembro-Dezembro 2025
-**Status Geral:** 🟡 13% concluído (4/32 tarefas completas) – FASE ATIVA
+**Status Geral:** 🟡 16% concluído (5/32 tarefas completas) – FASE ATIVA
 **ETA:** 2025-12-01
 **Pré-requisito:** v0.1.0 - MVP (✅ Concluído)
 
@@ -15,12 +15,12 @@
 
 | Categoria                  | Total  | Concluído | Em Andamento | Pendente | Bloqueado |
 | -------------------------- | ------ | --------- | ------------ | -------- | --------- |
-| Sistema de Vídeos Avançado | 7      | 4         | 0            | 3        | 0         |
+| Sistema de Vídeos Avançado | 7      | 5         | 0            | 2        | 0         |
 | Dashboard de Progresso     | 7      | 0         | 0            | 7        | 0         |
 | Sistema de Conquistas      | 6      | 0         | 0            | 6        | 0         |
 | Busca e Filtros            | 6      | 0         | 0            | 6        | 0         |
 | Sistema de Comentários     | 6      | 0         | 0            | 6        | 0         |
-| **TOTAL**                  | **32** | **4**     | **0**        | **28**   | **0**     |
+| **TOTAL**                  | **32** | **5**     | **0**        | **27**   | **0**     |
 
 ### 🎯 Principais Indicadores
 
@@ -234,7 +234,7 @@ Transformar o player de vídeo básico em uma experiência premium, com controle
 
 ---
 
-- [ ] **VID-005** - Sistema de legendas/closed captions
+- [x] **VID-005** - Sistema de legendas/closed captions
 
   **Descrição curta:**
   - Suporte a arquivos .vtt (WebVTT) para legendas
@@ -269,17 +269,23 @@ Transformar o player de vídeo básico em uma experiência premium, com controle
   - `src/lib/fileUpload.ts` (novo - upload de .vtt)
 
   **Critérios de aceitação:**
-  - [ ] Upload de arquivos .vtt com validação de formato
-  - [ ] Player exibe legendas corretamente sincronizadas
-  - [ ] Usuário pode alternar entre idiomas disponíveis
-  - [ ] Preferência de legenda persiste (localStorage)
-  - [ ] Acessibilidade: legendas visíveis e legíveis
+  - [x] Upload de arquivos .vtt com validação de formato
+  - [x] Player exibe legendas corretamente sincronizadas
+  - [x] Usuário pode alternar entre idiomas disponíveis
+  - [x] Preferência de legenda persiste (localStorage)
+  - [x] Acessibilidade: legendas visíveis e legíveis
 
   **Prioridade:** 🟡 Alta
   **Estimativa:** 8h
   **Dependências:** VID-001
-  **Status:** 🔴 Pendente
-  **Notas adicionais:**
+  **Status:** 🟢 Concluído (2026-01-16) ✅
+  **Notas de validação (2026-01-16):**
+  - Prisma atualizado com o modelo `VideoSubtitle`, índice por idioma e relação com `lessons`; CRUD exposto via `videoSubtitleActions` com garantia de apenas uma legenda padrão por aula
+  - Upload seguro de arquivos `.vtt` via rota `/api/uploads/subtitle` usando helper `saveSubtitleFile` (`public/uploads/subtitles`), validação de extensão/MIME e limite de 2MB
+  - Dashboard `/dashboard/lessons/[id]` ganhou `SubtitleManager` para CRUD completo (upload, edição de idioma/rótulo, definição de padrão, remoção)
+  - Player (`VideoPlayer`) agora renderiza trilhas WebVTT com seletor dedicado, persistência em `localStorage`, fallback para legenda padrão e opção de desligar; seleção disponível na página `cursos/[slug]` com dados da API
+  - API `/api/categories/[slug]` entrega legendas ordenadas (padrão primeiro) permitindo navegação SSR/CSR sem warnings
+    **Notas adicionais:**
   - Considerar integração futura com serviços de transcrição automática (OpenAI Whisper)
   - Ver `docs/accessibility/` para requisitos de acessibilidade
 

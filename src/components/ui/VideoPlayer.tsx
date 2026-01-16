@@ -23,6 +23,7 @@ import { useNetworkSpeed, VideoQuality } from "@/hooks/useNetworkSpeed";
 import TimestampList from "@/components/VideoPlayer/TimestampList";
 import SpeedControl from "@/components/VideoPlayer/SpeedControl";
 import QualitySelector from "@/components/VideoPlayer/QualitySelector";
+import SubtitleSelector from "@/components/VideoPlayer/SubtitleSelector";
 import { formatSeconds } from "@/lib/time";
 
 interface VideoPlayerProps {
@@ -37,6 +38,13 @@ interface VideoPlayerProps {
   hasNext?: boolean;
   className?: string;
   timestamps?: Array<{ id: string; time: number; label: string }>;
+  subtitles?: Array<{
+    id: string;
+    language: string;
+    label: string;
+    fileUrl: string;
+    isDefault?: boolean;
+  }>;
 }
 
 const clamp = (value: number, min: number, max: number) =>
@@ -70,6 +78,9 @@ const dedupeQualities = (values: VideoQuality[]) => {
   return Array.from(seen);
 };
 
+const SUBTITLE_STORAGE_KEY = "videoPlayerSubtitle";
+const SUBTITLE_OFF = "off";
+
 const resolveBestQuality = (
   available: VideoQuality[],
   target: Exclude<VideoQuality, "auto">,
@@ -100,6 +111,7 @@ const VideoPlayer = ({
   hasNext = false,
   className,
   timestamps,
+  subtitles,
 }: VideoPlayerProps) => {
   const playerRef = useRef<ReactPlayer | null>(null);
   const pendingSeekRef = useRef<number | null>(null);
@@ -119,6 +131,12 @@ const VideoPlayer = ({
   const [availableQualities, setAvailableQualities] = useState<VideoQuality[]>([
     "auto",
   ]);
+  const [subtitleSelection, setSubtitleSelection] =
+    useState<string>(SUBTITLE_OFF);
+  const [subtitlePreferenceLoaded, setSubtitlePreferenceLoaded] =
+    useState(false);
+  const [subtitlePreferenceWasStored, setSubtitlePreferenceWasStored] =
+    useState(false);
 
   // Hook de controle de velocidade de reprodução
   const { speed, setSpeed, isNormalSpeed } = usePlaybackSpeed();
@@ -146,6 +164,49 @@ const VideoPlayer = ({
   }, [manualQualities]);
 
   useEffect(() => {
+    if (!subtitlePreferenceLoaded) return;
+
+    if (!subtitles?.length) {
+      if (subtitleSelection !== SUBTITLE_OFF) {
+        setSubtitleSelection(SUBTITLE_OFF);
+      }
+      return;
+    }
+
+    if (
+      subtitleSelection !== SUBTITLE_OFF &&
+      subtitles.some((subtitle) => subtitle.language === subtitleSelection)
+    ) {
+      return;
+    }
+
+    if (subtitleSelection === SUBTITLE_OFF && subtitlePreferenceWasStored) {
+      return;
+    }
+
+    const fallbackSubtitle =
+      subtitles.find((subtitle) => subtitle.isDefault) ?? subtitles[0];
+
+    if (fallbackSubtitle) {
+      setSubtitleSelection(fallbackSubtitle.language);
+      if (typeof window !== "undefined") {
+        try {
+          localStorage.setItem(SUBTITLE_STORAGE_KEY, fallbackSubtitle.language);
+        } catch (error) {
+          console.error("Erro ao salvar legenda no localStorage:", error);
+        }
+      }
+    } else {
+      setSubtitleSelection(SUBTITLE_OFF);
+    }
+  }, [
+    subtitlePreferenceLoaded,
+    subtitles,
+    subtitleSelection,
+    subtitlePreferenceWasStored,
+  ]);
+
+  useEffect(() => {
     setCurrentSourceUrl(videoUrl ?? undefined);
     setPlayerReady(false);
   }, [videoUrl]);
@@ -169,6 +230,27 @@ const VideoPlayer = ({
       console.error("Erro ao carregar qualidade do localStorage:", error);
     } finally {
       setIsQualityLoaded(true);
+    }
+  }, []);
+
+  // Carregar preferência de legendas (on/off ou idioma) do localStorage na montagem
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    try {
+      const stored = localStorage.getItem(SUBTITLE_STORAGE_KEY);
+      if (stored) {
+        setSubtitleSelection(stored);
+        setSubtitlePreferenceWasStored(true);
+      } else {
+        setSubtitlePreferenceWasStored(false);
+      }
+    } catch (error) {
+      console.error("Erro ao carregar legenda do localStorage:", error);
+    } finally {
+      setSubtitlePreferenceLoaded(true);
     }
   }, []);
 
@@ -310,6 +392,50 @@ const VideoPlayer = ({
   }, [currentSourceUrl, playerReady]);
 
   const hasVideo = Boolean(currentSourceUrl);
+
+  const subtitleOptions = useMemo(() => subtitles ?? [], [subtitles]);
+
+  const activeSubtitle = useMemo(() => {
+    if (!subtitleOptions.length || subtitleSelection === SUBTITLE_OFF) {
+      return null;
+    }
+
+    return (
+      subtitleOptions.find(
+        (subtitle) => subtitle.language === subtitleSelection,
+      ) ||
+      subtitleOptions.find((subtitle) => subtitle.isDefault) ||
+      null
+    );
+  }, [subtitleOptions, subtitleSelection]);
+
+  const subtitleTracks = useMemo(
+    () =>
+      activeSubtitle
+        ? [
+            {
+              kind: "subtitles",
+              src: activeSubtitle.fileUrl,
+              srcLang: activeSubtitle.language,
+              label: activeSubtitle.label,
+              default: true,
+            },
+          ]
+        : [],
+    [activeSubtitle],
+  );
+
+  const handleSubtitleChange = useCallback((nextSubtitle: string) => {
+    setSubtitleSelection(nextSubtitle);
+    setSubtitlePreferenceWasStored(true);
+    if (typeof window !== "undefined") {
+      try {
+        localStorage.setItem(SUBTITLE_STORAGE_KEY, nextSubtitle);
+      } catch (error) {
+        console.error("Erro ao salvar legenda no localStorage:", error);
+      }
+    }
+  }, []);
 
   const sortedTimestamps = useMemo(
     () => [...(timestamps ?? [])].sort((a, b) => a.time - b.time),
@@ -495,9 +621,11 @@ const VideoPlayer = ({
                         autoStartLoad: true,
                         capLevelToPlayerSize: true,
                       },
+                      tracks: subtitleTracks,
                       attributes: {
                         controlsList: "nodownload",
                         playsInline: true,
+                        crossOrigin: "anonymous",
                       },
                     },
                   } satisfies PlayerConfig
@@ -601,6 +729,12 @@ const VideoPlayer = ({
                   </div>
 
                   <SpeedControl currentSpeed={speed} onSpeedChange={setSpeed} />
+
+                  <SubtitleSelector
+                    currentSelection={subtitleSelection}
+                    options={subtitleOptions}
+                    onChange={handleSubtitleChange}
+                  />
 
                   <QualitySelector
                     currentQuality={quality}

@@ -13,6 +13,12 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
   - Player agora detecta níveis HLS disponíveis (1080p/720p/480p/360p) via `hls.js` e permite troca manual ou automática preservando o tempo de reprodução
   - Modo Auto usa `useNetworkSpeed` para sugerir qualidade com fallback quando a Network Information API não está disponível
   - Preferência persiste em `localStorage` e o seletor exibe apenas opções realmente disponíveis
+- VID-005: Sistema de legendas/closed captions
+  - Novo modelo Prisma `VideoSubtitle` com idioma único por aula, flag de padrão e revalidação automática das rotas
+  - Upload seguro de `.vtt` via `/api/uploads/subtitle` usando helper `saveSubtitleFile` (validação de extensão/MIME e limite de 2MB)
+  - Dashboard `/dashboard/lessons/[id]` ganhou `SubtitleManager` para CRUD completo (upload, edição, definição de padrão, exclusão)
+  - Player `VideoPlayer` agora suporta trilhas WebVTT com seletor de legendas, persistência de preferência em `localStorage` e modo OFF
+  - API `/api/categories/[slug]` entrega legendas ordenadas para SSR/CSR sem warnings
 - VID-003: Controle de velocidade de reprodução
   - Hook `usePlaybackSpeed` para gerenciar estado e persistência de velocidade no localStorage
   - Componente `SpeedControl` com dropdown interativo para seleção de velocidade (0.5x, 0.75x, 1x, 1.25x, 1.5x, 2x)

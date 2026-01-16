@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { db } from "@/lib/prisma";
 import { formatSeconds } from "@/lib/time";
 import TimestampManager from "./components/TimestampManager";
+import SubtitleManager from "./components/SubtitleManager";
 
 interface LessonTimestampPageProps {
   params: Promise<{
@@ -19,6 +20,9 @@ export default async function LessonTimestampPage({
     include: {
       category: { select: { name: true, slug: true } },
       timestamps: { orderBy: { time: "asc" } },
+      subtitles: {
+        orderBy: [{ isDefault: "desc" }, { language: "asc" }],
+      },
     },
   });
 
@@ -48,21 +52,18 @@ export default async function LessonTimestampPage({
 
         <div className="mt-4 space-y-2 text-sm text-muted-foreground">
           <p>
-            <span className="font-semibold text-foreground">Aula:</span>
-            {" "}
+            <span className="font-semibold text-foreground">Aula:</span>{" "}
             {lesson.title}
           </p>
           {lesson.category?.name && (
             <p>
-              <span className="font-semibold text-foreground">Categoria:</span>
-              {" "}
+              <span className="font-semibold text-foreground">Categoria:</span>{" "}
               {lesson.category.name}
             </p>
           )}
           {typeof lesson.duration === "number" && (
             <p>
-              <span className="font-semibold text-foreground">Duração:</span>
-              {" "}
+              <span className="font-semibold text-foreground">Duração:</span>{" "}
               {formatSeconds(lesson.duration)}
             </p>
           )}
@@ -73,6 +74,11 @@ export default async function LessonTimestampPage({
         lessonId={lesson.id}
         lessonDuration={lesson.duration}
         initialTimestamps={lesson.timestamps}
+      />
+
+      <SubtitleManager
+        lessonId={lesson.id}
+        initialSubtitles={lesson.subtitles}
       />
     </div>
   );

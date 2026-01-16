@@ -18,6 +18,9 @@ export async function GET(
             timestamps: {
               orderBy: { time: "asc" },
             },
+            subtitles: {
+              orderBy: [{ isDefault: "desc" }, { language: "asc" }],
+            },
           },
         },
       },

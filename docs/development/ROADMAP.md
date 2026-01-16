@@ -49,7 +49,7 @@ Este documento apresenta o planejamento de curto, médio e longo prazo para o pr
 - [x] Marcação de timestamps importantes (VID-002)
 - [x] Velocidade de reprodução ajustável
 - [x] Qualidade de vídeo adaptativa
-- [ ] Legendas/closed captions
+- [x] Legendas/closed captions
 
 ##### 📊 Dashboard de Progresso do Aluno
 

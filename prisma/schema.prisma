@@ -116,6 +116,7 @@ model lessons {
   createdBy    user                @relation(fields: [createdById], references: [id])
   classes      classes[]           @relation("classesTolessons")
   timestamps   VideoTimestamp[]
+  subtitles    VideoSubtitle[]
 }
 
 model VideoTimestamp {
@@ -128,6 +129,21 @@ model VideoTimestamp {
   lesson    lessons  @relation(fields: [lessonId], references: [id], onDelete: Cascade)
 
   @@index([lessonId, time])
+}
+
+model VideoSubtitle {
+  id        String   @id @default(uuid())
+  lessonId  String
+  language  String
+  label     String
+  fileUrl   String
+  isDefault Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  lesson    lessons  @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@unique([lessonId, language])
+  @@index([lessonId, isDefault])
 }
 
 model lessonEnrollments {
