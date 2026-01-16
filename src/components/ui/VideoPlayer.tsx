@@ -11,15 +11,10 @@ import {
   Volume2,
   VolumeX,
 } from "lucide-react";
-import {
-  type SyntheticEvent,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import ReactPlayer from "react-player";
+import type { OnProgressProps, PlayerConfig } from "react-player";
+import type Hls from "hls.js";
 import styles from "./VideoPlayer.module.scss";
 import { cn } from "@/lib/utils";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
@@ -32,6 +27,7 @@ import { formatSeconds } from "@/lib/time";
 
 interface VideoPlayerProps {
   videoUrl?: string | null;
+  qualitySources?: Partial<Record<Exclude<VideoQuality, "auto">, string>>;
   thumbnailUrl?: string | null;
   title: string;
   description: string;
@@ -46,8 +42,55 @@ interface VideoPlayerProps {
 const clamp = (value: number, min: number, max: number) =>
   Math.min(Math.max(value, min), max);
 
+const ORDERED_QUALITIES: Array<Exclude<VideoQuality, "auto">> = [
+  "1080p",
+  "720p",
+  "480p",
+  "360p",
+];
+
+const mapHeightToQuality = (
+  height?: number,
+): Exclude<VideoQuality, "auto"> | null => {
+  if (!height) return null;
+  if (height >= 1080) return "1080p";
+  if (height >= 720) return "720p";
+  if (height >= 480) return "480p";
+  return "360p";
+};
+
+const dedupeQualities = (values: VideoQuality[]) => {
+  const seen = new Set<VideoQuality>();
+  const ordered = ["auto", ...ORDERED_QUALITIES] as VideoQuality[];
+  for (const quality of ordered) {
+    if (values.includes(quality)) {
+      seen.add(quality);
+    }
+  }
+  return Array.from(seen);
+};
+
+const resolveBestQuality = (
+  available: VideoQuality[],
+  target: Exclude<VideoQuality, "auto">,
+): VideoQuality => {
+  const filtered = available.filter((quality) => quality !== "auto");
+  if (!filtered.length) return "auto";
+
+  const targetIndex = ORDERED_QUALITIES.indexOf(target);
+  for (let index = targetIndex; index < ORDERED_QUALITIES.length; index++) {
+    const candidate = ORDERED_QUALITIES[index];
+    if (filtered.includes(candidate)) {
+      return candidate;
+    }
+  }
+
+  return filtered[filtered.length - 1];
+};
+
 const VideoPlayer = ({
   videoUrl,
+  qualitySources,
   thumbnailUrl,
   title,
   description,
@@ -58,7 +101,8 @@ const VideoPlayer = ({
   className,
   timestamps,
 }: VideoPlayerProps) => {
-  const playerRef = useRef<HTMLVideoElement | null>(null);
+  const playerRef = useRef<ReactPlayer | null>(null);
+  const pendingSeekRef = useRef<number | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
@@ -68,17 +112,47 @@ const VideoPlayer = ({
   const [previousVolume, setPreviousVolume] = useState(0.8);
   const [duration, setDuration] = useState(0);
   const [playedSeconds, setPlayedSeconds] = useState(0);
+  const [playerReady, setPlayerReady] = useState(false);
+  const [currentSourceUrl, setCurrentSourceUrl] = useState<string | undefined>(
+    videoUrl ?? undefined,
+  );
+  const [availableQualities, setAvailableQualities] = useState<VideoQuality[]>([
+    "auto",
+  ]);
 
   // Hook de controle de velocidade de reprodução
   const { speed, setSpeed, isNormalSpeed } = usePlaybackSpeed();
 
   // AIDEV-NOTE: Hook de detecção de velocidade de rede
   // Detecta conexão e sugere qualidade apropriada
-  const { suggestedQuality, connectionSpeed, isSupported } = useNetworkSpeed();
+  const { suggestedQuality, isSupported } = useNetworkSpeed();
 
   // Estado de qualidade de vídeo com persistência
   const [quality, setQualityState] = useState<VideoQuality>("auto");
+  const [effectiveQuality, setEffectiveQuality] =
+    useState<VideoQuality>("auto");
   const [isQualityLoaded, setIsQualityLoaded] = useState(false);
+
+  const manualQualities = useMemo(
+    () =>
+      ORDERED_QUALITIES.filter(
+        (qualityKey) => qualitySources && qualitySources[qualityKey],
+      ),
+    [qualitySources],
+  );
+
+  useEffect(() => {
+    setAvailableQualities(dedupeQualities(["auto", ...manualQualities]));
+  }, [manualQualities]);
+
+  useEffect(() => {
+    setCurrentSourceUrl(videoUrl ?? undefined);
+    setPlayerReady(false);
+  }, [videoUrl]);
+
+  useEffect(() => {
+    setPlayerReady(false);
+  }, [currentSourceUrl]);
 
   // Carregar qualidade do localStorage na montagem
   useEffect(() => {
@@ -98,22 +172,38 @@ const VideoPlayer = ({
     }
   }, []);
 
-  // Atualizar qualidade quando modo auto e sugestão mudar
-  useEffect(() => {
-    if (quality === "auto" && isQualityLoaded) {
-      // Em modo auto, a qualidade efetiva é a sugerida pela rede
-      // AIDEV-NOTE: react-player não suporta controle direto de qualidade
-      // para vídeos MP4. Esta lógica está preparada para futuras integrações
-      // com HLS/DASH ou para vídeos do YouTube/Vimeo que já possuem
-      // múltiplas qualidades embutidas
+  const resolveAutoQuality = useCallback((): VideoQuality => {
+    if (!availableQualities.length) {
+      return "auto";
     }
-  }, [quality, suggestedQuality, isQualityLoaded]);
 
-  // Função para atualizar qualidade e persistir
+    if (suggestedQuality === "auto") {
+      const highestAvailable = availableQualities.find(
+        (qualityValue) => qualityValue !== "auto",
+      );
+      return highestAvailable ?? "auto";
+    }
+
+    return resolveBestQuality(
+      availableQualities,
+      suggestedQuality as Exclude<VideoQuality, "auto">,
+    );
+  }, [availableQualities, suggestedQuality]);
+
+  useEffect(() => {
+    if (!isQualityLoaded) return;
+
+    if (quality === "auto") {
+      setEffectiveQuality(resolveAutoQuality());
+      return;
+    }
+
+    setEffectiveQuality(quality);
+  }, [quality, resolveAutoQuality, isQualityLoaded]);
+
   const setQuality = useCallback((newQuality: VideoQuality) => {
     setQualityState(newQuality);
 
-    // Persistir no localStorage
     if (typeof window !== "undefined") {
       try {
         localStorage.setItem("videoPlayerQuality", newQuality);
@@ -123,10 +213,103 @@ const VideoPlayer = ({
     }
   }, []);
 
-  // Determinar qualidade efetiva (auto usa sugestão da rede)
-  const effectiveQuality = quality === "auto" ? suggestedQuality : quality;
+  const updateHlsQualities = useCallback(() => {
+    const hls = playerRef.current?.getInternalPlayer?.("hls") as Hls | null;
 
-  const hasVideo = Boolean(videoUrl);
+    if (!hls || !hls.levels?.length) {
+      return;
+    }
+
+    const detected = hls.levels
+      .map((level) => mapHeightToQuality(level.height))
+      .filter(Boolean) as Array<Exclude<VideoQuality, "auto">>;
+
+    if (!detected.length) {
+      return;
+    }
+
+    setAvailableQualities((previous) =>
+      dedupeQualities(["auto", ...manualQualities, ...detected, ...previous]),
+    );
+  }, [manualQualities]);
+
+  useEffect(() => {
+    if (!playerReady) return;
+    updateHlsQualities();
+  }, [playerReady, currentSourceUrl, updateHlsQualities]);
+
+  const applyQualityToPlayer = useCallback(
+    (nextQuality: VideoQuality) => {
+      const hls = playerRef.current?.getInternalPlayer?.("hls") as Hls | null;
+      const internalPlayer =
+        playerRef.current?.getInternalPlayer?.() as HTMLVideoElement | null;
+
+      const currentTime =
+        playerRef.current?.getCurrentTime?.() ??
+        internalPlayer?.currentTime ??
+        playedSeconds;
+
+      if (hls && hls.levels?.length) {
+        pendingSeekRef.current = null;
+
+        if (nextQuality === "auto") {
+          hls.currentLevel = -1;
+          hls.loadLevel = -1;
+          return;
+        }
+
+        const targetLevelIndex = hls.levels.findIndex((level) => {
+          const mapped = mapHeightToQuality(level.height);
+          return mapped === nextQuality;
+        });
+
+        if (targetLevelIndex >= 0) {
+          hls.currentLevel = targetLevelIndex;
+          hls.loadLevel = targetLevelIndex;
+        } else {
+          hls.currentLevel = -1;
+          hls.loadLevel = -1;
+        }
+        return;
+      }
+
+      if (qualitySources && nextQuality !== "auto") {
+        const manualSource =
+          qualitySources[nextQuality as Exclude<VideoQuality, "auto">];
+        if (manualSource && manualSource !== currentSourceUrl) {
+          pendingSeekRef.current = currentTime;
+          setCurrentSourceUrl(manualSource);
+        }
+        return;
+      }
+
+      const fallbackUrl = videoUrl ?? undefined;
+      if (fallbackUrl !== currentSourceUrl) {
+        pendingSeekRef.current = currentTime;
+        setCurrentSourceUrl(fallbackUrl);
+      } else {
+        pendingSeekRef.current = null;
+      }
+    },
+    [currentSourceUrl, playedSeconds, qualitySources, videoUrl],
+  );
+
+  useEffect(() => {
+    if (!playerReady || !isQualityLoaded) return;
+    applyQualityToPlayer(effectiveQuality);
+  }, [applyQualityToPlayer, effectiveQuality, isQualityLoaded, playerReady]);
+
+  useEffect(() => {
+    if (!playerReady) return;
+    if (pendingSeekRef.current === null) return;
+
+    const target = pendingSeekRef.current;
+    pendingSeekRef.current = null;
+    playerRef.current?.seekTo?.(target, "seconds");
+    setPlayedSeconds(target);
+  }, [currentSourceUrl, playerReady]);
+
+  const hasVideo = Boolean(currentSourceUrl);
 
   const sortedTimestamps = useMemo(
     () => [...(timestamps ?? [])].sort((a, b) => a.time - b.time),
@@ -154,10 +337,12 @@ const VideoPlayer = ({
       if (!instance) {
         return;
       }
+
       const effectiveDuration =
-        duration || instance.duration || Math.max(nextTime, 0);
+        duration || instance.getDuration?.() || Math.max(nextTime, 0);
       const safeTime = clamp(nextTime, 0, effectiveDuration || 0);
-      instance.currentTime = safeTime;
+
+      instance.seekTo?.(safeTime, "seconds");
       setPlayedSeconds(safeTime);
     },
     [duration],
@@ -165,7 +350,7 @@ const VideoPlayer = ({
 
   const handleSeekBy = useCallback(
     (deltaSeconds: number) => {
-      const current = playerRef.current?.currentTime ?? playedSeconds;
+      const current = playerRef.current?.getCurrentTime?.() ?? playedSeconds;
       handleSeekTo(current + deltaSeconds);
     },
     [handleSeekTo, playedSeconds],
@@ -178,21 +363,13 @@ const VideoPlayer = ({
     setIsPlaying((prev) => !prev);
   }, [hasVideo]);
 
-  const handleTimeUpdate = useCallback(
-    (event: SyntheticEvent<HTMLVideoElement>) => {
-      const current = event.currentTarget.currentTime ?? 0;
-      setPlayedSeconds(current);
-    },
-    [],
-  );
+  const handleProgress = useCallback((progress: OnProgressProps) => {
+    setPlayedSeconds(progress.playedSeconds);
+  }, []);
 
-  const handleDurationChange = useCallback(
-    (event: SyntheticEvent<HTMLVideoElement>) => {
-      const mediaDuration = event.currentTarget.duration ?? 0;
-      setDuration(mediaDuration);
-    },
-    [],
-  );
+  const handleDuration = useCallback((mediaDuration: number) => {
+    setDuration(mediaDuration);
+  }, []);
 
   const handleVolumeChange = useCallback((value: number) => {
     const newVolume = clamp(value, 0, 1);
@@ -300,7 +477,7 @@ const VideoPlayer = ({
             >
               <ReactPlayer
                 ref={playerRef}
-                src={videoUrl ?? undefined}
+                url={currentSourceUrl}
                 className={styles.playerInstance}
                 width="100%"
                 height="100%"
@@ -308,14 +485,34 @@ const VideoPlayer = ({
                 muted={isMuted}
                 volume={volume}
                 playbackRate={speed}
-                playsInline
-                onReady={() => setIsBuffering(false)}
+                playsinline
+                config={
+                  {
+                    file: {
+                      forceHLS: Boolean(currentSourceUrl?.endsWith(".m3u8")),
+                      hlsOptions: {
+                        startLevel: -1,
+                        autoStartLoad: true,
+                        capLevelToPlayerSize: true,
+                      },
+                      attributes: {
+                        controlsList: "nodownload",
+                        playsInline: true,
+                      },
+                    },
+                  } satisfies PlayerConfig
+                }
+                onReady={() => {
+                  setIsBuffering(false);
+                  setPlayerReady(true);
+                  updateHlsQualities();
+                }}
                 onPlay={() => setIsPlaying(true)}
                 onPause={() => setIsPlaying(false)}
-                onTimeUpdate={handleTimeUpdate}
-                onDurationChange={handleDurationChange}
-                onWaiting={() => setIsBuffering(true)}
-                onPlaying={() => setIsBuffering(false)}
+                onProgress={handleProgress}
+                onDuration={handleDuration}
+                onBuffer={() => setIsBuffering(true)}
+                onBufferEnd={() => setIsBuffering(false)}
                 onError={(error) => {
                   console.error("Erro ao reproduzir vídeo", error);
                   setIsPlaying(false);
@@ -343,9 +540,7 @@ const VideoPlayer = ({
                     className={styles.range}
                     disabled={!duration}
                   />
-                  <span className="font-mono">
-                    {formatSeconds(duration)}
-                  </span>
+                  <span className="font-mono">{formatSeconds(duration)}</span>
                 </div>
 
                 <div className={styles.controlRow}>
@@ -410,6 +605,10 @@ const VideoPlayer = ({
                   <QualitySelector
                     currentQuality={quality}
                     onQualityChange={setQuality}
+                    availableQualities={availableQualities}
+                    effectiveQuality={effectiveQuality}
+                    suggestedQuality={suggestedQuality}
+                    isNetworkSupported={isSupported}
                     isAutoMode={quality === "auto"}
                   />
 

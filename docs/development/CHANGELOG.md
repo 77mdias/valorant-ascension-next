@@ -8,6 +8,11 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 ## [Não Lançado]
 
 ### ✨ Adicionado
+
+- VID-004: Qualidade de vídeo adaptativa
+  - Player agora detecta níveis HLS disponíveis (1080p/720p/480p/360p) via `hls.js` e permite troca manual ou automática preservando o tempo de reprodução
+  - Modo Auto usa `useNetworkSpeed` para sugerir qualidade com fallback quando a Network Information API não está disponível
+  - Preferência persiste em `localStorage` e o seletor exibe apenas opções realmente disponíveis
 - VID-003: Controle de velocidade de reprodução
   - Hook `usePlaybackSpeed` para gerenciar estado e persistência de velocidade no localStorage
   - Componente `SpeedControl` com dropdown interativo para seleção de velocidade (0.5x, 0.75x, 1x, 1.25x, 1.5x, 2x)
@@ -21,6 +26,7 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
   - Lista clicável de timestamps integrada ao `VideoPlayer`, permitindo navegar rapidamente pelo conteúdo
 
 ### 📚 Documentação
+
 - Estrutura completa de documentação em `/docs`
   - `/docs/architecture` - Diagramas e arquitetura do sistema
   - `/docs/guides` - Guias de uso e recursos
@@ -34,6 +40,7 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 ### ✨ Adicionado
 
 #### Autenticação
+
 - ✅ Sistema completo de autenticação com Auth.js (NextAuth.js)
 - ✅ OAuth Google funcional (login e cadastro automático)
 - ✅ Sistema de RBAC com três roles: CUSTOMER, ADMIN, PROFESSIONAL
@@ -41,6 +48,7 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 - ✅ Páginas de signin/signup com validação Zod
 
 #### Assinaturas e Pagamentos
+
 - ✅ Integração completa com Stripe
 - ✅ Três planos de assinatura: Básico, Intermediário, Avançado
 - ✅ Sistema de checkout com Stripe Checkout Session
@@ -51,6 +59,7 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 - ✅ Página de preços com feedback contextual do plano atual
 
 #### Dashboard Admin
+
 - ✅ CRUD completo de usuários (criar, listar, editar, deletar)
 - ✅ CRUD completo de aulas (criar, listar, editar, deletar)
 - ✅ CRUD completo de categorias de aulas
@@ -58,6 +67,7 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 - ✅ Interface responsiva e otimizada para mobile
 
 #### Conteúdo
+
 - ✅ Sistema de aulas com vídeos (integração com React Player)
 - ✅ Categorias de aulas (Iniciante, Intermediário, Avançado, Pro, Extras)
 - ✅ Progresso de aulas (tracking de visualizações)
@@ -65,6 +75,7 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 - ✅ Seed com 20 aulas de exemplo (4 por categoria)
 
 #### Banco de Dados
+
 - ✅ Schema Prisma completo com modelos:
   - User (usuários e roles)
   - Subscription (assinaturas Stripe)
@@ -81,6 +92,7 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 - ✅ Suporte para PostgreSQL (Neon Database)
 
 #### UI/UX
+
 - ✅ Design system com Tailwind CSS
 - ✅ Componentes reutilizáveis (Radix UI)
 - ✅ Layout responsivo (mobile-first)
@@ -91,10 +103,12 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 - ✅ Páginas de erro customizadas (404, 500)
 
 #### Integração Externa
+
 - ✅ API HenrikDev para dados de Valorant
 - ✅ Sincronização de MMR e partidas (estrutura base)
 
 #### DevOps e Qualidade
+
 - ✅ ESLint configurado com TypeScript
 - ✅ Prettier com plugin Tailwind
 - ✅ Configuração do Prisma com dois ambientes (dev/prod)
@@ -104,6 +118,7 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 - ✅ Qodana para qualidade de código
 
 ### 🔒 Segurança
+
 - ✅ Cookies HTTP-Only e SameSite estritos
 - ✅ Validação de entrada com Zod em todas as camadas
 - ✅ Secrets nunca expostos no cliente
@@ -112,6 +127,7 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 - ✅ Hashing de senhas com bcrypt
 
 ### 📚 Documentação
+
 - ✅ README completo com instruções de setup
 - ✅ Guia de CRUD e Roles (`docs/crud-roles-complete-guide.md`)
 - ✅ Diagrama de fluxo de autenticação (`docs/auth-flow-diagram.md`)
@@ -121,6 +137,7 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 - ✅ Notas técnicas de implementação (`docs/notes/`)
 
 ### 🐛 Corrigido
+
 - ✅ Problemas de sincronização de assinaturas (implementado fallback de polling)
 - ✅ Erros de validação de priceId no checkout
 - ✅ Problemas de CORS em webhooks Stripe
@@ -129,6 +146,7 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 - ✅ Layout quebrado em mobile (ajustado responsividade)
 
 ### 🔄 Alterado
+
 - ✅ Migração de Pages Router para App Router (Next.js 15)
 - ✅ Atualização de dependências para versões estáveis
 - ✅ Refatoração de componentes para Server Components
@@ -136,6 +154,7 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 - ✅ Otimização de queries Prisma
 
 ### 🚀 Performance
+
 - ✅ Server Components por padrão (reduz bundle JS)
 - ✅ Lazy loading de componentes pesados
 - ✅ Otimização de imagens com next/image
@@ -166,4 +185,4 @@ Este projeto segue o [Semantic Versioning](https://semver.org/lang/pt-BR/):
 
 ---
 
-**Última atualização**: 2025-11-15
+**Última atualização**: 2026-01-16

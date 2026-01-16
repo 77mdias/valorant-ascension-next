@@ -3,9 +3,9 @@
 > **Como usar:** Este arquivo documenta todas as tarefas da fase v0.2.0. Atualize o status de cada tarefa conforme o progresso e mantenha a tabela de resumo sincronizada.
 
 **Status:** 🟡 EM ANDAMENTO
-**Última atualização:** 2025-11-15
+**Última atualização:** 2026-01-16
 **Sprint Atual:** Novembro-Dezembro 2025
-**Status Geral:** 🟡 9% concluído (3/32 tarefas completas) – FASE ATIVA
+**Status Geral:** 🟡 13% concluído (4/32 tarefas completas) – FASE ATIVA
 **ETA:** 2025-12-01
 **Pré-requisito:** v0.1.0 - MVP (✅ Concluído)
 
@@ -13,16 +13,17 @@
 
 ## 📊 Resumo de Progresso
 
-| Categoria                     | Total | Concluído | Em Andamento | Pendente | Bloqueado |
-| ----------------------------- | ----- | --------- | ------------ | -------- | --------- |
-| Sistema de Vídeos Avançado    | 7     | 3         | 0            | 4        | 0         |
-| Dashboard de Progresso        | 7     | 0         | 0            | 7        | 0         |
-| Sistema de Conquistas         | 6     | 0         | 0            | 6        | 0         |
-| Busca e Filtros               | 6     | 0         | 0            | 6        | 0         |
-| Sistema de Comentários        | 6     | 0         | 0            | 6        | 0         |
-| **TOTAL**                     | **32** | **3**    | **0**        | **29**   | **0**     |
+| Categoria                  | Total  | Concluído | Em Andamento | Pendente | Bloqueado |
+| -------------------------- | ------ | --------- | ------------ | -------- | --------- |
+| Sistema de Vídeos Avançado | 7      | 4         | 0            | 3        | 0         |
+| Dashboard de Progresso     | 7      | 0         | 0            | 7        | 0         |
+| Sistema de Conquistas      | 6      | 0         | 0            | 6        | 0         |
+| Busca e Filtros            | 6      | 0         | 0            | 6        | 0         |
+| Sistema de Comentários     | 6      | 0         | 0            | 6        | 0         |
+| **TOTAL**                  | **32** | **4**     | **0**        | **28**   | **0**     |
 
 ### 🎯 Principais Indicadores
+
 - ✅ v0.1.0 MVP concluído com sucesso
 - 🎯 Meta: 100+ usuários ativos mensais
 - 🎯 Meta: 10%+ taxa de conversão para assinatura
@@ -50,6 +51,7 @@ Esta fase tem como objetivo elevar a experiência do usuário e expandir o conte
 ### 📦 VID - Sistema de Vídeos Avançado
 
 #### Objetivo
+
 Transformar o player de vídeo básico em uma experiência premium, com controles avançados, acessibilidade e recursos que facilitam o aprendizado (timestamps, velocidade ajustável, legendas).
 
 #### VID.1 - Player Customizado e Controles ✅
@@ -192,7 +194,7 @@ Transformar o player de vídeo básico em uma experiência premium, com controle
 
 ---
 
-- [ ] **VID-004** - Qualidade de vídeo adaptativa
+- [x] **VID-004** - Qualidade de vídeo adaptativa
 
   **Descrição curta:**
   - Detectar qualidades disponíveis do vídeo
@@ -207,21 +209,28 @@ Transformar o player de vídeo básico em uma experiência premium, com controle
   5. Persistir preferência em localStorage
 
   **Arquivos/áreas afetadas:**
-  - `src/components/ui/VideoPlayer.tsx` (atualizar)
-  - `src/components/VideoPlayer/QualitySelector.tsx` (novo)
-  - `src/hooks/useNetworkSpeed.ts` (novo)
+  - `src/components/ui/VideoPlayer.tsx` (atualizado)
+  - `src/components/VideoPlayer/QualitySelector.tsx` (atualizado)
+  - `src/hooks/useNetworkSpeed.ts` (já existente)
 
   **Critérios de aceitação:**
-  - [ ] Seletor exibe apenas qualidades disponíveis para o vídeo
-  - [ ] Modo "Auto" funciona corretamente
-  - [ ] Transição entre qualidades é suave (sem interrupção)
-  - [ ] Preferência persiste entre sessões
-  - [ ] Fallback gracioso quando API não suportada
+  - [x] Seletor exibe apenas qualidades disponíveis para o vídeo
+  - [x] Modo "Auto" funciona corretamente
+  - [x] Transição entre qualidades é suave (sem interrupção)
+  - [x] Preferência persiste entre sessões
+  - [x] Fallback gracioso quando API não suportada
+
+  **Notas de validação (2026-01-16):**
+  - `VideoPlayer` agora detecta qualidades HLS disponíveis via `hls.js`, mantém lista de opções reais e aplica troca de nível sem reiniciar o vídeo (seek preservado).
+  - Modo Auto usa `useNetworkSpeed` e escolhe automaticamente a melhor qualidade disponível, com persistência da preferência no `localStorage`.
+  - `QualitySelector` exibe apenas qualidades detectadas, mostra sugestão de rede e badge com qualidade efetiva quando em Auto.
+  - Fallback seguro: quando a Network Information API não existe ou só há uma fonte, o seletor permanece em Auto e mantém playback estável.
+  - `package.json` inclui `hls.js` para controle de níveis HLS e o player passou em testes manuais de troca entre 1080p/720p/480p.
 
   **Prioridade:** 🔵 Baixa
   **Estimativa:** 5h
   **Dependências:** VID-001
-  **Status:** 🔴 Pendente
+  **Status:** 🟢 Concluído (2026-01-16) ✅
 
 ---
 
@@ -366,6 +375,7 @@ Transformar o player de vídeo básico em uma experiência premium, com controle
 ### 📦 PRG - Dashboard de Progresso do Aluno
 
 #### Objetivo
+
 Criar uma área dedicada onde alunos (role: CUSTOMER) possam visualizar sua evolução, estatísticas de estudo, conquistas desbloqueadas e metas, aumentando engajamento e motivação.
 
 #### PRG.1 - Página "Meu Progresso"
@@ -619,6 +629,7 @@ Criar uma área dedicada onde alunos (role: CUSTOMER) possam visualizar sua evol
 ### 📦 ACH - Sistema de Conquistas (Achievements)
 
 #### Objetivo
+
 Implementar sistema de gamificação baseado em conquistas desbloqueáveis, com níveis de raridade e notificações, para aumentar engajamento e criar senso de progressão.
 
 #### ACH.1 - Modelo de Dados e CRUD
@@ -632,6 +643,7 @@ Implementar sistema de gamificação baseado em conquistas desbloqueáveis, com 
 
   **Implementação sugerida:**
   1. Adicionar modelos ao Prisma:
+
      ```prisma
      enum AchievementRarity {
        COMMON
@@ -673,6 +685,7 @@ Implementar sistema de gamificação baseado em conquistas desbloqueáveis, com 
        @@unique([userId, achievementId])
      }
      ```
+
   2. Criar migrations
   3. Criar server actions para CRUD de conquistas
   4. Criar página `/dashboard/achievements` para gerenciamento
@@ -906,6 +919,7 @@ Implementar sistema de gamificação baseado em conquistas desbloqueáveis, com 
 ### 📦 SCH - Busca e Filtros
 
 #### Objetivo
+
 Implementar sistema de busca avançada e filtros para facilitar a descoberta de conteúdo, permitindo que usuários encontrem rapidamente aulas relevantes por título, categoria, duração e dificuldade.
 
 #### SCH.1 - Busca e Filtros de Aulas
@@ -925,14 +939,14 @@ Implementar sistema de busca avançada e filtros para facilitar a descoberta de 
      await db.lessons.findMany({
        where: {
          OR: [
-           { title: { contains: query, mode: 'insensitive' } },
-           { description: { contains: query, mode: 'insensitive' } }
-         ]
+           { title: { contains: query, mode: "insensitive" } },
+           { description: { contains: query, mode: "insensitive" } },
+         ],
        },
        take: 20,
        skip: (page - 1) * 20,
-       include: { category: true, author: true }
-     })
+       include: { category: true, author: true },
+     });
      ```
   3. Criar componente `SearchBar` com debounce (500ms)
   4. Implementar highlight de termos buscados
@@ -977,8 +991,8 @@ Implementar sistema de busca avançada e filtros para facilitar a descoberta de 
      where: {
        AND: [
          categoryIds.length > 0 ? { categoryId: { in: categoryIds } } : {},
-         searchQuery ? { title: { contains: searchQuery } } : {}
-       ]
+         searchQuery ? { title: { contains: searchQuery } } : {},
+       ];
      }
      ```
   4. Sincronizar estado com URL (useSearchParams)
@@ -1159,6 +1173,7 @@ Implementar sistema de busca avançada e filtros para facilitar a descoberta de 
 ### 📦 COM - Sistema de Comentários
 
 #### Objetivo
+
 Criar sistema de comentários em aulas para fomentar discussão, permitir dúvidas e aumentar engajamento comunitário, com moderação por admins e sistema de upvote/downvote.
 
 #### COM.1 - Modelo de Dados e CRUD
@@ -1172,6 +1187,7 @@ Criar sistema de comentários em aulas para fomentar discussão, permitir dúvid
 
   **Implementação sugerida:**
   1. Adicionar modelos ao Prisma:
+
      ```prisma
      model Comment {
        id          String    @id @default(uuid())
@@ -1203,6 +1219,7 @@ Criar sistema de comentários em aulas para fomentar discussão, permitir dúvid
        @@unique([commentId, userId])
      }
      ```
+
   2. Criar migrations
   3. Criar server actions para CRUD
   4. Criar schemas Zod para validação
@@ -1345,11 +1362,11 @@ Criar sistema de comentários em aulas para fomentar discussão, permitir dúvid
      ```typescript
      await createNotification({
        userId: parentComment.authorId,
-       type: 'COMMENT_REPLY',
-       title: 'Nova resposta ao seu comentário',
+       type: "COMMENT_REPLY",
+       title: "Nova resposta ao seu comentário",
        message: `${replier.name} respondeu: "${content.slice(0, 50)}..."`,
-       metadata: { lessonId, commentId }
-     })
+       metadata: { lessonId, commentId },
+     });
      ```
   3. Implementar link direto para comentário com scroll automático
   4. Adicionar preferência de notificações no perfil
@@ -1411,17 +1428,20 @@ Criar sistema de comentários em aulas para fomentar discussão, permitir dúvid
 ## 🧪 Testes e Validações
 
 ### Suites Necessárias
+
 - **Jest (Unit Tests):** Componentes, hooks, utils, server actions
 - **Jest (Integration Tests):** API routes, database operations
 - **Playwright/Cypress (E2E):** Fluxos críticos (assistir aula, comentar, desbloquear conquista)
 
 ### Cobertura Alvo
+
 - **Global:** >75% branches
 - **Lógicas críticas** (achievement engine, streak calculator): >85%
 - **Server actions:** >80%
 - **Components:** >70%
 
 ### Comandos de Verificação
+
 ```bash
 # Testes unitários e integração
 make test
@@ -1444,6 +1464,7 @@ make ci
 ```
 
 ### Estado Atual
+
 ⚠️ Suites de teste precisam ser criadas junto com implementação das features
 
 ---
@@ -1506,6 +1527,7 @@ make ci
 - [ ] Comunicação de lançamento preparada (changelog user-facing)
 
 **Critérios de Transição para v0.3.0:**
+
 - Todas as features de v0.2.0 estáveis em produção
 - Feedback inicial coletado de usuários
 - Bugs críticos corrigidos

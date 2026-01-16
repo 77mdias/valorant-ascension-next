@@ -15,6 +15,14 @@ interface QualitySelectorProps {
   className?: string;
   /** Se o modo auto está ativo */
   isAutoMode?: boolean;
+  /** Qualidades efetivamente disponíveis para o vídeo */
+  availableQualities?: VideoQuality[];
+  /** Qualidade aplicada quando em modo auto */
+  effectiveQuality?: VideoQuality;
+  /** Sugestão de qualidade baseada em rede */
+  suggestedQuality?: VideoQuality;
+  /** Se a API de rede está disponível */
+  isNetworkSupported?: boolean;
 }
 
 /**
@@ -43,10 +51,17 @@ export default function QualitySelector({
   onQualityChange,
   className,
   isAutoMode = false,
+  availableQualities,
+  effectiveQuality,
+  suggestedQuality,
+  isNetworkSupported = true,
 }: QualitySelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const qualityList = availableQualities?.length
+    ? availableQualities
+    : VIDEO_QUALITIES;
 
   // Fechar dropdown ao clicar fora
   useEffect(() => {
@@ -114,7 +129,9 @@ export default function QualitySelector({
   const getQualityDescription = (quality: VideoQuality): string => {
     switch (quality) {
       case "auto":
-        return "Ajuste automático";
+        return isNetworkSupported
+          ? "Ajuste automático"
+          : "Modo auto (sem API de rede)";
       case "1080p":
         return "Full HD";
       case "720p":
@@ -128,9 +145,22 @@ export default function QualitySelector({
     }
   };
 
-  const displayQuality = isAutoMode && currentQuality !== "auto" 
-    ? `Auto (${currentQuality.toUpperCase()})` 
-    : getQualityLabel(currentQuality);
+  const activeQuality =
+    currentQuality === "auto" && effectiveQuality
+      ? effectiveQuality
+      : currentQuality;
+
+  const displayQuality =
+    isAutoMode && activeQuality !== "auto"
+      ? `Auto (${activeQuality.toUpperCase()})`
+      : getQualityLabel(activeQuality);
+
+  const badgeContent =
+    currentQuality === "auto"
+      ? effectiveQuality && effectiveQuality !== "auto"
+        ? `Auto (${effectiveQuality.toUpperCase()})`
+        : "Auto"
+      : currentQuality.toUpperCase();
 
   return (
     <div ref={dropdownRef} className={cn(styles.container, className)}>
@@ -145,22 +175,24 @@ export default function QualitySelector({
         title={`Qualidade: ${displayQuality}`}
       >
         <MonitorPlay className="h-4 w-4" />
-        {currentQuality !== "auto" && !isAutoMode && (
-          <span className={styles.badge}>{currentQuality.toUpperCase()}</span>
-        )}
-        {isAutoMode && currentQuality === "auto" && (
-          <span className={styles.badge}>Auto</span>
-        )}
+        {badgeContent && <span className={styles.badge}>{badgeContent}</span>}
       </button>
 
       {isOpen && (
         <div className={styles.dropdown} role="menu">
           <div className={styles.dropdownHeader}>
             <span className="text-xs font-semibold">Qualidade</span>
+            {isAutoMode && suggestedQuality && (
+              <span className="text-[10px] text-muted-foreground">
+                Sugestão: {suggestedQuality.toUpperCase()}
+              </span>
+            )}
           </div>
           <div className={styles.dropdownContent}>
-            {VIDEO_QUALITIES.map((quality) => {
-              const isActive = quality === currentQuality;
+            {qualityList.map((quality) => {
+              const isActive =
+                quality === currentQuality ||
+                (currentQuality === "auto" && quality === effectiveQuality);
               return (
                 <button
                   key={quality}
