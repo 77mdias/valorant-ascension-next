@@ -5,13 +5,22 @@ import { ChevronDown, Trophy } from "lucide-react";
 import { Target } from "lucide-react";
 import { Users } from "lucide-react";
 import { notFound } from "next/navigation";
+import dynamic from "next/dynamic";
 import LessonCard from "@/components/LessonCard";
 import { LessonCategory, lessons } from "@prisma/client";
-import { useState, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import styles from "./page.module.scss";
 import stylesVideo from "@/components/ui/VideoPlayer.module.scss";
-import VideoPlayer from "@/components/ui/VideoPlayer";
 import CourseDetailLoading from "@/components/CourseDetailLoading";
+
+const VideoPlayer = dynamic(() => import("@/components/ui/VideoPlayer"), {
+  ssr: false,
+  loading: () => (
+    <div className="flex min-h-[360px] items-center justify-center rounded-2xl border border-white/10 bg-card/40 text-sm text-muted-foreground">
+      Preparando player...
+    </div>
+  ),
+});
 
 interface CategoryPageProps {
   params: Promise<{
@@ -24,6 +33,8 @@ export default function CategoryPage({ params }: CategoryPageProps) {
   const [activeLesson, setActiveLesson] = useState<string | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [shouldLoadPlayer, setShouldLoadPlayer] = useState(false);
+  const playerContainerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     async function fetchCategory() {
@@ -53,6 +64,43 @@ export default function CategoryPage({ params }: CategoryPageProps) {
 
     fetchCategory();
   }, [params]);
+
+  useEffect(() => {
+    const target = playerContainerRef.current;
+
+    if (typeof window === "undefined") {
+      return undefined;
+    }
+
+    if (!("IntersectionObserver" in window)) {
+      setShouldLoadPlayer(true);
+      return undefined;
+    }
+
+    if (!target) {
+      return undefined;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const [entry] = entries;
+        if (entry?.isIntersecting) {
+          setShouldLoadPlayer(true);
+          observer.disconnect();
+        }
+      },
+      {
+        rootMargin: "200px 0px",
+        threshold: 0.25,
+      },
+    );
+
+    observer.observe(target);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
 
   if (loading) {
     return <CourseDetailLoading />;
@@ -226,28 +274,34 @@ export default function CategoryPage({ params }: CategoryPageProps) {
           </div>
 
           {/* Video Player Section */}
-          <main>
-            <VideoPlayer
-              title={currentLesson.title}
-              description={
-                currentLesson.description ??
-                "Nesta aula, você aprenderá técnicas avançadas utilizadas pelos melhores jogadores de Valorant. Vamos cobrir conceitos fundamentais de posicionamento, timing e tomada de decisão que farão a diferença no seu gameplay. Prepare-se para elevar seu jogo ao próximo nível!"
-              }
-              onPrevious={handlePreviousLesson}
-              onNext={handleNextLesson}
-              hasPrevious={currentLessonIndex > 0}
-              hasNext={
-                currentLessonIndex >= 0 &&
-                currentLessonIndex < category.lessons.length - 1 &&
-                !category.lessons[currentLessonIndex + 1]?.isLocked
-              }
-              videoUrl={currentLesson?.videoUrl}
-              thumbnailUrl={currentLesson?.thumbnailUrl}
-              timestamps={currentLesson?.timestamps ?? []}
-              subtitles={currentLesson?.subtitles ?? []}
-              lessonId={currentLesson?.id}
-              lessonProgress={currentLesson?.progress ?? null}
-            />
+          <main ref={playerContainerRef}>
+            {shouldLoadPlayer ? (
+              <VideoPlayer
+                title={currentLesson.title}
+                description={
+                  currentLesson.description ??
+                  "Nesta aula, você aprenderá técnicas avançadas utilizadas pelos melhores jogadores de Valorant. Vamos cobrir conceitos fundamentais de posicionamento, timing e tomada de decisão que farão a diferença no seu gameplay. Prepare-se para elevar seu jogo ao próximo nível!"
+                }
+                onPrevious={handlePreviousLesson}
+                onNext={handleNextLesson}
+                hasPrevious={currentLessonIndex > 0}
+                hasNext={
+                  currentLessonIndex >= 0 &&
+                  currentLessonIndex < category.lessons.length - 1 &&
+                  !category.lessons[currentLessonIndex + 1]?.isLocked
+                }
+                videoUrl={currentLesson?.videoUrl}
+                thumbnailUrl={currentLesson?.thumbnailUrl}
+                timestamps={currentLesson?.timestamps ?? []}
+                subtitles={currentLesson?.subtitles ?? []}
+                lessonId={currentLesson?.id}
+                lessonProgress={currentLesson?.progress ?? null}
+              />
+            ) : (
+              <div className="flex min-h-[360px] items-center justify-center rounded-2xl border border-white/10 bg-card/40 text-sm text-muted-foreground">
+                Carregando player...
+              </div>
+            )}
           </main>
         </div>
       </div>

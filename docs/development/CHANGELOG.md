@@ -9,6 +9,11 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 
 ### ✨ Adicionado
 
+- VID-007: Testes e otimização de performance
+  - Suites de teste para `VideoPlayer` e `useVideoProgress`, cobrindo controles, seek, persistência e hidratação remota
+  - Player aplica `preconnect`/`dns-prefetch` dinâmicos, `preload: metadata` e pré-carrega thumbnails para reduzir TTFMP
+  - Rota `cursos/[slug]` agora carrega o player de forma lazy via `IntersectionObserver` + importação dinâmica, mantendo placeholder leve
+
 - VID-004: Qualidade de vídeo adaptativa
   - Player agora detecta níveis HLS disponíveis (1080p/720p/480p/360p) via `hls.js` e permite troca manual ou automática preservando o tempo de reprodução
   - Modo Auto usa `useNetworkSpeed` para sugerir qualidade com fallback quando a Network Information API não está disponível

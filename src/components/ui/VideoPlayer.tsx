@@ -114,6 +114,40 @@ const resolveBestQuality = (
   return filtered[filtered.length - 1];
 };
 
+const ensureHeadLink = (
+  rel: "preconnect" | "dns-prefetch" | "preload",
+  href: string,
+  attributes?: Partial<HTMLLinkElement>,
+) => {
+  if (typeof document === "undefined") {
+    return () => undefined;
+  }
+
+  const selector = `link[rel="${rel}"][data-preconnect-origin="${href}"]`;
+  const existing = document.head.querySelector<HTMLLinkElement>(selector);
+  if (existing) {
+    return () => undefined;
+  }
+
+  const link = document.createElement("link");
+  link.rel = rel;
+  link.href = href;
+  link.dataset.preconnectOrigin = href;
+
+  if (attributes?.crossOrigin) {
+    link.crossOrigin = attributes.crossOrigin;
+  }
+
+  if (attributes?.as) {
+    link.as = attributes.as;
+  }
+
+  document.head.appendChild(link);
+  return () => {
+    link.remove();
+  };
+};
+
 const VideoPlayer = ({
   videoUrl,
   qualitySources,
@@ -156,12 +190,39 @@ const VideoPlayer = ({
   const [subtitlePreferenceWasStored, setSubtitlePreferenceWasStored] =
     useState(false);
 
+  const registerPreconnect = useCallback((source?: string | null) => {
+    if (!source) {
+      return () => undefined;
+    }
+
+    try {
+      const origin = new URL(source).origin;
+      const teardownPreconnect = ensureHeadLink("preconnect", origin, {
+        crossOrigin: "anonymous",
+      });
+      const teardownDns = ensureHeadLink("dns-prefetch", origin);
+
+      return () => {
+        teardownPreconnect();
+        teardownDns();
+      };
+    } catch (error) {
+      console.error("Não foi possível preparar preconnect do vídeo:", error);
+      return () => undefined;
+    }
+  }, []);
+
   // Hook de controle de velocidade de reprodução
-  const { speed, setSpeed, isNormalSpeed } = usePlaybackSpeed();
+  const {
+    speed = 1,
+    setSpeed = () => undefined,
+    isNormalSpeed = true,
+  } = usePlaybackSpeed() ?? {};
 
   // AIDEV-NOTE: Hook de detecção de velocidade de rede
   // Detecta conexão e sugere qualidade apropriada
-  const { suggestedQuality, isSupported } = useNetworkSpeed();
+  const { suggestedQuality = "auto", isSupported = true } =
+    useNetworkSpeed() ?? {};
 
   // Estado de qualidade de vídeo com persistência
   const [quality, setQualityState] = useState<VideoQuality>("auto");
@@ -187,7 +248,14 @@ const VideoPlayer = ({
   } = useVideoProgress({
     lessonId,
     initialProgress: lessonProgress,
-  });
+  }) ?? {
+    resumeFrom: null,
+    isCompleted: false,
+    handleProgressTick: () => undefined,
+    handleDurationChange: () => undefined,
+    flushProgress: () => undefined,
+    hasHydratedInitial: true,
+  };
 
   useEffect(() => {
     setAvailableQualities(dedupeQualities(["auto", ...manualQualities]));
@@ -252,6 +320,28 @@ const VideoPlayer = ({
     setCurrentSourceUrl(videoUrl ?? undefined);
     setPlayerReady(false);
   }, [videoUrl]);
+
+  useEffect(() => {
+    const teardown = registerPreconnect(currentSourceUrl ?? videoUrl ?? null);
+    return () => {
+      teardown();
+    };
+  }, [currentSourceUrl, registerPreconnect, videoUrl]);
+
+  useEffect(() => {
+    if (!thumbnailUrl) {
+      return undefined;
+    }
+
+    const teardown = ensureHeadLink("preload", thumbnailUrl, {
+      as: "image",
+      crossOrigin: "anonymous",
+    });
+
+    return () => {
+      teardown();
+    };
+  }, [thumbnailUrl]);
 
   useEffect(() => {
     setPlayerReady(false);
@@ -709,6 +799,7 @@ const VideoPlayer = ({
                         controlsList: "nodownload",
                         playsInline: true,
                         crossOrigin: "anonymous",
+                        preload: "metadata",
                       },
                     },
                   } satisfies PlayerConfig

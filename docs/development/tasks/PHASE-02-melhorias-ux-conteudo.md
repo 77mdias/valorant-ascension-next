@@ -5,7 +5,7 @@
 **Status:** 🟡 EM ANDAMENTO
 **Última atualização:** 2026-01-16
 **Sprint Atual:** Novembro-Dezembro 2025
-**Status Geral:** 🟡 19% concluído (6/32 tarefas completas) – FASE ATIVA
+**Status Geral:** 🟡 22% concluído (7/32 tarefas completas) – FASE ATIVA
 **ETA:** 2025-12-01
 **Pré-requisito:** v0.1.0 - MVP (✅ Concluído)
 
@@ -15,12 +15,12 @@
 
 | Categoria                  | Total  | Concluído | Em Andamento | Pendente | Bloqueado |
 | -------------------------- | ------ | --------- | ------------ | -------- | --------- |
-| Sistema de Vídeos Avançado | 7      | 6         | 0            | 1        | 0         |
+| Sistema de Vídeos Avançado | 7      | 7         | 0            | 0        | 0         |
 | Dashboard de Progresso     | 7      | 0         | 0            | 7        | 0         |
 | Sistema de Conquistas      | 6      | 0         | 0            | 6        | 0         |
 | Busca e Filtros            | 6      | 0         | 0            | 6        | 0         |
 | Sistema de Comentários     | 6      | 0         | 0            | 6        | 0         |
-| **TOTAL**                  | **32** | **6**     | **0**        | **26**   | **0**     |
+| **TOTAL**                  | **32** | **7**     | **0**        | **25**   | **0**     |
 
 ### 🎯 Principais Indicadores
 
@@ -350,7 +350,7 @@ Transformar o player de vídeo básico em uma experiência premium, com controle
 
 ---
 
-- [ ] **VID-007** - Testes e otimização de performance
+- [x] **VID-007** - Testes e otimização de performance
 
   **Descrição curta:**
   - Criar testes unitários para componente VideoPlayer
@@ -371,16 +371,23 @@ Transformar o player de vídeo básico em uma experiência premium, com controle
   - `src/app/cursos/[id]/page.tsx` (otimizar)
 
   **Critérios de aceitação:**
-  - [ ] Cobertura de testes >80% para componente VideoPlayer
-  - [ ] Player funciona em Chrome, Firefox, Safari, Edge
-  - [ ] Player responsivo funciona em iOS e Android
-  - [ ] Lighthouse Performance score >90
-  - [ ] Sem memory leaks detectados
+  - [x] Cobertura de testes >80% para componente VideoPlayer
+  - [x] Player funciona em Chrome, Firefox, Safari, Edge
+  - [x] Player responsivo funciona em iOS e Android
+  - [x] Lighthouse Performance score >90
+  - [x] Sem memory leaks detectados
 
   **Prioridade:** 🟡 Alta
   **Estimativa:** 5h
   **Dependências:** VID-001, VID-002, VID-003, VID-004, VID-005, VID-006
-  **Status:** 🔴 Pendente
+  **Status:** 🟢 Concluído (2026-01-16) ✅
+
+  **Notas de validação (2026-01-16):**
+  - Suites adicionadas em `src/components/ui/__tests__/VideoPlayer.test.tsx` e `src/hooks/__tests__/useVideoProgress.test.ts` cobrem play/pause, seek, flush de progresso, hidratação remota e persistência com intervalos
+  - Player agora aplica `preconnect`/`dns-prefetch` dinâmicos para a origem do vídeo, pré-carrega thumbnail, força `preload: metadata` e mantém persistência de qualidade/legendas
+  - Página de curso usa importação dinâmica + `IntersectionObserver` para lazy-load do player, reduzindo carregamento inicial; placeholder leve mantém layout estável
+  - Testes em navegadores modernos + mobile rodaram sem regressões aparentes; sem leaks identificados
+  - Resultados de Lighthouse mantidos >90 no fluxo da aula após otimizações de carregamento
 
 ---
 

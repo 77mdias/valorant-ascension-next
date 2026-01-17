@@ -40,6 +40,7 @@ export const useVideoProgress = ({
   const [isCompleted, setIsCompleted] = useState<boolean>(
     Boolean(initialProgress?.completed),
   );
+  const completionRef = useRef<boolean>(Boolean(initialProgress?.completed));
   const [trackingEnabled, setTrackingEnabled] = useState<boolean>(
     Boolean(lessonId),
   );
@@ -59,13 +60,21 @@ export const useVideoProgress = ({
     syncingRef.current = false;
     abortControllerRef.current?.abort();
     abortControllerRef.current = null;
+    completionRef.current = Boolean(initialProgress?.completed);
+  }, [initialProgress?.completed]);
+
+  const markCompleted = useCallback(() => {
+    completionRef.current = true;
+    setIsCompleted(true);
   }, []);
 
   useEffect(() => {
     resetState();
+    const initialCompleted = Boolean(initialProgress?.completed);
     setResumeFrom(initialProgress?.lastPosition ?? null);
-    setIsCompleted(Boolean(initialProgress?.completed));
+    setIsCompleted(initialCompleted);
     setTrackingEnabled(Boolean(lessonId));
+    completionRef.current = initialCompleted;
     durationRef.current = initialProgress?.totalDuration ?? 0;
     setHasHydratedInitial(Boolean(initialProgress));
 
@@ -160,7 +169,13 @@ export const useVideoProgress = ({
               data: LessonProgressState | null;
             };
             if (payload?.data) {
-              setIsCompleted(Boolean(payload.data.completed));
+              setIsCompleted((previous) => {
+                const next = previous || Boolean(payload.data?.completed);
+                if (next) {
+                  completionRef.current = true;
+                }
+                return next;
+              });
               setResumeFrom(payload.data.lastPosition ?? resumeFrom);
               durationRef.current = Math.max(
                 durationRef.current,
@@ -185,6 +200,14 @@ export const useVideoProgress = ({
     (snapshot: Snapshot, options?: { immediate?: boolean }) => {
       if (!lessonId || !trackingEnabled) {
         return;
+      }
+
+      const isCompleteSnapshot =
+        snapshot.duration > 0 &&
+        snapshot.position / snapshot.duration >= LESSON_COMPLETE_RATIO;
+
+      if (isCompleteSnapshot) {
+        markCompleted();
       }
 
       pendingRef.current = snapshot;
@@ -224,12 +247,24 @@ export const useVideoProgress = ({
         normalizedDuration || Math.round(position),
       );
 
+      setResumeFrom((previous) => {
+        const next = safePosition > (previous ?? 0) ? safePosition : previous;
+        return next;
+      });
+
+      if (
+        normalizedDuration > 0 &&
+        safePosition / normalizedDuration >= LESSON_COMPLETE_RATIO
+      ) {
+        markCompleted();
+      }
+
       scheduleSync(
         { position: safePosition, duration: normalizedDuration },
         options,
       );
     },
-    [lessonId, scheduleSync, trackingEnabled],
+    [lessonId, markCompleted, scheduleSync, trackingEnabled],
   );
 
   const handleDurationChange = useCallback((duration: number) => {
@@ -274,7 +309,7 @@ export const useVideoProgress = ({
   return useMemo(
     () => ({
       resumeFrom,
-      isCompleted,
+      isCompleted: completionRef.current || isCompleted,
       trackingEnabled,
       handleProgressTick,
       handleDurationChange,

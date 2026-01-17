@@ -24,12 +24,14 @@ Este documento contém informações essenciais para desenvolvedores que desejam
 ### Instalação
 
 1. **Clone o repositório**
+
 ```bash
 git clone https://github.com/77mdias/valorant-ascension-next.git
 cd valorant-ascension-next
 ```
 
 2. **Instale as dependências**
+
 ```bash
 pnpm install
 ```
@@ -150,6 +152,7 @@ valorant-ascension-next/
 ### Fluxo de Trabalho
 
 1. **Crie uma branch a partir de `develop`**
+
 ```bash
 git checkout develop
 git pull origin develop
@@ -162,12 +165,14 @@ git checkout -b feature/nome-da-feature
    - Adicione testes quando necessário
 
 3. **Commit com mensagens descritivas**
+
 ```bash
 git add .
 git commit -m "🧸 feat: adiciona funcionalidade X"
 ```
 
 **Convenção de commits:**
+
 - `feat`: Nova funcionalidade
 - `fix`: Correção de bug
 - `docs`: Documentação
@@ -177,6 +182,7 @@ git commit -m "🧸 feat: adiciona funcionalidade X"
 - `chore`: Tarefas de build, configs, etc
 
 4. **Push e Pull Request**
+
 ```bash
 git push origin feature/nome-da-feature
 ```
@@ -237,6 +243,10 @@ pnpm test:watch
 # Coverage
 pnpm test:coverage
 ```
+
+- Manter cobertura alta para `VideoPlayer` e hooks críticos (`useVideoProgress`), meta ≥80% usando `pnpm test:coverage`
+- Player de cursos é carregado de forma lazy (importação dinâmica + IntersectionObserver); preserve a estratégia para garantir métricas de performance (Lighthouse >90)
+- Utilize `preconnect`/`dns-prefetch` e `preload: metadata` ao adicionar novas fontes de vídeo para evitar regressões de TTFMP
 
 ### Tipos de Testes
 
