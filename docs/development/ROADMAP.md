@@ -3,7 +3,7 @@
 Este documento apresenta o planejamento de curto, médio e longo prazo para o projeto **Valorant Ascension**.
 
 > **Status**: 🟢 Em desenvolvimento ativo
-> **Última atualização**: 2025-11-15
+> **Última atualização**: 2026-01-16
 
 ---
 
@@ -53,7 +53,7 @@ Este documento apresenta o planejamento de curto, médio e longo prazo para o pr
 
 ##### 📊 Dashboard de Progresso do Aluno
 
-- [ ] Página "Meu Progresso" para customers
+- [x] Página "Meu Progresso" para customers
 - [ ] Gráficos de tempo de estudo
 - [ ] Aulas concluídas vs. pendentes
 - [ ] Conquistas desbloqueadas

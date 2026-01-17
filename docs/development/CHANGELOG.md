@@ -9,6 +9,12 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 
 ### ✨ Adicionado
 
+- PRG-001: Página "Meu Progresso" para alunos
+  - Nova rota `app/progresso` protegida pelo middleware, carregando dados reais de `lessonProgress`
+  - Cards de horas estudadas, conclusão de aulas, streak atual/melhor e próxima conquista (mapeada para conquistas seed)
+  - Gráfico de evolução (14 dias) e listas de aulas em andamento/concluídas com links rápidos; import dinâmico do chart para carregamento <2s
+  - Link "Meu Progresso" adicionado ao header/menu
+
 - VID-007: Testes e otimização de performance
   - Suites de teste para `VideoPlayer` e `useVideoProgress`, cobrindo controles, seek, persistência e hidratação remota
   - Player aplica `preconnect`/`dns-prefetch` dinâmicos, `preload: metadata` e pré-carrega thumbnails para reduzir TTFMP

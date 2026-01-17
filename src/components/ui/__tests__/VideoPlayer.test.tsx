@@ -6,7 +6,8 @@ import {
   screen,
   waitFor,
 } from "@testing-library/react";
-import React from "react";
+import React, { forwardRef, useImperativeHandle } from "react";
+import * as playbackModule from "@/hooks/usePlaybackSpeed";
 
 const mockSeekTo = jest.fn();
 const mockGetCurrentTime = jest.fn();
@@ -16,21 +17,29 @@ const mockGetInternalPlayer = jest.fn();
 let latestPlayerProps: any = null;
 
 jest.mock("react-player", () => {
-  const React = require("react");
-  return React.forwardRef((props: any, ref) => {
-    latestPlayerProps = props;
+  const MockReactPlayer = forwardRef<unknown, { onReady?: () => void }>(
+    (props, ref) => {
+      latestPlayerProps = props;
 
-    React.useImperativeHandle(ref, () => ({
-      seekTo: mockSeekTo,
-      getCurrentTime: mockGetCurrentTime,
-      getDuration: mockGetDuration,
-      getInternalPlayer: mockGetInternalPlayer,
-    }));
+      useImperativeHandle(ref, () => ({
+        seekTo: mockSeekTo,
+        getCurrentTime: mockGetCurrentTime,
+        getDuration: mockGetDuration,
+        getInternalPlayer: mockGetInternalPlayer,
+      }));
 
-    return (
-      <div data-testid="react-player-mock" onClick={() => props.onReady?.()} />
-    );
-  });
+      return (
+        <div
+          data-testid="react-player-mock"
+          onClick={() => props.onReady?.()}
+        />
+      );
+    },
+  );
+
+  MockReactPlayer.displayName = "MockReactPlayer";
+
+  return MockReactPlayer;
 });
 
 const mockHandleProgressTick = jest.fn();
@@ -60,8 +69,6 @@ jest.mock("@/hooks/usePlaybackSpeed", () => ({
   })),
   PLAYBACK_SPEEDS: [0.5, 1, 1.5, 2],
 }));
-
-const playbackModule = require("@/hooks/usePlaybackSpeed");
 if (typeof playbackModule.usePlaybackSpeed !== "function") {
   throw new Error("Mock de usePlaybackSpeed não carregado");
 }
@@ -77,15 +84,23 @@ jest.mock("@/hooks/useNetworkSpeed", () => ({
   })),
 }));
 
-jest.mock("@/components/VideoPlayer/SpeedControl", () => (props: any) => (
-  <button
-    data-testid="speed-control"
-    type="button"
-    onClick={() => props.onSpeedChange(1.5)}
-  >
-    Speed
-  </button>
-));
+jest.mock("@/components/VideoPlayer/SpeedControl", () => {
+  function MockSpeedControl(props: { onSpeedChange: (speed: number) => void }) {
+    return (
+      <button
+        data-testid="speed-control"
+        type="button"
+        onClick={() => props.onSpeedChange(1.5)}
+      >
+        Speed
+      </button>
+    );
+  }
+
+  MockSpeedControl.displayName = "MockSpeedControl";
+
+  return MockSpeedControl;
+});
 
 jest.mock(
   "@/components/VideoPlayer/QualitySelector",
@@ -144,8 +159,7 @@ const { useVideoProgress } = jest.requireMock("@/hooks/useVideoProgress") as {
 };
 
 // Import after mocks so the component consumes mocked hooks/dependencies
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const VideoPlayer = require("../VideoPlayer").default;
+import VideoPlayer from "../VideoPlayer";
 
 describe("VideoPlayer", () => {
   beforeEach(() => {

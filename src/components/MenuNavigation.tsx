@@ -43,6 +43,12 @@ const MenuNavigation = () => {
                     asChild
                     className="p-3 px-5 text-foreground/80 transition-colors hover:bg-[#E7517B] hover:text-white"
                   >
+                    <Link href="/progresso">Meu Progresso</Link>
+                  </NavigationMenuLink>
+                  <NavigationMenuLink
+                    asChild
+                    className="p-3 px-5 text-foreground/80 transition-colors hover:bg-[#E7517B] hover:text-white"
+                  >
                     <Link href="/profile/settings">Configurações</Link>
                   </NavigationMenuLink>
                   <NavigationMenuLink
@@ -79,6 +85,15 @@ const MenuNavigation = () => {
                     <Link href="/profile">
                       <User size={16} />
                       Perfil
+                    </Link>
+                  </NavigationMenuLink>
+                  <NavigationMenuLink
+                    asChild
+                    className="flex items-center gap-3 p-3 px-5 text-foreground/80 transition-colors hover:bg-[#E7517B] hover:text-white"
+                  >
+                    <Link href="/progresso">
+                      <Menu size={16} />
+                      Meu Progresso
                     </Link>
                   </NavigationMenuLink>
                   <NavigationMenuLink

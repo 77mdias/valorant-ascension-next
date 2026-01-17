@@ -13,6 +13,7 @@ export default withAuth(
     const isCartPage = req.nextUrl.pathname.includes("/carrinho");
     const isOrderPage = req.nextUrl.pathname.includes("/pedido");
     const isCheckoutPage = req.nextUrl.pathname.includes("/checkout");
+    const isProgressPage = req.nextUrl.pathname.startsWith("/progresso");
 
     // Redirecionar usuários autenticados das páginas de auth
     // Mas não redirecionar durante o processo de OAuth ou páginas de erro
@@ -28,7 +29,11 @@ export default withAuth(
     // Proteger páginas que requerem autenticação
     if (
       !isAuth &&
-      (isProfilePage || isWishlistPage || isCartPage || isCheckoutPage)
+      (isProfilePage ||
+        isWishlistPage ||
+        isCartPage ||
+        isCheckoutPage ||
+        isProgressPage)
     ) {
       const signInUrl = new URL("/auth/signin", req.url);
       signInUrl.searchParams.set("callbackUrl", req.nextUrl.pathname);
@@ -59,7 +64,7 @@ export default withAuth(
     callbacks: {
       authorized: () => true, // Deixar o middleware handle a lógica
     },
-  }
+  },
 );
 
 export const config = {

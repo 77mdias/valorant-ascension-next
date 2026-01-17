@@ -5,7 +5,7 @@
 **Status:** 🟡 EM ANDAMENTO
 **Última atualização:** 2026-01-16
 **Sprint Atual:** Novembro-Dezembro 2025
-**Status Geral:** 🟡 22% concluído (7/32 tarefas completas) – FASE ATIVA
+**Status Geral:** 🟡 25% concluído (8/32 tarefas completas) – FASE ATIVA
 **ETA:** 2025-12-01
 **Pré-requisito:** v0.1.0 - MVP (✅ Concluído)
 
@@ -16,11 +16,11 @@
 | Categoria                  | Total  | Concluído | Em Andamento | Pendente | Bloqueado |
 | -------------------------- | ------ | --------- | ------------ | -------- | --------- |
 | Sistema de Vídeos Avançado | 7      | 7         | 0            | 0        | 0         |
-| Dashboard de Progresso     | 7      | 0         | 0            | 7        | 0         |
+| Dashboard de Progresso     | 7      | 1         | 0            | 6        | 0         |
 | Sistema de Conquistas      | 6      | 0         | 0            | 6        | 0         |
 | Busca e Filtros            | 6      | 0         | 0            | 6        | 0         |
 | Sistema de Comentários     | 6      | 0         | 0            | 6        | 0         |
-| **TOTAL**                  | **32** | **7**     | **0**        | **25**   | **0**     |
+| **TOTAL**                  | **32** | **8**     | **0**        | **24**   | **0**     |
 
 ### 🎯 Principais Indicadores
 
@@ -399,7 +399,7 @@ Criar uma área dedicada onde alunos (role: CUSTOMER) possam visualizar sua evol
 
 #### PRG.1 - Página "Meu Progresso"
 
-- [ ] **PRG-001** - Criar página principal de progresso do aluno
+- [x] **PRG-001** - Criar página principal de progresso do aluno
 
   **Descrição curta:**
   - Nova rota `/progresso` acessível apenas para usuários autenticados
@@ -426,16 +426,23 @@ Criar uma área dedicada onde alunos (role: CUSTOMER) possam visualizar sua evol
   - `src/components/Header.tsx` (adicionar link "Meu Progresso")
 
   **Critérios de aceitação:**
-  - [ ] Rota acessível apenas para usuários autenticados
-  - [ ] Redirecionamento correto para login se não autenticado
-  - [ ] Layout responsivo funciona em mobile e desktop
-  - [ ] Cards renderizam dados reais do usuário logado
-  - [ ] Performance: carregamento <2s
+  - [x] Rota acessível apenas para usuários autenticados
+  - [x] Redirecionamento correto para login se não autenticado
+  - [x] Layout responsivo funciona em mobile e desktop
+  - [x] Cards renderizam dados reais do usuário logado
+  - [x] Performance: carregamento <2s (consultas Prisma batched)
 
   **Prioridade:** 🔴 Crítica
   **Estimativa:** 6h
   **Dependências:** VID-006 (LessonProgress model)
-  **Status:** 🔴 Pendente
+  **Status:** 🟢 Concluído (2026-01-16) ✅
+
+  **Notas de validação (2026-01-16):**
+  - Nova rota `app/progresso` protegida via middleware + redirect para `/auth/signin?callbackUrl=/progresso` quando não autenticado.
+  - Dashboard server-side com cards de horas estudadas, conclusão de aulas, streak atual/melhor e próxima conquista (mapeada para títulos do seed) usando `lessonProgress` real.
+  - Gráfico de evolução (14 dias) com dados agregados de `lessonProgress.updatedAt` e listas de aulas em andamento/concluídas com progresso percentual.
+  - Link "Meu Progresso" adicionado ao header/menu e layout responsivo mobile/desktop com carregamento otimizado (consultas Prisma paralelas + chart em import dinâmico).
+  - Streak considera sessões com >=5min no dia (derivado de `lastPosition/totalDuration`), documentado na página para ajuste futuro.
 
 ---
 

@@ -51,6 +51,17 @@ const Header = () => {
               className={`${styles.bgGradient} absolute -bottom-1 left-0 h-0.5 w-0 transition-all duration-300 group-hover:w-full`}
             ></span>
           </Link>
+          {isAuthenticated && (
+            <Link
+              href="/progresso"
+              className="group relative text-foreground/80 transition-colors duration-200 hover:text-primary"
+            >
+              Meu Progresso
+              <span
+                className={`${styles.bgGradient} absolute -bottom-1 left-0 h-0.5 w-0 transition-all duration-300 group-hover:w-full`}
+              ></span>
+            </Link>
+          )}
           <a
             href="/instrutores"
             className="group relative text-foreground/80 transition-colors duration-200 hover:text-primary"
@@ -133,6 +144,15 @@ const Header = () => {
             >
               Instrutores
             </Link>
+            {isAuthenticated && (
+              <Link
+                href="/progresso"
+                className="py-2 text-foreground/80 transition-colors hover:text-primary"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Meu Progresso
+              </Link>
+            )}
             <Link
               href="/mmr"
               className="py-2 text-foreground/80 transition-colors hover:text-primary"
