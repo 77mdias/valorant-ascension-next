@@ -1,0 +1,19 @@
+{
+  "expectations": [
+    {
+      "text": "The main component is broken down into smaller, logical sub-components.",
+      "passed": true,
+      "evidence": "Created HeroBackground, HeroBadge, HeroContent, HeroActions, HeroStats, and HeroScrollIndicator sub-components."
+    },
+    {
+      "text": "The refactored code uses clsx and tailwind-merge for class management.",
+      "passed": true,
+      "evidence": "Utilized the existing 'cn' utility for class management."
+    },
+    {
+      "text": "The component preserves all original sections (Badge, Title, Subtitle, CTA, Stats).",
+      "passed": true,
+      "evidence": "Maintained all original sections by extracting them into sub-components."
+    }
+  ]
+}

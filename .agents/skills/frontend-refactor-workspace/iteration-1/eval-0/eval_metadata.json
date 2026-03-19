@@ -1,0 +1,19 @@
+{
+  "eval_id": 0,
+  "eval_name": "hero-refactor",
+  "prompt": "Refactor the following React component (src/components/Hero.tsx) to improve its structure, readability, and maintainability. Break it down into smaller sub-components if it makes sense, and use tailwind-merge and clsx for cleaner class management.",
+  "assertions": [
+    {
+      "name": "uses-sub-components",
+      "text": "The main component is broken down into smaller, logical sub-components."
+    },
+    {
+      "name": "uses-clsx-twmerge",
+      "text": "The refactored code uses clsx and tailwind-merge for class management."
+    },
+    {
+      "name": "preserves-functionality",
+      "text": "The component preserves all original sections (Badge, Title, Subtitle, CTA, Stats)."
+    }
+  ]
+}

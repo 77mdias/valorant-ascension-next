@@ -1,0 +1,24 @@
+{
+  "skill_name": "frontend-refactor",
+  "iterations": [
+    {
+      "iteration": 1,
+      "results": [
+        {
+          "eval_id": 0,
+          "eval_name": "hero-refactor",
+          "with_skill": {
+            "pass_rate": 1.0,
+            "tokens": 0,
+            "duration": 0
+          },
+          "without_skill": {
+            "pass_rate": 1.0,
+            "tokens": 0,
+            "duration": 0
+          }
+        }
+      ]
+    }
+  ]
+}
