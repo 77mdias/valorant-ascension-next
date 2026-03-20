@@ -17,7 +17,7 @@ class StripeService {
 
     try {
       this.instance = new Stripe(secretKey, {
-        apiVersion: "2025-07-30.basil",
+        apiVersion: "2025-08-27.basil",
         appInfo: {
           name: "Valorant Ascension",
           version: "1.0.0",
