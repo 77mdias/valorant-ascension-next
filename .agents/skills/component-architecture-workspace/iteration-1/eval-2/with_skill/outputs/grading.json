@@ -1,0 +1,19 @@
+{
+  "expectations": [
+    {
+      "text": "Does the output propose a feature-based folder structure?",
+      "passed": true,
+      "evidence": "The output proposes grouping components within 'src/components/dashboard' and mentions 'Feature-Based Cohesion'."
+    },
+    {
+      "text": "Does the output separate layout components from feature components?",
+      "passed": true,
+      "evidence": "The output explicitly mentions 'separating layout from logic and UI'."
+    },
+    {
+      "text": "Does the output follow the 3-part structure defined in the skill?",
+      "passed": true,
+      "evidence": "The output uses the exact headers from the skill."
+    }
+  ]
+}

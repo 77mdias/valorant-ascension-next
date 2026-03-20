@@ -8,9 +8,6 @@ import { HeroContent } from "./Hero/HeroContent";
 import { HeroStats, type StatItemProps } from "./Hero/HeroStats";
 import { HeroScrollIndicator } from "./Hero/HeroScrollIndicator";
 import { HeroActions } from "./Hero/HeroActions";
-import { cn } from "@/lib/utils";
-
-const HERO_BUTTON_CLASSES = "rounded-full px-8 py-4 text-lg font-semibold";
 
 const HERO_STATS: StatItemProps[] = [
   { label: "Alunos Ativos", value: "500+", colorClassName: "text-primary" },
@@ -18,6 +15,8 @@ const HERO_STATS: StatItemProps[] = [
   { label: "Horas de Conteúdo", value: "1000+", colorClassName: "text-accent" },
   { label: "Radiant Coaches", value: "50+", colorClassName: "text-ciano" },
 ];
+
+const HERO_BUTTON_CLASSES = "rounded-full px-8 py-4 text-lg font-semibold";
 
 const Hero = () => {
   return (
@@ -47,7 +46,7 @@ const Hero = () => {
         <HeroActions>
           <Button
             size="lg"
-            className={cn("btn-gradient group", HERO_BUTTON_CLASSES)}
+            className={`btn-gradient group ${HERO_BUTTON_CLASSES}`}
             asChild
           >
             <Link href="/login" className="flex items-center">
@@ -58,10 +57,7 @@ const Hero = () => {
           <Button
             size="lg"
             variant="outline"
-            className={cn(
-              "border-2 border-primary/30 hover:border-primary hover:bg-primary/10",
-              HERO_BUTTON_CLASSES
-            )}
+            className={`${HERO_BUTTON_CLASSES} border-2 border-primary/30 hover:border-primary hover:bg-primary/10`}
           >
             <Play className="mr-2 h-5 w-5" />
             Ver Conteúdo

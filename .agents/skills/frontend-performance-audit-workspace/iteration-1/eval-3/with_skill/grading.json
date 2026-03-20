@@ -1,0 +1,10 @@
+{
+  "eval_id": 3,
+  "eval_name": "header-navigation-audit",
+  "prompt": "Review the Header.tsx and its navigation components for potential state-driven re-renders. Suggest how to optimize the rendering tree.",
+  "assertions": [
+    { "text": "Identifies state-driven re-renders from isMenuOpen", "passed": true, "evidence": "Subagent identified that toggling the mobile menu state triggered re-renders of the entire desktop navigation." },
+    { "text": "Suggests extracting sub-components into standalone memoized parts", "passed": true, "evidence": "Subagent recommended extracting DesktopNav and MobileMenu into standalone memoized components." },
+    { "text": "Recommends removing unused hooks", "passed": true, "evidence": "Subagent identified and removed unused useRouter calls." }
+  ]
+}

@@ -1,0 +1,114 @@
+### 1. Problems in Architecture
+
+*   **Monolithic Components:** The current `DashboardLayout` is a server component that combines layout logic (auth, redirect) with UI elements (Header) in a single file. This makes it difficult to manage as the UI grows.
+*   **Incomplete Sidebar Implementation:** There is no dedicated sidebar component. Mobile responsive logic is currently placeholder comment ("SSR workaround: always closed").
+*   **Lack of Feature Cohesion:** Dashboard-specific features like "Charts" or "Settings Modals" are not clearly separated, leading to potentially bloated `page.tsx` or `components/dashboard` files.
+*   **Static UI Components:** The existing `Modal` component in `src/components/ui` is specialized for notifications (success/error types) rather than generic content like user settings forms.
+
+### 2. Improved Structure
+
+A feature-based organization is recommended to keep the dashboard maintainable.
+
+```
+src/
+├── app/
+│   └── dashboard/
+│       ├── page.tsx            # Orchestrator: Fetches data and composes the view
+│       └── layout.tsx          # Layout: Shared Sidebar, Header, and Mobile Navigation
+├── components/
+│   ├── dashboard/              # Feature-specific dashboard components
+│   │   ├── charts/             # Visualization logic
+│   │   │   ├── GrowthChart.tsx
+│   │   │   └── RevenueChart.tsx
+│   │   ├── modals/             # Context-specific modals
+│   │   │   └── UserSettingsModal.tsx
+│   │   ├── Sidebar.tsx         # Navigation logic (desktop)
+│   │   ├── Header.tsx          # User profile, search, notifications
+│   │   └── MobileNav.tsx       # Sheet/Drawer for mobile navigation
+│   └── ui/                     # Generic design system components
+│       ├── Card.tsx            # Wrapper for dashboard widgets
+│       ├── Button.tsx
+│       └── Dialog.tsx          # Generic modal for arbitrary content
+├── hooks/
+│   ├── useDashboardState.ts    # Manages sidebar toggle and modal visibility
+│   └── useDashboardData.ts     # Encapsulates data fetching (e.g., using TanStack Query)
+└── types/
+    └── dashboard.ts            # Interfaces for chart data and settings
+```
+
+### 3. Example Implementation
+
+This implementation separates the layout structure from the UI components and logic.
+
+#### A. Custom Hook for Dashboard State (`src/hooks/useDashboardState.ts`)
+```typescript
+import { useState } from 'react';
+
+export function useDashboardState() {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
+
+  const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
+  const openSettings = () => setIsSettingsModalOpen(true);
+  const closeSettings = () => setIsSettingsModalOpen(false);
+
+  return {
+    isSidebarOpen,
+    toggleSidebar,
+    isSettingsModalOpen,
+    openSettings,
+    closeSettings,
+  };
+}
+```
+
+#### B. Refactored Dashboard Layout (`src/app/dashboard/layout.tsx`)
+```tsx
+"use client";
+
+import { Sidebar } from "@/components/dashboard/Sidebar";
+import { Header } from "@/components/dashboard/Header";
+import { useDashboardState } from "@/hooks/useDashboardState";
+import { UserSettingsModal } from "@/components/dashboard/modals/UserSettingsModal";
+
+export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+  const { isSidebarOpen, toggleSidebar, isSettingsModalOpen, closeSettings, openSettings } = useDashboardState();
+
+  return (
+    <div className="flex min-h-screen bg-muted/30">
+      <Sidebar isOpen={isSidebarOpen} onClose={toggleSidebar} />
+      
+      <div className="flex-1 flex flex-col">
+        <Header onMenuClick={toggleSidebar} onProfileClick={openSettings} />
+        <main className="p-4 md:p-8 overflow-auto">
+          {children}
+        </main>
+      </div>
+
+      <UserSettingsModal isOpen={isSettingsModalOpen} onClose={closeSettings} />
+    </div>
+  );
+}
+```
+
+#### C. Specialized Chart Component (`src/components/dashboard/charts/GrowthChart.tsx`)
+```tsx
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+// Import chart library (e.g., Recharts)
+
+export function GrowthChart({ data }: { data: any[] }) {
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>User Growth</CardTitle>
+      </CardHeader>
+      <CardContent>
+        {/* Render chart logic here using Recharts/Chart.js */}
+        <div className="h-[300px] w-full bg-muted/50 rounded flex items-center justify-center">
+          Chart Placeholder
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+```

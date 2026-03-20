@@ -1,0 +1,82 @@
+{
+  "skill_name": "component-architecture",
+  "iteration": 1,
+  "evals": [
+    {
+      "id": 1,
+      "name": "refactor-messy-component",
+      "configurations": [
+        {
+          "name": "with_skill",
+          "pass_rate": 1.0,
+          "assertions": [
+            { "name": "identifies_problems", "passed": true },
+            { "name": "suggests_custom_hooks", "passed": true },
+            { "name": "follows_output_format", "passed": true }
+          ]
+        },
+        {
+          "name": "without_skill",
+          "pass_rate": 0.66,
+          "assertions": [
+            { "name": "identifies_problems", "passed": true },
+            { "name": "suggests_custom_hooks", "passed": true },
+            { "name": "follows_output_format", "passed": false }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "dashboard-feature-architecture",
+      "configurations": [
+        {
+          "name": "with_skill",
+          "pass_rate": 1.0,
+          "assertions": [
+            { "name": "proposes_feature_structure", "passed": true },
+            { "name": "separates_layout", "passed": true },
+            { "name": "follows_output_format", "passed": true }
+          ]
+        },
+        {
+          "name": "without_skill",
+          "pass_rate": 0.66,
+          "assertions": [
+            { "name": "proposes_feature_structure", "passed": true },
+            { "name": "separates_layout", "passed": true },
+            { "name": "follows_output_format", "passed": false }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "reorganize-flat-components",
+      "configurations": [
+        {
+          "name": "with_skill",
+          "pass_rate": 1.0,
+          "assertions": [
+            { "name": "identifies_flat_list_problem", "passed": true },
+            { "name": "suggests_hierarchical_structure", "passed": true },
+            { "name": "follows_output_format", "passed": true }
+          ]
+        },
+        {
+          "name": "without_skill",
+          "pass_rate": 0.66,
+          "assertions": [
+            { "name": "identifies_flat_list_problem", "passed": true },
+            { "name": "suggests_hierarchical_structure", "passed": true },
+            { "name": "follows_output_format", "passed": false }
+          ]
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "with_skill": { "mean_pass_rate": 1.0 },
+    "without_skill": { "mean_pass_rate": 0.66 }
+  }
+}

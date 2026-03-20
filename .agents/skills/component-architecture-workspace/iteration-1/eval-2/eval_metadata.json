@@ -1,0 +1,22 @@
+{
+  "eval_id": 2,
+  "eval_name": "dashboard-feature-architecture",
+  "prompt": "I'm building a 'Dashboard' feature. It needs a sidebar, header, several charts, and a user settings modal. How should I organize the folders and components for this?",
+  "assertions": [
+    {
+      "name": "proposes_feature_structure",
+      "text": "Does the output propose a feature-based folder structure?",
+      "expected": true
+    },
+    {
+      "name": "separates_layout",
+      "text": "Does the output separate layout components from feature components?",
+      "expected": true
+    },
+    {
+      "name": "follows_output_format",
+      "text": "Does the output follow the 3-part structure defined in the skill?",
+      "expected": true
+    }
+  ]
+}

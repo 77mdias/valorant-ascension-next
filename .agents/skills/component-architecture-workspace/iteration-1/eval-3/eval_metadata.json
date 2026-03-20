@@ -1,0 +1,22 @@
+{
+  "eval_id": 3,
+  "eval_name": "reorganize-flat-components",
+  "prompt": "Look at my current src/components folder. It's just a flat list of 50 files. Help me reorganize it for better scalability.",
+  "assertions": [
+    {
+      "name": "identifies_flat_list_problem",
+      "text": "Does the output identify problems with a flat list of components?",
+      "expected": true
+    },
+    {
+      "name": "suggests_hierarchical_structure",
+      "text": "Does the output suggest a hierarchical or feature-based structure?",
+      "expected": true
+    },
+    {
+      "name": "follows_output_format",
+      "text": "Does the output follow the 3-part structure defined in the skill?",
+      "expected": true
+    }
+  ]
+}

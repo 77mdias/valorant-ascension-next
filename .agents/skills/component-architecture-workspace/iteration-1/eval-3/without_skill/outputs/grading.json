@@ -1,0 +1,19 @@
+{
+  "expectations": [
+    {
+      "text": "Does the output identify problems with a flat list of components?",
+      "passed": true,
+      "evidence": "The output mentions categorization and resolving conflicts."
+    },
+    {
+      "text": "Does the output suggest a hierarchical or feature-based structure?",
+      "passed": true,
+      "evidence": "The output suggests layout/, sections/, features/, and common/ui/."
+    },
+    {
+      "text": "Does the output follow the 3-part structure defined in the skill?",
+      "passed": false,
+      "evidence": "The output does not use the 3-part structure at all, it's a numbered list of plan points."
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "expectations": [
+    {
+      "text": "Does the output identify problems with a flat list of components?",
+      "passed": true,
+      "evidence": "The output lists 'Flat Root Folder Clutter' as the first problem."
+    },
+    {
+      "text": "Does the output suggest a hierarchical or feature-based structure?",
+      "passed": true,
+      "evidence": "The output proposes a 'Feature-Based + Shared UI Architecture' with a detailed folder tree."
+    },
+    {
+      "text": "Does the output follow the 3-part structure defined in the skill?",
+      "passed": true,
+      "evidence": "The output follows the specified headers exactly."
+    }
+  ]
+}

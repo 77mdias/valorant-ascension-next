@@ -1,0 +1,23 @@
+{
+  "skill_name": "component-architecture",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Refactor this UserProfile component. It currently handles user data fetching, state management for a form, and has 500 lines of JSX including some UI primitives that are used elsewhere.",
+      "expected_output": "The output should identify the tightly coupled logic and UI, suggest extracting a custom hook for data/form logic, moving UI primitives to a shared directory, and follow the specified 3-part output format.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "I'm building a 'Dashboard' feature. It needs a sidebar, header, several charts, and a user settings modal. How should I organize the folders and components for this?",
+      "expected_output": "The output should propose a feature-based folder structure (e.g., src/features/dashboard), separate layout components from feature components, and provide an example implementation of the structure.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Look at my current src/components folder. It's just a flat list of 50 files. Help me reorganize it for better scalability.",
+      "expected_output": "The output should identify the problems with flat lists, suggest a more hierarchical structure (like atomic design or feature-based), and provide an improved structure with clear naming conventions.",
+      "files": []
+    }
+  ]
+}

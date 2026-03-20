@@ -1,0 +1,19 @@
+{
+  "expectations": [
+    {
+      "text": "Does the output identify tightly coupled logic and UI?",
+      "passed": true,
+      "evidence": "The output mentions 'Violates Single Responsibility Principle' and 'logic and presentation are tightly coupled'."
+    },
+    {
+      "text": "Does the output suggest extracting logic into custom hooks?",
+      "passed": true,
+      "evidence": "The output suggests a 'useUserProfile (Hook)'."
+    },
+    {
+      "text": "Does the output follow the 3-part structure defined in the skill?",
+      "passed": false,
+      "evidence": "The output uses different headers: '1. Architectural Issues Identified', '2. Proposed Refactored Structure', '3. Implementation Example'."
+    }
+  ]
+}

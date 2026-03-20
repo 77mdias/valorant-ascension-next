@@ -1,0 +1,15 @@
+{
+  "eval_id": 0,
+  "eval_name": "simplify-benefits-ternary",
+  "prompt": "Clean up the card icon background logic in Benefits.tsx. The nested ternary is hard to read. Use a mapping or a helper to make it more readable.",
+  "assertions": [
+    {
+      "name": "Removes nested ternary",
+      "text": "The nested ternary for the card icon background has been replaced with a mapping or helper."
+    },
+    {
+      "name": "Maintains visual consistency",
+      "text": "The gradient colors and intensities remain consistent with the original design."
+    }
+  ]
+}

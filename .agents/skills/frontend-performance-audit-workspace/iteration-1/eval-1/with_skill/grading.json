@@ -1,0 +1,10 @@
+{
+  "eval_id": 1,
+  "eval_name": "courses-page-audit",
+  "prompt": "Audit the performance of the main courses page (src/app/cursos/page.tsx). Look for heavy components that should be lazy loaded and check for unnecessary re-renders in the list.",
+  "assertions": [
+    { "text": "Identifies at least 2 components for next/dynamic", "passed": true, "evidence": "Subagent identified StatsSection, TestimonialCarousel, and ProjectInfoCompact." },
+    { "text": "Suggests React.memo for CourseCard", "passed": true, "evidence": "Subagent explicitly suggested using React.memo for CourseCard." },
+    { "text": "Recommends moving static objects outside the component", "passed": true, "evidence": "Subagent identified redundant object recreation for styling mappings." }
+  ]
+}

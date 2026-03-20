@@ -1,0 +1,26 @@
+{
+  "skill_name": "frontend-performance-audit",
+  "evals": [
+    {
+      "id": 1,
+      "name": "courses-page-audit",
+      "prompt": "Audit the performance of the main courses page (src/app/cursos/page.tsx). Look for heavy components that should be lazy loaded and check for unnecessary re-renders in the list.",
+      "expected_output": "A report identifying heavy list items, suggesting memoization for cards, and identifying components for next/dynamic.",
+      "files": ["src/app/cursos/page.tsx", "src/components/CourseCard.tsx"]
+    },
+    {
+      "id": 2,
+      "name": "image-optimization-audit",
+      "prompt": "Analyze how images are handled in the Hero.tsx and CourseCard.tsx components. Suggest optimizations for faster LCP and better bundle management.",
+      "expected_output": "Recommendations for next/image usage, priority property for LCP elements, and proper sizes attributes.",
+      "files": ["src/components/Hero.tsx", "src/components/CourseCard.tsx"]
+    },
+    {
+      "id": 3,
+      "name": "header-navigation-audit",
+      "prompt": "Review the Header.tsx and its navigation components for potential state-driven re-renders. Suggest how to optimize the rendering tree.",
+      "expected_output": "Analysis of mobile menu state and navigation link re-renders, suggesting state colocation or memoization.",
+      "files": ["src/components/Header.tsx", "src/components/MenuNavigation.tsx"]
+    }
+  ]
+}

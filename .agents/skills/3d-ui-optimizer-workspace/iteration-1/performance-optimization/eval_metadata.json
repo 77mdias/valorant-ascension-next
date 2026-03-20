@@ -1,0 +1,19 @@
+{
+  "eval_id": 0,
+  "eval_name": "r3f-performance-cleanup",
+  "prompt": "Optimize this React Three Fiber scene. It has a rotating cube that updates state every frame, causing unnecessary re-renders of the main UI. It also loads a large uncompressed .glb file without Suspense.",
+  "assertions": [
+    {
+      "name": "Removes React State from useFrame",
+      "text": "The animation logic no longer uses `useState` inside `useFrame`, instead using `useRef` to directly manipulate Three.js objects."
+    },
+    {
+      "name": "Implements Suspense/Preloading",
+      "text": "The model loading logic utilizes `<Suspense />` or preloading techniques for better UX during asset loading."
+    },
+    {
+      "name": "Optimizes Canvas DPR",
+      "text": "The `<Canvas />` component should ideally set `dpr` appropriately for different screen densities."
+    }
+  ]
+}

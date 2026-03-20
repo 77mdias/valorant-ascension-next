@@ -1,0 +1,19 @@
+{
+  "eval_id": 0,
+  "eval_name": "futuristic-space-travel",
+  "prompt": "Create a highly creative and original web design concept for a software startup called 'Aethelgard'. Aethelgard is a space-time travel agency that uses quantum folding for instantaneous travel.",
+  "assertions": [
+    {
+      "name": "Avoids Generic SaaS Layout",
+      "text": "The design concept does not use standard 2-column hero or repetitive card grids."
+    },
+    {
+      "name": "Defines Unique Visual Identity",
+      "text": "The concept includes bold typography, non-standard colors, and expressive spacing."
+    },
+    {
+      "name": "Justifies Creative Choices",
+      "text": "The output explains why specific layout or visual decisions were made based on the product's purpose."
+    }
+  ]
+}

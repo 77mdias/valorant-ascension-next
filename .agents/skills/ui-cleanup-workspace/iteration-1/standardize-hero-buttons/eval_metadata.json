@@ -1,0 +1,11 @@
+{
+  "eval_id": 1,
+  "eval_name": "standardize-hero-buttons",
+  "prompt": "The buttons in Hero.tsx have repeated classes for styling: `rounded-full px-8 py-4 text-lg font-semibold`. Please clean this up to be more consistent and maintainable.",
+  "assertions": [
+    {
+      "name": "Standardizes button styles",
+      "text": "Repeated button classes are consolidated into a variant, constant, or common component."
+    }
+  ]
+}

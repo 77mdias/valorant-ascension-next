@@ -1,0 +1,10 @@
+{
+  "eval_id": 2,
+  "eval_name": "image-optimization-audit",
+  "prompt": "Analyze how images are handled in the Hero.tsx and CourseCard.tsx components. Suggest optimizations for faster LCP and better bundle management.",
+  "assertions": [
+    { "text": "Recommends priority for LCP images (Hero)", "passed": true, "evidence": "Subagent suggested adding priority to ensure the browser prioritizes these assets." },
+    { "text": "Suggests specific sizes attribute values", "passed": true, "evidence": "Subagent provided specific responsive sizes: (max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw." },
+    { "text": "Mentions placeholder=\"blur\" for static imports", "passed": false, "evidence": "Subagent did not explicitly mention placeholder=\"blur\" in its summary." }
+  ]
+}

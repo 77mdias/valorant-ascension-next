@@ -1,0 +1,40 @@
+{
+  "skill_name": "creative-web-design",
+  "configurations": [
+    {
+      "id": "with_skill",
+      "name": "With Creative Web Design Skill",
+      "pass_rate": 100,
+      "mean_duration_sec": 0,
+      "mean_tokens": 0
+    },
+    {
+      "id": "without_skill",
+      "name": "Baseline (No Skill)",
+      "pass_rate": 100,
+      "mean_duration_sec": 0,
+      "mean_tokens": 0
+    }
+  ],
+  "evals": [
+    {
+      "id": 0,
+      "name": "futuristic-space-travel",
+      "prompt": "Create a highly creative and original web design concept for a software startup called 'Aethelgard'. Aethelgard is a space-time travel agency that uses quantum folding for instantaneous travel.",
+      "results": [
+        {
+          "config_id": "with_skill",
+          "passed": true,
+          "duration_sec": 0,
+          "tokens": 0
+        },
+        {
+          "config_id": "without_skill",
+          "passed": true,
+          "duration_sec": 0,
+          "tokens": 0
+        }
+      ]
+    }
+  ]
+}

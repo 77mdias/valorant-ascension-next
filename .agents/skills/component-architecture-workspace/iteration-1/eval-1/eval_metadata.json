@@ -1,0 +1,22 @@
+{
+  "eval_id": 1,
+  "eval_name": "refactor-messy-component",
+  "prompt": "Refactor this UserProfile component. It currently handles user data fetching, state management for a form, and has 500 lines of JSX including some UI primitives that are used elsewhere.",
+  "assertions": [
+    {
+      "name": "identifies_problems",
+      "text": "Does the output identify tightly coupled logic and UI?",
+      "expected": true
+    },
+    {
+      "name": "suggests_custom_hooks",
+      "text": "Does the output suggest extracting logic into custom hooks?",
+      "expected": true
+    },
+    {
+      "name": "follows_output_format",
+      "text": "Does the output follow the 3-part structure defined in the skill?",
+      "expected": true
+    }
+  ]
+}

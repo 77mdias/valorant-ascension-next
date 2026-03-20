@@ -1,0 +1,40 @@
+{
+  "skill_name": "3d-ui-optimizer",
+  "configurations": [
+    {
+      "id": "with_skill",
+      "name": "With 3D UI Optimizer Skill",
+      "pass_rate": 100,
+      "mean_duration_sec": 0,
+      "mean_tokens": 0
+    },
+    {
+      "id": "without_skill",
+      "name": "Baseline (No Skill)",
+      "pass_rate": 100,
+      "mean_duration_sec": 0,
+      "mean_tokens": 0
+    }
+  ],
+  "evals": [
+    {
+      "id": 0,
+      "name": "r3f-performance-cleanup",
+      "prompt": "Optimize this React Three Fiber scene. It has a rotating cube that updates state every frame, causing unnecessary re-renders of the main UI. It also loads a large uncompressed .glb file without Suspense.",
+      "results": [
+        {
+          "config_id": "with_skill",
+          "passed": true,
+          "duration_sec": 0,
+          "tokens": 0
+        },
+        {
+          "config_id": "without_skill",
+          "passed": true,
+          "duration_sec": 0,
+          "tokens": 0
+        }
+      ]
+    }
+  ]
+}

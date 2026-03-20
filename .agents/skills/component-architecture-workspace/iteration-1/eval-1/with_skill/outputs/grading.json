@@ -1,0 +1,19 @@
+{
+  "expectations": [
+    {
+      "text": "Does the output identify tightly coupled logic and UI?",
+      "passed": true,
+      "evidence": "The output explicitly mentions 'Tightly Coupled Responsibilities' and 'Mixed Logic and Presentation' in the first section."
+    },
+    {
+      "text": "Does the output suggest extracting logic into custom hooks?",
+      "passed": true,
+      "evidence": "The output suggests a 'Custom Hook (useUserProfile)' and provides its implementation."
+    },
+    {
+      "text": "Does the output follow the 3-part structure defined in the skill?",
+      "passed": true,
+      "evidence": "The output uses the exact headers: '1. Problems in Architecture', '2. Improved Structure', and '3. Example Implementation'."
+    }
+  ]
+}

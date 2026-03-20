@@ -1,0 +1,19 @@
+{
+  "expectations": [
+    {
+      "text": "Does the output propose a feature-based folder structure?",
+      "passed": true,
+      "evidence": "The output suggests organizing dashboard-specific components within 'src/components/dashboard/'."
+    },
+    {
+      "text": "Does the output separate layout components from feature components?",
+      "passed": true,
+      "evidence": "The output separates 'layout/', 'charts/', and 'settings/'."
+    },
+    {
+      "text": "Does the output follow the 3-part structure defined in the skill?",
+      "passed": false,
+      "evidence": "The output uses '1. Folder & Component Organization', '2. Pages & Layout Structure', '3. Supporting Logic'."
+    }
+  ]
+}

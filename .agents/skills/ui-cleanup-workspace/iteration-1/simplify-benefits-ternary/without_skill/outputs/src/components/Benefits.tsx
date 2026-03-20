@@ -48,7 +48,7 @@ const benefits = [
     icon: Trophy,
     title: "Comunidade BR",
     description:
-      "Conecte-se com players brasileiros, forme squads e participe de campeonatos internos.",
+      "Conecte-se with players brasileiros, forme squads e participe de campeonatos internos.",
     color: "text-primary",
   },
 ];
