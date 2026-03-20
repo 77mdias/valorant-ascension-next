@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import Image from "next/image";
 import {
   HenrikDevAPI,
   processPlayerData,
@@ -9,37 +8,16 @@ import {
   HenrikDevMatch,
 } from "../../lib/henrikdev-api";
 import { valorantCache } from "../../lib/cache";
-import { ScrollArea, Scrollbar } from "@radix-ui/react-scroll-area";
-import styles from "./page.module.scss";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import { PlayerData, MatchData } from "./types";
 
-interface PlayerData {
-  name: string;
-  tag: string;
-  level: number;
-  rank: string;
-  elo: number;
-  rankImage: string;
-  cardImage: string;
-  lastUpdate: Date;
-}
-
-interface MatchData {
-  id: string;
-  map: string;
-  mode: string;
-  agent: string;
-  result: "win" | "loss" | "draw";
-  score: string;
-  kills: number;
-  deaths: number;
-  assists: number;
-  headshots: number;
-  damage: number;
-  rounds_played: number;
-  date: Date;
-  duration: number;
-}
+// Components
+import { SearchHero } from "./components/SearchHero";
+import { PlayerStatsCard } from "./components/PlayerStatsCard";
+import { MatchHistoryList } from "./components/MatchHistoryList";
+import { CacheStatus } from "./components/CacheStatus";
+import { Tabs } from "./components/Tabs";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function PlayerSearch() {
   const [searchInput, setSearchInput] = useState("");
@@ -53,7 +31,7 @@ export default function PlayerSearch() {
   );
   const [dataFromCache, setDataFromCache] = useState(false);
 
-  // Função para executar busca diretamente com parâmetros
+  // Function to perform search
   const performSearch = async (
     name: string,
     tag: string,
@@ -65,21 +43,10 @@ export default function PlayerSearch() {
     setMatches([]);
 
     try {
-      console.log(
-        "🔍 Buscando jogador:",
-        name,
-        tag,
-        "na região:",
-        searchRegion,
-      );
-
-      // Primeiro, verificar se há dados em cache
+      // Check cache first
       const cachedData = valorantCache.getPlayerData(name, tag, searchRegion);
 
       if (cachedData) {
-        console.log("📖 Usando dados do cache para:", name, tag);
-
-        // Processar dados do cache
         const processedPlayer = processPlayerData(
           cachedData.player,
           cachedData.mmr,
@@ -91,23 +58,20 @@ export default function PlayerSearch() {
           .filter(Boolean) as MatchData[];
 
         setMatches(processedMatches);
+        setDataFromCache(true);
         setLoading(false);
         return;
       }
 
-      console.log("🌐 Dados não encontrados no cache, buscando na API...");
-
-      // Buscar dados do jogador e MMR
+      // Fetch from API
       const [playerResponse, mmrResponse] = await Promise.all([
         HenrikDevAPI.getPlayer(name, tag, searchRegion),
         HenrikDevAPI.getMMR(name, tag, searchRegion),
       ]);
 
-      // Processar dados do jogador
       const processedPlayer = processPlayerData(playerResponse, mmrResponse);
       setPlayerData(processedPlayer);
 
-      // Buscar partidas recentes
       const matchesResponse = await HenrikDevAPI.getMatches(
         name,
         tag,
@@ -122,7 +86,7 @@ export default function PlayerSearch() {
 
       setMatches(processedMatches);
 
-      // Salvar dados no cache
+      // Cache data
       const cacheData = {
         player: playerResponse,
         mmr: mmrResponse,
@@ -131,19 +95,16 @@ export default function PlayerSearch() {
       };
 
       valorantCache.setPlayerData(name, tag, searchRegion, cacheData);
-      console.log("💾 Dados salvos no cache para:", name, tag);
-
-      // Marcar que os dados vieram da API (não do cache)
       setDataFromCache(false);
     } catch (err: unknown) {
-      console.error("❌ Erro na busca automática:", err);
-      setError(err instanceof Error ? err.message : "Erro ao buscar jogador");
+      console.error("❌ Search error:", err);
+      setError(err instanceof Error ? err.message : "Error searching for player");
     } finally {
       setLoading(false);
     }
   };
 
-  // Ler parâmetros da URL ao carregar a página
+  // Read URL params on mount
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const nameParam = urlParams.get("name");
@@ -151,500 +112,157 @@ export default function PlayerSearch() {
     const regionParam = urlParams.get("region");
 
     if (nameParam && tagParam) {
-      // Preencher o input com o nome e tag da URL
       setSearchInput(`${nameParam}#${tagParam}`);
-
-      // Atualizar a região se fornecida
       const effectiveRegion = regionParam || region;
-      if (regionParam) {
-        setRegion(regionParam);
-      }
-
-      // Verificar cache primeiro
-      const cachedData = valorantCache.getPlayerData(
-        nameParam,
-        tagParam,
-        effectiveRegion,
-      );
-
-      if (cachedData) {
-        console.log("📖 Carregando dados do cache para:", nameParam, tagParam);
-
-        // Processar dados do cache
-        const processedPlayer = processPlayerData(
-          cachedData.player,
-          cachedData.mmr,
-        );
-        setPlayerData(processedPlayer);
-
-        const processedMatches = cachedData.matches
-          .map((match: HenrikDevMatch) => processMatchData(match, nameParam))
-          .filter(Boolean) as MatchData[];
-
-        setMatches(processedMatches);
-        setDataFromCache(true);
-      } else {
-        // Se não há cache, fazer busca na API após um pequeno delay
-        const timer = setTimeout(() => {
-          performSearch(nameParam, tagParam, effectiveRegion);
-        }, 500);
-
-        return () => clearTimeout(timer);
-      }
+      if (regionParam) setRegion(regionParam);
+      
+      performSearch(nameParam, tagParam, effectiveRegion);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Executar apenas uma vez ao montar o componente
+  }, []);
 
-  const handleSearch = async () => {
+  const handleSearch = () => {
     if (!searchInput.trim()) return;
+    const [name, tag] = searchInput.split("#");
+    if (!name || !tag) {
+      setError("Invalid format. Use: Name#TAG");
+      return;
+    }
+    performSearch(name, tag, region);
+  };
 
-    setLoading(true);
-    setError("");
-    setPlayerData(null);
-    setMatches([]);
-
-    try {
-      // Parse Riot ID (Name#Tag)
-      const [name, tag] = searchInput.split("#");
-      if (!name || !tag) {
-        throw new Error("Formato inválido. Use: Nome#TAG");
-      }
-
-      console.log("🔍 Buscando jogador:", name, tag, "na região:", region);
-
-      // Primeiro, verificar se há dados em cache
-      const cachedData = valorantCache.getPlayerData(name, tag, region);
-
-      if (cachedData) {
-        console.log("📖 Usando dados do cache para:", name, tag);
-
-        // Processar dados do cache
-        const processedPlayer = processPlayerData(
-          cachedData.player,
-          cachedData.mmr,
-        );
-        setPlayerData(processedPlayer);
-
-        const processedMatches = cachedData.matches
-          .map((match: HenrikDevMatch) => processMatchData(match, name))
-          .filter(Boolean) as MatchData[];
-
-        setMatches(processedMatches);
-        setDataFromCache(true);
-        setLoading(false);
-        return;
-      }
-
-      console.log("🌐 Dados não encontrados no cache, buscando na API...");
-
-      // Buscar dados do jogador e MMR
-      const [playerResponse, mmrResponse] = await Promise.all([
-        HenrikDevAPI.getPlayer(name, tag, region),
-        HenrikDevAPI.getMMR(name, tag, region),
-      ]);
-
-      // Processar dados do jogador
-      const processedPlayer = processPlayerData(playerResponse, mmrResponse);
-      setPlayerData(processedPlayer);
-
-      // Buscar partidas recentes
-      const matchesResponse = await HenrikDevAPI.getMatches(
-        name,
-        tag,
-        region,
-        "competitive",
-        5,
-      );
-
-      const processedMatches = matchesResponse
-        .map((match: HenrikDevMatch) => processMatchData(match, name))
-        .filter(Boolean) as MatchData[];
-
-      setMatches(processedMatches);
-
-      // Salvar dados no cache
-      const cacheData = {
-        player: playerResponse,
-        mmr: mmrResponse,
-        matches: matchesResponse,
-        region: region,
-      };
-
-      valorantCache.setPlayerData(name, tag, region, cacheData);
-      console.log("💾 Dados salvos no cache para:", name, tag);
-
-      // Marcar que os dados vieram da API (não do cache)
+  const handleRefresh = () => {
+    if (playerData) {
+      valorantCache.clearAllCache();
       setDataFromCache(false);
-    } catch (err: unknown) {
-      console.error("❌ Erro na busca:", err);
-      setError(err instanceof Error ? err.message : "Erro ao buscar jogador");
-    } finally {
-      setLoading(false);
+      performSearch(playerData.name, playerData.tag, region);
     }
   };
 
-  const getResultColor = (result: string) => {
-    switch (result) {
-      case "win":
-        return styles.win;
-      case "loss":
-        return styles.loss;
-      default:
-        return styles.draw;
-    }
-  };
-
-  const getResultEmoji = (result: string) => {
-    switch (result) {
-      case "win":
-        return "✅";
-      case "loss":
-        return "❌";
-      default:
-        return "🤝";
-    }
-  };
-
-  // Calcula o ADR (Average Damage per Round)
-  const calculateADR = (damage: number, rounds: number): number => {
-    return Math.round(damage / Math.max(rounds, 1));
-  };
-
-  // Calcula o ADS (Average Deaths per Round)
-  const calculateADS = (deaths: number, rounds: number): number => {
-    return Number((deaths / Math.max(rounds, 1)).toFixed(2));
-  };
-
-  // Calcula o ACS (Average Combat Score)
-  const calculateACS = (
-    damage: number,
-    kills: number,
-    rounds: number,
-  ): number => {
-    // Fórmula aproximada do ACS:
-    // (Dano total / Rounds) + (50 * Kills / Rounds)
-    const damagePerRound = damage / Math.max(rounds, 1);
-    const killScore = (50 * kills) / Math.max(rounds, 1);
-    return Math.round(damagePerRound + killScore);
+  const handleClearCache = () => {
+    valorantCache.clearAllCache();
+    // Potentially trigger a visual feedback
   };
 
   return (
-    <div className={styles.container}>
-      <div className={styles.header}>
-        <h1>🔍 Buscar Jogador</h1>
-        <p>Encontre estatísticas detalhadas de qualquer jogador do Valorant</p>
-      </div>
-
-      {/* Search Form */}
-      <div className={styles.searchForm}>
-        <div className={styles.inputGroup}>
-          <input
-            type="text"
-            placeholder="Nome#TAG (ex: TenZ#1337)"
-            value={searchInput}
-            onChange={(e) => setSearchInput(e.target.value)}
-            className={styles.searchInput}
-            onKeyPress={(e) => e.key === "Enter" && handleSearch()}
-          />
-          <select
-            value={region}
-            onChange={(e) => setRegion(e.target.value)}
-            className={styles.regionSelect}
+    <div className="min-h-screen bg-[#0f1419] text-white pb-20">
+      <AnimatePresence mode="wait">
+        {!playerData ? (
+          <motion.div
+            key="search-hero"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.4, ease: "easeOut" }}
+            className="pt-20"
           >
-            <option value="na">América do Norte</option>
-            <option value="eu">Europa</option>
-            <option value="ap">Ásia-Pacífico</option>
-            <option value="kr">Coreia</option>
-            <option value="br">Brasil</option>
-            <option value="latam">América Latina</option>
-          </select>
-          <button
-            onClick={handleSearch}
-            disabled={loading || !searchInput.trim()}
-            className={styles.searchButton}
-          >
-            {loading ? "🔍 Buscando..." : "🔍 Buscar"}
-          </button>
-        </div>
-      </div>
-
-      {/* Error Message */}
-      {error && <div className={styles.error}>❌ {error}</div>}
-
-      {/* Cache Status */}
-      {playerData && (
-        <div className={styles.cacheStatus}>
-          {dataFromCache ? (
-            <div className={styles.cacheInfo}>
-              <span className={styles.cacheIcon}>📖</span>
-              <span>Dados carregados do cache</span>
-              <button
-                onClick={() => {
-                  if (playerData) {
-                    const [name, tag] = searchInput.split("#");
-                    if (name && tag) {
-                      // Limpar cache e buscar novamente
-                      valorantCache.clearAllCache();
-                      setDataFromCache(false);
-                      performSearch(name, tag, region);
-                    }
-                  }
-                }}
-                className={styles.refreshButton}
-              >
-                🔄 Atualizar
-              </button>
-            </div>
-          ) : (
-            <div className={styles.cacheInfo}>
-              <span className={styles.cacheIcon}>🌐</span>
-              <span>Dados carregados da API</span>
-              <button
-                onClick={() => valorantCache.clearAllCache()}
-                className={styles.clearCacheButton}
-              >
-                🧹 Limpar Cache
-              </button>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* Player Data */}
-      {playerData && (
-        <div className={styles.playerCard}>
-          <div className={styles.playerHeader}>
-            <Image
-              src={playerData.cardImage}
-              alt="Player Card"
-              width={300}
-              height={200}
-              className={styles.playerCardImage}
+            <SearchHero
+              searchInput={searchInput}
+              setSearchInput={setSearchInput}
+              region={region}
+              setRegion={setRegion}
+              handleSearch={handleSearch}
+              loading={loading}
             />
-            <div className={styles.playerInfo}>
-              <h2>
-                {playerData.name}#{playerData.tag}
-              </h2>
-              <p>Nível: {playerData.level}</p>
-              <p>Região: {region.toUpperCase()}</p>
-              <p>
-                Última atualização:{" "}
-                {playerData.lastUpdate.toLocaleDateString("pt-BR")}
-              </p>
-            </div>
-            <div className={styles.rankInfo}>
-              <Image
-                src={playerData.rankImage}
-                alt="Rank"
-                width={100}
-                height={100}
-                className={styles.rankImage}
-              />
-              <h3>{playerData.rank}</h3>
-              <p>ELO: {playerData.elo}</p>
-            </div>
-          </div>
-
-          {/* Tabs */}
-          <div className={styles.tabs}>
-            <button
-              className={`${styles.tab} ${activeTab === "overview" ? styles.active : ""}`}
-              onClick={() => setActiveTab("overview")}
-            >
-              Geral
-            </button>
-            <button
-              className={`${styles.tab} ${activeTab === "matches" ? styles.active : ""}`}
-              onClick={() => setActiveTab("matches")}
-            >
-              Partidas
-            </button>
-            <button
-              className={`${styles.tab} ${activeTab === "stats" ? styles.active : ""}`}
-              onClick={() => setActiveTab("stats")}
-            >
-              Estatísticas
-            </button>
-          </div>
-
-          {/* Tab Content */}
-          <div className={styles.tabContent}>
-            {activeTab === "overview" && (
-              <div className={styles.overview}>
-                <div className={styles.statsGrid}>
-                  <div className={styles.statCard}>
-                    <h4>Rank Atual</h4>
-                    <p>{playerData.rank}</p>
-                  </div>
-                  <div className={styles.statCard}>
-                    <h4>ELO</h4>
-                    <p>{playerData.elo}</p>
-                  </div>
-                  <div className={styles.statCard}>
-                    <h4>Nível da Conta</h4>
-                    <p>{playerData.level}</p>
-                  </div>
-                  <div className={styles.statCard}>
-                    <h4>Região</h4>
-                    <p>{region.toUpperCase()}</p>
-                  </div>
+            {error && (
+              <div className="max-w-2xl mx-auto px-4 mt-4">
+                <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 font-bold text-sm">
+                  ❌ {error}
                 </div>
               </div>
             )}
+          </motion.div>
+        ) : (
+          <motion.div
+            key="player-dashboard"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="max-w-5xl mx-auto px-6 pt-12 space-y-10"
+          >
+            {/* Minimal Search Bar for quick searches when already on profile */}
+            <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+               <div className="flex-1 w-full max-w-md">
+                 <div className="relative group">
+                    <input
+                      type="text"
+                      placeholder="Search another player..."
+                      value={searchInput}
+                      onChange={(e) => setSearchInput(e.target.value)}
+                      onKeyPress={(e) => e.key === "Enter" && handleSearch()}
+                      className="w-full h-10 px-4 rounded-full border border-zinc-800 bg-zinc-900 focus:outline-none focus:ring-2 focus:ring-zinc-700 transition-all text-sm text-white"
+                    />
+                    <button 
+                      onClick={handleSearch}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-white transition-colors"
+                    >
+                      🔍
+                    </button>
+                 </div>
+               </div>
+               <CacheStatus 
+                 dataFromCache={dataFromCache}
+                 onRefresh={handleRefresh}
+                 onClearCache={handleClearCache}
+               />
+            </div>
 
-            {activeTab === "matches" && (
-              <div className={styles.matches}>
-                {matches.length === 0 ? (
-                  <div className={styles.noMatches}>
-                    <p>
-                      🎮 Nenhuma partida competitiva encontrada recentemente.
-                    </p>
-                    <p className={styles.noMatchesSub}>
-                      O jogador pode não ter jogado partidas competitivas nas
-                      últimas 5 partidas.
-                    </p>
-                  </div>
-                ) : (
-                  <>
-                    <div className={styles.matchesHeader}>
-                      <h3>📊 Últimas {matches.length} Partidas</h3>
-                      <div className={styles.matchesSummary}>
-                        <span className={styles.winCount}>
-                          ✅ Vitórias:{" "}
-                          {matches.filter((m) => m.result === "win").length}
-                        </span>
-                        <span className={styles.lossCount}>
-                          ❌ Derrotas:{" "}
-                          {matches.filter((m) => m.result === "loss").length}
-                        </span>
+            <PlayerStatsCard playerData={playerData} region={region} />
+
+            <div className="space-y-6">
+              <Tabs activeTab={activeTab} setActiveTab={setActiveTab} />
+              
+              <div className="min-h-[400px]">
+                {activeTab === "overview" && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+                  >
+                    {[
+                      { label: "Rank", value: playerData.rank },
+                      { label: "Elo", value: playerData.elo },
+                      { label: "Level", value: playerData.level },
+                      { label: "Region", value: region.toUpperCase() },
+                    ].map((stat, i) => (
+                      <div key={i} className="p-6 rounded-2xl border border-zinc-800/50 bg-zinc-950/40">
+                        <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 mb-2">{stat.label}</p>
+                        <p className="text-xl font-bold">{stat.value}</p>
                       </div>
-                    </div>
+                    ))}
+                  </motion.div>
+                )}
 
-                    {/* SEÇÃO DE PARTIDAS*/}
-                    <div className={styles.matchesTable}>
-                      <table>
-                        <tbody className={styles.matchesTableBody}>
-                          {matches.map((match, index) => (
-                            <tr
-                              key={match.id}
-                              onClick={() => {
-                                // Navegar para a API externa do HenrikDev com contexto do player
-                                if (playerData) {
-                                  const playerName = `${playerData.name}#${playerData.tag}`;
-                                  // Navegar para a página de match com contexto do player
-                                  window.location.href = `/match/${match.id}?region=${region}&player=${encodeURIComponent(playerName)}`;
-                                }
-                              }}
-                              className={`${styles.matchTableRow} ${match.result === "win" ? styles.win : styles.loss}`}
-                              style={{ cursor: "pointer" }}
-                            >
-                              <td className={styles.matchInfo}>
-                                <div className="flex flex-row items-center gap-4">
-                                  <div className={styles.agent}>
-                                    <Image
-                                      src={`/agents/${match.agent.toLowerCase().replace(" ", "-").replace("/", "-")}.png`}
-                                      alt={match.agent}
-                                      width={60}
-                                      height={60}
-                                      className={styles.agentImage}
-                                    />
-                                  </div>
-                                  <div className={styles.matchDate}>
-                                    <span
-                                      className={`${styles.map} ${match.result === "win" ? styles.winBg : styles.lossBg}`}
-                                    >
-                                      <p>{match.map}</p>
-                                    </span>
-                                  </div>
-                                  <div className="flex flex-row items-center justify-center gap-2">
-                                    <div className="size-10">
-                                      <Image
-                                        src={playerData.rankImage}
-                                        alt="Rank"
-                                        width={40}
-                                        height={40}
-                                        className={`object-contain`}
-                                      />
-                                    </div>
-                                    <div>
-                                      <span className={styles.score}>
-                                        {match.score}
-                                      </span>
-                                    </div>
-                                  </div>
-                                </div>
-                              </td>
-                              <td className={styles.kdaRow}>
-                                <div className={styles.columnHeader}>K/D/A</div>
-                                <p className={styles.kdaValue}>
-                                  {match.kills}/{match.deaths}/{match.assists}
-                                </p>
-                              </td>
-                              <td className={styles.headshotsRow}>
-                                <div className={styles.columnHeader}>HS%</div>
-                                <div className="flex flex-row gap-2 font-bold text-white shadow-md">
-                                  {match.headshots}
-                                  <p className={styles.headshotsPercent}>
-                                    (
-                                    {(
-                                      (match.headshots /
-                                        Math.max(match.kills, 1)) *
-                                      100
-                                    ).toFixed(0)}
-                                    %)
-                                  </p>
-                                </div>
-                              </td>
-                              <td className={styles.damageRow}>
-                                <div className={styles.columnHeader}>
-                                  DAMAGE
-                                </div>
-                                <p className={styles.damageValue}>
-                                  {match.damage.toLocaleString()}
-                                </p>
-                              </td>
-                              <td className={styles.adrRow}>
-                                <div className={styles.columnHeader}>ADR</div>
-                                <p className={styles.adValue}>
-                                  {calculateADR(
-                                    match.damage,
-                                    match.rounds_played,
-                                  )}
-                                </p>
-                              </td>
-                              <td className={styles.acsRow}>
-                                <div className={styles.columnHeader}>ACS</div>
-                                <p className={styles.adValue}>
-                                  {calculateACS(
-                                    match.damage,
-                                    match.kills,
-                                    match.rounds_played,
-                                  )}
-                                </p>
-                              </td>
-                              <td className={styles.dateRow}>
-                                <div className={styles.columnHeader}>Data</div>
-                                <p className={styles.dateValue}>
-                                  {match.date.toLocaleDateString("pt-BR")}
-                                </p>
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
+                {activeTab === "matches" && (
+                  <MatchHistoryList
+                    matches={matches}
+                    playerData={playerData}
+                    region={region}
+                  />
+                )}
+
+                {activeTab === "stats" && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="flex flex-col items-center justify-center py-20 text-center space-y-4"
+                  >
+                    <span className="text-4xl opacity-20 grayscale">📈</span>
+                    <div className="space-y-1">
+                       <h3 className="text-lg font-bold">Detailed Stats</h3>
+                       <p className="text-zinc-500">Coming soon to the ascension dashboard.</p>
                     </div>
-                  </>
+                  </motion.div>
                 )}
               </div>
-            )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-            {activeTab === "stats" && (
-              <div className={styles.stats}>
-                <p>Estatísticas detalhadas em desenvolvimento...</p>
-                <p>Esta funcionalidade será implementada em breve!</p>
-              </div>
-            )}
-          </div>
+      {loading && (
+        <div className="fixed inset-0 bg-[#0f1419]/90 backdrop-blur-sm z-50 flex flex-col items-center justify-center space-y-4">
+          <LoadingSpinner />
+          <p className="text-sm font-bold uppercase tracking-widest text-zinc-500 animate-pulse">Loading Data...</p>
         </div>
       )}
     </div>
