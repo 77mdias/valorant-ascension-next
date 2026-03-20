@@ -12,6 +12,7 @@ interface PlayerStatsCalculated {
   kdDiff: number;
   hsPercentage: number;
   adr: number;
+  acs: number;
   totalShots: number;
 }
 
@@ -69,12 +70,16 @@ export function useMatchStats(matchDetails: MatchDetails | null): UseMatchStatsR
     const adr = matchDetails?.rounds?.length
       ? Math.round(player.stats.damage.dealt / matchDetails.rounds.length)
       : 0;
+    const acs = matchDetails?.rounds?.length
+      ? Math.round(player.stats.score / matchDetails.rounds.length)
+      : 0;
 
     return {
       kd: kd.toFixed(1),
       kdDiff,
       hsPercentage,
       adr,
+      acs,
       totalShots,
     };
   };

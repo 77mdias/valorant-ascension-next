@@ -19,12 +19,14 @@ interface ScoreboardTabProps {
   matchDetails: MatchDetails;
   region: string;
   winnerTeamId: "Red" | "Blue";
+  playerContext?: string | null;
 }
 
 export default function ScoreboardTab({
   matchDetails,
   region,
   winnerTeamId,
+  playerContext,
 }: ScoreboardTabProps) {
   const {
     sortBy,
@@ -43,6 +45,10 @@ export default function ScoreboardTab({
 
   const { fkAndFD, mk, calculatePlayerStats } = useMatchStats(matchDetails);
 
+  const searchedPlayerPuuid = playerContext 
+    ? matchDetails.players.find(p => `${p.name}#${p.tag}`.toLowerCase() === playerContext.toLowerCase())?.puuid 
+    : undefined;
+
   const handlePlayerClick = (playerName: string, playerTag: string) => {
     const encodedName = encodeURIComponent(playerName);
     const encodedTag = encodeURIComponent(playerTag);
@@ -50,53 +56,59 @@ export default function ScoreboardTab({
   };
 
   return (
-    <div>
+    <div className="flex flex-col gap-6 py-4">
       <RoundHistory rounds={matchDetails.rounds || []} />
 
-      <ViewControls tableView={tableView} onViewChange={setTableView} />
-
-      <SortControls
-        sortBy={sortBy}
-        sortOrder={sortOrder}
-        onSortByChange={setSortBy}
-        onToggleSortOrder={toggleSortOrder}
-      />
-
-      {tableView === "total" ? (
-        <ScoreboardTable
-          players={sortedPlayers}
-          onPlayerClick={handlePlayerClick}
-          calculatePlayerStats={calculatePlayerStats}
-          fkAndFD={fkAndFD}
-          mk={mk}
-          winnerTeamId={winnerTeamId}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <ViewControls tableView={tableView} onViewChange={setTableView} />
+        <SortControls
+          sortBy={sortBy}
+          sortOrder={sortOrder}
+          onSortByChange={setSortBy}
+          onToggleSortOrder={toggleSortOrder}
         />
-      ) : (
-        <>
-          <TeamScoreboard
-            team="Red"
-            teamName="Time A"
-            players={redTeam}
-            teamScore={redTeamScore}
-            won={redTeamWon}
+      </div>
+
+      <div className="mt-4">
+        {tableView === "total" ? (
+          <ScoreboardTable
+            players={sortedPlayers}
             onPlayerClick={handlePlayerClick}
             calculatePlayerStats={calculatePlayerStats}
             fkAndFD={fkAndFD}
             mk={mk}
+            winnerTeamId={winnerTeamId}
+            searchedPlayerPuuid={searchedPlayerPuuid}
           />
-          <TeamScoreboard
-            team="Blue"
-            teamName="Time B"
-            players={blueTeam}
-            teamScore={blueTeamScore}
-            won={!redTeamWon}
-            onPlayerClick={handlePlayerClick}
-            calculatePlayerStats={calculatePlayerStats}
-            fkAndFD={fkAndFD}
-            mk={mk}
-          />
-        </>
-      )}
+        ) : (
+          <div className="flex flex-col gap-8">
+            <TeamScoreboard
+              team="Red"
+              teamName="Time A"
+              players={redTeam}
+              teamScore={redTeamScore}
+              won={redTeamWon}
+              onPlayerClick={handlePlayerClick}
+              calculatePlayerStats={calculatePlayerStats}
+              fkAndFD={fkAndFD}
+              mk={mk}
+              searchedPlayerPuuid={searchedPlayerPuuid}
+            />
+            <TeamScoreboard
+              team="Blue"
+              teamName="Time B"
+              players={blueTeam}
+              teamScore={blueTeamScore}
+              won={!redTeamWon}
+              onPlayerClick={handlePlayerClick}
+              calculatePlayerStats={calculatePlayerStats}
+              fkAndFD={fkAndFD}
+              mk={mk}
+              searchedPlayerPuuid={searchedPlayerPuuid}
+            />
+          </div>
+        )}
+      </div>
     </div>
   );
 }

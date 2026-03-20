@@ -1,163 +1,137 @@
 .roundHistory {
-  background: linear-gradient(135deg, rgba(18, 22, 32, 0.9), rgba(14, 16, 26, 0.95));
-  border-radius: 18px;
-  padding: 1.5rem;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
-  margin-bottom: 1.5rem;
-  --cell-size: clamp(34px, 3vw, 44px);
-  --cell-gap: clamp(6px, 1.2vw, 10px);
+  padding: 1rem;
+  background: #0d1117;
+  border: 1px solid #1a2030;
+  border-radius: 10px;
 }
 
 .roundHistoryHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: 1rem;
-  flex-wrap: wrap;
-
-  h4 {
-    font-size: 1.15rem;
-    font-weight: 800;
-    color: white;
-    margin: 0;
-  }
+  margin-bottom: 0.75rem;
 }
 
 .eyebrow {
-  font-size: 0.8rem;
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: rgba(255, 255, 255, 0.55);
-  margin: 0 0 0.25rem 0;
+  color: #555;
+  margin-bottom: 0.25rem;
 }
 
 .titleRow {
   display: flex;
-  align-items: baseline;
-  gap: 0.75rem;
-  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+
+  h4 {
+    font-size: 0.9375rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0;
+  }
 }
 
 .roundCount {
-  padding: 0.25rem 0.75rem;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.06);
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 0.9rem;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 0.75rem;
+  color: #555;
+  background: #131920;
+  border: 1px solid #1a2030;
+  border-radius: 20px;
+  padding: 0.1rem 0.5rem;
 }
 
 .legend {
-  display: grid;
-  grid-auto-flow: column;
-  gap: 0.5rem;
-  align-items: center;
-  color: rgba(255, 255, 255, 0.75);
-  font-size: 0.95rem;
-  background: rgba(255, 255, 255, 0.02);
-  padding: 0.5rem 0.75rem;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-
-  .legendDot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    display: inline-flex;
-  }
-
-  .win {
-    background: #4ade80;
-    box-shadow: 0 0 0 4px rgba(74, 222, 128, 0.12);
-  }
-
-  .loss {
-    background: #ec176b;
-    box-shadow: 0 0 0 4px rgba(236, 23, 107, 0.12);
-  }
-}
-
-.roundHistoryGrid {
-  display: grid;
-  gap: 0.85rem;
-}
-
-.roundHistoryRow {
-  display: grid;
-  grid-template-columns: 110px 1fr;
-  align-items: center;
-  gap: 0.75rem;
-
-  @media (max-width: 720px) {
-    grid-template-columns: 80px 1fr;
-  }
-}
-
-.teamLabel {
-  color: rgba(255, 255, 255, 0.75);
-  font-weight: 700;
-  font-size: 0.95rem;
-}
-
-.roundIconsContainer,
-.roundNumbersContainer {
-  display: grid;
-  gap: var(--cell-gap);
-  grid-template-columns: repeat(auto-fit, minmax(var(--cell-size), 1fr));
-  align-items: center;
-}
-
-.roundIcon {
-  width: var(--cell-size);
-  height: var(--cell-size);
   display: flex;
   align-items: center;
-  justify-content: center;
-  border-radius: 10px;
-  font-size: 0.9rem;
-  font-weight: 700;
-  transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
-  border: 1px solid transparent;
-  color: #0f131b;
+  gap: 0.4rem;
+  font-size: 0.75rem;
+  color: #666;
+  margin-bottom: 1rem;
+}
+
+.legendDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
 
   &.win {
-    background: rgba(74, 222, 128, 0.16);
-    border-color: rgba(74, 222, 128, 0.35);
-    color: #c9f7d8;
+    background: #4ade80;
   }
 
   &.loss {
-    background: rgba(236, 23, 107, 0.16);
-    border-color: rgba(236, 23, 107, 0.35);
-    color: #ffd3e4;
-  }
-
-  &:hover {
-    transform: translateY(-1px);
+    background: #f87171;
   }
 }
 
-.roundNumber {
-  width: var(--cell-size);
-  height: var(--cell-size);
+.half {
+  margin-bottom: 1rem;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.halfHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.halfLabel {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #555;
+}
+
+.halfScore {
+  display: flex;
+  align-items: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.teamA {
+  color: #4ade80;
+}
+
+.teamB {
+  color: #f87171;
+}
+
+.divider {
+  color: #333;
+}
+
+.circles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.circle {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: rgba(255, 255, 255, 0.45);
-  font-size: 0.85rem;
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-}
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1;
 
-@media (min-width: 1100px) {
-  .roundHistory {
-    padding: 1.75rem;
+  &.win {
+    background: rgba(74, 222, 128, 0.15);
+    color: #4ade80;
+    border: 1px solid rgba(74, 222, 128, 0.35);
   }
 
-  .roundHistoryRow {
-    grid-template-columns: 120px 1fr;
+  &.loss {
+    background: rgba(248, 113, 113, 0.12);
+    color: #f87171;
+    border: 1px solid rgba(248, 113, 113, 0.28);
   }
 }

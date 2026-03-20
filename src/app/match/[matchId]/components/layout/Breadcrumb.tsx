@@ -30,7 +30,7 @@ export default function Breadcrumb({ playerContext, region }: BreadcrumbProps) {
               window.location.href = `/mmr?name=${encodeURIComponent(name)}&tag=${encodeURIComponent(tag)}&region=${region}`;
             }
           }}
-          className={styles.backButton}
+          className={styles.playerButton}
         >
           {playerContext}
         </button>

@@ -103,6 +103,7 @@ export default function MatchDetailsPage() {
               matchDetails={matchDetails}
               region={region}
               winnerTeamId={winnerTeamId}
+              playerContext={playerContext}
             />
           )}
 

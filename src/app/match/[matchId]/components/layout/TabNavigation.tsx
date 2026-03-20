@@ -46,6 +46,7 @@ export default function TabNavigation({
           aria-selected={activeTab === tab.id}
           onClick={() => !tab.disabled && onTabChange(tab.id)}
           disabled={tab.disabled}
+          title={tab.disabled ? "Em breve" : undefined}
         >
           {tab.label}
         </button>

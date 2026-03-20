@@ -1,10 +1,9 @@
 /**
- * ViewControls component
- * Toggle between total scoreboard and team-separated view
+ * ViewControls component - Minimalist Style
+ * Toggle between total scoreboard and team-separated view using TailwindCSS
  */
 
 import type { TableView } from "../../types/match.types";
-import styles from "./ViewControls.module.scss";
 
 interface ViewControlsProps {
   tableView: TableView;
@@ -16,39 +15,32 @@ export default function ViewControls({
   onViewChange,
 }: ViewControlsProps) {
   return (
-    <div className={styles.viewControls}>
-      <div className={styles.labelBlock}>
-        <p className={styles.eyebrow}>Visualização</p>
-        <p className={styles.helper}>
-          Altere entre a visão geral consolidada ou separe por times.
-        </p>
+    <div className="flex flex-col gap-3 p-3 sm:p-5 rounded-xl bg-zinc-950/40 border border-zinc-800/50 backdrop-blur-sm">
+      <div className="flex flex-col">
+        <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">Visualização</p>
+        <p className="text-xs text-zinc-400 mt-1 hidden sm:block">Altere entre visão geral ou por times.</p>
       </div>
-      <div
-        className={styles.viewToggle}
-        role="group"
-        aria-label="Seleção de visualização do placar"
-      >
+
+      <div className="flex gap-0 border-b border-[#1a2030]">
         <button
-          className={`${styles.viewButton} ${tableView === "total" ? styles.active : ""}`}
+          className={`flex-1 flex items-center justify-center px-4 py-2 border-b-2 transition-all duration-200 text-xs font-medium ${
+            tableView === "total"
+              ? "border-[#ec176b] -mb-px text-white font-bold"
+              : "border-transparent text-zinc-500 hover:text-zinc-300"
+          }`}
           onClick={() => onViewChange("total")}
-          aria-pressed={tableView === "total"}
         >
-          <span className={styles.viewIcon}>📊</span>
-          <span className={styles.buttonLabel}>
-            Scoreboard Geral
-            <small>Todos os jogadores juntos</small>
-          </span>
+          <span>Geral</span>
         </button>
         <button
-          className={`${styles.viewButton} ${tableView === "teams" ? styles.active : ""}`}
+          className={`flex-1 flex items-center justify-center px-4 py-2 border-b-2 transition-all duration-200 text-xs font-medium ${
+            tableView === "teams"
+              ? "border-[#ec176b] -mb-px text-white font-bold"
+              : "border-transparent text-zinc-500 hover:text-zinc-300"
+          }`}
           onClick={() => onViewChange("teams")}
-          aria-pressed={tableView === "teams"}
         >
-          <span className={styles.viewIcon}>🏆</span>
-          <span className={styles.buttonLabel}>
-            Por Times
-            <small>Comparação lado a lado</small>
-          </span>
+          <span>Times</span>
         </button>
       </div>
     </div>

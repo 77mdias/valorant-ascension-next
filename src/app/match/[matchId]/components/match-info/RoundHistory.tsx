@@ -11,80 +11,66 @@ interface RoundHistoryProps {
 }
 
 export default function RoundHistory({ rounds }: RoundHistoryProps) {
-  const totalRounds = rounds.length;
+  const firstHalf = rounds.slice(0, 12);
+  const secondHalf = rounds.slice(12, 24);
+  const overtime = rounds.slice(24);
+
+  const countWins = (halfRounds: Round[], team: "Red" | "Blue") =>
+    halfRounds.filter((r) => r?.winning_team === team).length;
+
+  const renderHalf = (halfRounds: Round[], startIndex: number, label: string) => {
+    const redWins = countWins(halfRounds, "Red");
+    const blueWins = countWins(halfRounds, "Blue");
+
+    return (
+      <div className={styles.half} key={label}>
+        <div className={styles.halfHeader}>
+          <span className={styles.halfLabel}>{label}</span>
+          <span className={styles.halfScore}>
+            <span className={styles.teamA}>TA: {redWins}</span>
+            <span className={styles.divider}> · </span>
+            <span className={styles.teamB}>TB: {blueWins}</span>
+          </span>
+        </div>
+        <div className={styles.circles}>
+          {halfRounds.map((round, i) => {
+            const roundNum = startIndex + i + 1;
+            const isRedWin = round?.winning_team === "Red";
+            return (
+              <div
+                key={i}
+                className={`${styles.circle} ${isRedWin ? styles.win : styles.loss}`}
+                aria-label={`Round ${roundNum}: ${isRedWin ? "Time A venceu" : "Time B venceu"}`}
+              >
+                {roundNum}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  };
 
   return (
-    <section
-      className={styles.roundHistory}
-      aria-label="Histórico de rounds entre os times"
-    >
+    <section className={styles.roundHistory} aria-label="Histórico de rounds">
       <div className={styles.roundHistoryHeader}>
-        <div>
-          <p className={styles.eyebrow}>Progressão</p>
-          <div className={styles.titleRow}>
-            <h4>Histórico de Rounds</h4>
-            <span className={styles.roundCount}>{totalRounds} rounds</span>
-          </div>
-        </div>
-        <div className={styles.legend} aria-hidden="true">
-          <span className={`${styles.legendDot} ${styles.win}`} />
-          <span>Vitória</span>
-          <span className={`${styles.legendDot} ${styles.loss}`} />
-          <span>Derrota</span>
+        <p className={styles.eyebrow}>Progressão</p>
+        <div className={styles.titleRow}>
+          <h4>Histórico de Rounds</h4>
+          <span className={styles.roundCount}>{rounds.length} rounds</span>
         </div>
       </div>
 
-      <div className={styles.roundHistoryGrid}>
-        {/* Team A Row */}
-        <div className={styles.roundHistoryRow}>
-          <div className={styles.teamLabel}>Time A</div>
-          <div className={styles.roundIconsContainer}>
-            {rounds.map((round, i) => {
-              const isWin = round?.winning_team === "Red";
-              return (
-                <div
-                  key={i}
-                  className={`${styles.roundIcon} ${isWin ? styles.win : styles.loss}`}
-                  aria-label={`Round ${i + 1}: ${isWin ? "Vitória" : "Derrota"}`}
-                >
-                  {isWin ? "✓" : "✗"}
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Round Numbers Row */}
-        <div className={styles.roundHistoryRow} aria-hidden="true">
-          <div className={styles.teamLabel}></div>
-          <div className={styles.roundNumbersContainer}>
-            {rounds.map((_, i) => (
-              <span key={i} className={styles.roundNumber}>
-                {i + 1}
-              </span>
-            ))}
-          </div>
-        </div>
-
-        {/* Team B Row */}
-        <div className={styles.roundHistoryRow}>
-          <div className={styles.teamLabel}>Time B</div>
-          <div className={styles.roundIconsContainer}>
-            {rounds.map((round, i) => {
-              const isWin = round?.winning_team === "Blue";
-              return (
-                <div
-                  key={i}
-                  className={`${styles.roundIcon} ${isWin ? styles.win : styles.loss}`}
-                  aria-label={`Round ${i + 1}: ${isWin ? "Vitória" : "Derrota"}`}
-                >
-                  {isWin ? "✓" : "✗"}
-                </div>
-              );
-            })}
-          </div>
-        </div>
+      <div className={styles.legend} aria-hidden="true">
+        <span className={`${styles.legendDot} ${styles.win}`} />
+        <span>Time A</span>
+        <span className={`${styles.legendDot} ${styles.loss}`} />
+        <span>Time B</span>
       </div>
+
+      {firstHalf.length > 0 && renderHalf(firstHalf, 0, "1ª Metade")}
+      {secondHalf.length > 0 && renderHalf(secondHalf, 12, "2ª Metade")}
+      {overtime.length > 0 && renderHalf(overtime, 24, "OT")}
     </section>
   );
 }
