@@ -39,3 +39,14 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# tools / local dev
+.claude/
+.playwright-mcp/
+.serena/
+.superpowers/
+
+# screenshots temporários
+*.png
+*.jpg
+*.jpeg
