@@ -42,11 +42,7 @@ export default function MatchDetailsPage() {
 
   // Loading state
   if (loading) {
-    return (
-      <div className={styles.container}>
-        <LoadingState />
-      </div>
-    );
+    return <LoadingState />;
   }
 
   // Error state
