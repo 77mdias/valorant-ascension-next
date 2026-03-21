@@ -3,9 +3,9 @@
 > **Como usar:** Este arquivo documenta todas as tarefas da fase v0.2.0. Atualize o status de cada tarefa conforme o progresso e mantenha a tabela de resumo sincronizada.
 
 **Status:** 🟡 EM ANDAMENTO
-**Última atualização:** 2026-01-16
+**Última atualização:** 2026-03-20
 **Sprint Atual:** Novembro-Dezembro 2025
-**Status Geral:** 🟡 25% concluído (8/32 tarefas completas) – FASE ATIVA
+**Status Geral:** 🟡 28% concluído (9/32 tarefas completas) – FASE ATIVA
 **ETA:** 2025-12-01
 **Pré-requisito:** v0.1.0 - MVP (✅ Concluído)
 
@@ -16,11 +16,11 @@
 | Categoria                  | Total  | Concluído | Em Andamento | Pendente | Bloqueado |
 | -------------------------- | ------ | --------- | ------------ | -------- | --------- |
 | Sistema de Vídeos Avançado | 7      | 7         | 0            | 0        | 0         |
-| Dashboard de Progresso     | 7      | 1         | 0            | 6        | 0         |
+| Dashboard de Progresso     | 7      | 2         | 0            | 5        | 0         |
 | Sistema de Conquistas      | 6      | 0         | 0            | 6        | 0         |
 | Busca e Filtros            | 6      | 0         | 0            | 6        | 0         |
 | Sistema de Comentários     | 6      | 0         | 0            | 6        | 0         |
-| **TOTAL**                  | **32** | **8**     | **0**        | **24**   | **0**     |
+| **TOTAL**                  | **32** | **9**     | **0**        | **23**   | **0**     |
 
 ### 🎯 Principais Indicadores
 
@@ -446,7 +446,7 @@ Criar uma área dedicada onde alunos (role: CUSTOMER) possam visualizar sua evol
 
 ---
 
-- [ ] **PRG-002** - Gráfico de tempo de estudo
+- [x] **PRG-002** - Gráfico de tempo de estudo ✅
 
   **Descrição curta:**
   - Gráfico de linhas/barras mostrando horas estudadas por dia/semana/mês
@@ -466,16 +466,23 @@ Criar uma área dedicada onde alunos (role: CUSTOMER) possam visualizar sua evol
   - `package.json` (adicionar recharts)
 
   **Critérios de aceitação:**
-  - [ ] Gráfico renderiza corretamente em todos os períodos
-  - [ ] Dados agregados corretamente (sem duplicação)
-  - [ ] Tooltip exibe informações detalhadas ao hover
-  - [ ] Responsivo: adapta-se a diferentes tamanhos de tela
-  - [ ] Sem erros de hidratação (SSR/CSR)
+  - [x] Gráfico renderiza corretamente em todos os períodos
+  - [x] Dados agregados corretamente (sem duplicação)
+  - [x] Tooltip exibe informações detalhadas ao hover
+  - [x] Responsivo: adapta-se a diferentes tamanhos de tela
+  - [x] Sem erros de hidratação (SSR/CSR)
 
   **Prioridade:** 🟡 Alta
   **Estimativa:** 5h
   **Dependências:** PRG-001
-  **Status:** 🔴 Pendente
+  **Status:** 🟢 Concluído (2026-03-20) ✅
+
+  **Notas de validação (2026-03-20):**
+  - Action server-side `getStudyTimeStats(userId, period)` e agregação multi-período `getStudyTimeStatsByPeriods` adicionadas em `src/server/progressActions.ts`.
+  - Nova camada de agregação (`src/lib/studyTimeAggregation.ts`) com buckets diários, semanais e mensais para `7d`, `30d`, `3m` e `1y`.
+  - Card principal de gráfico em `/progresso` substituído por `StudyTimeChart` com filtros por tabs e carregamento client-side dinâmico.
+  - Tooltip e indicadores de total/média/pico exibindo minutos por período, com layout responsivo desktop/mobile.
+  - Métrica atual documentada como proxy por progresso consolidado (`lastPosition`/`progress`) agrupado por `updatedAt`.
 
 ---
 

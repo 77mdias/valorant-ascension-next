@@ -2,10 +2,13 @@ import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
 import { ArrowUpRight, Clock3, Sparkles } from "lucide-react";
 import { authOptions } from "@/lib/auth";
-import { getUserProgressDashboard } from "@/server/progressActions";
+import {
+  getStudyTimeStatsByPeriods,
+  getUserProgressDashboard,
+} from "@/server/progressActions";
 import { StatsCards } from "./components/StatsCards";
 import { LessonList } from "./components/LessonList";
-import { ProgressTimelineChartDynamic } from "./components/ProgressTimelineChartDynamic";
+import { StudyTimeChartDynamic } from "./components/StudyTimeChartDynamic";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default async function ProgressPage() {
@@ -15,7 +18,10 @@ export default async function ProgressPage() {
     redirect("/auth/signin?callbackUrl=/progresso");
   }
 
-  const dashboard = await getUserProgressDashboard(session.user.id);
+  const [dashboard, studyTimeStats] = await Promise.all([
+    getUserProgressDashboard(session.user.id),
+    getStudyTimeStatsByPeriods(session.user.id),
+  ]);
   const totalHours = dashboard.stats.totalWatchedSeconds / 3600;
 
   const lessonsInProgress = dashboard.lessons
@@ -75,16 +81,19 @@ export default async function ProgressPage() {
           <CardHeader className="flex flex-row items-center justify-between">
             <div>
               <CardTitle className="text-lg text-foreground">
-                Evolução recente
+                Tempo de estudo
               </CardTitle>
               <p className="text-sm text-muted-foreground">
-                Tempo estudado nos últimos 14 dias (minutos)
+                Ritmo diário, semanal e mensal com filtros de período
               </p>
             </div>
             <Sparkles className="h-5 w-5 text-primary" />
           </CardHeader>
           <CardContent>
-            <ProgressTimelineChartDynamic data={dashboard.timeline} />
+            <StudyTimeChartDynamic
+              statsByPeriod={studyTimeStats}
+              defaultPeriod="7d"
+            />
           </CardContent>
         </Card>
 

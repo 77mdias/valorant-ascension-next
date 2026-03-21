@@ -3,6 +3,12 @@
 import { db } from "@/lib/prisma";
 import { LESSON_COMPLETE_RATIO } from "@/schemas/lessonProgress";
 import {
+  buildStudyTimeStats,
+  STUDY_TIME_PERIODS,
+  type StudyTimePeriod,
+  type StudyTimeStats,
+} from "@/lib/studyTimeAggregation";
+import {
   calculateStreaks,
   type DailyStudyRecord,
 } from "@/lib/streakCalculator";
@@ -28,6 +34,35 @@ const watchedSecondsFromProgress = (options: {
   const ratioBased = safeDuration * clamp01(options.progress ?? 0);
 
   return Math.max(positionBased, ratioBased, 0);
+};
+
+type StudyProgressRecord = {
+  updatedAt: Date;
+  lastPosition: number | null;
+  totalDuration: number | null;
+  progress: number | null;
+  lesson?: {
+    duration: number | null;
+  } | null;
+};
+
+const buildDailyRecords = (records: StudyProgressRecord[]) => {
+  const dailyRecords: DailyStudyRecord[] = [];
+  let totalWatchedSeconds = 0;
+
+  for (const record of records) {
+    const watchedSeconds = watchedSecondsFromProgress({
+      lastPosition: record.lastPosition,
+      totalDuration: record.totalDuration,
+      lessonDuration: record.lesson?.duration,
+      progress: record.progress,
+    });
+
+    totalWatchedSeconds += watchedSeconds;
+    dailyRecords.push({ date: record.updatedAt, seconds: watchedSeconds });
+  }
+
+  return { dailyRecords, totalWatchedSeconds };
 };
 
 const buildTimeline = (records: DailyStudyRecord[], days: number) => {
@@ -100,6 +135,48 @@ export type ProgressDashboardData = {
   } | null;
 };
 
+export type { StudyTimePeriod, StudyTimeStats };
+
+export type StudyTimeStatsByPeriod = Record<StudyTimePeriod, StudyTimeStats>;
+
+const getStudyProgressRecords = (userId: string) =>
+  db.lessonProgress.findMany({
+    where: { userId },
+    include: {
+      lesson: {
+        select: {
+          duration: true,
+        },
+      },
+    },
+    orderBy: { updatedAt: "desc" },
+  });
+
+export async function getStudyTimeStats(
+  userId: string,
+  period: StudyTimePeriod,
+): Promise<StudyTimeStats> {
+  const progressRecords = await getStudyProgressRecords(userId);
+  const { dailyRecords } = buildDailyRecords(progressRecords);
+
+  return buildStudyTimeStats(dailyRecords, period);
+}
+
+export async function getStudyTimeStatsByPeriods(
+  userId: string,
+): Promise<StudyTimeStatsByPeriod> {
+  const progressRecords = await getStudyProgressRecords(userId);
+  const { dailyRecords } = buildDailyRecords(progressRecords);
+
+  return STUDY_TIME_PERIODS.reduce(
+    (accumulator, period) => {
+      accumulator[period] = buildStudyTimeStats(dailyRecords, period);
+      return accumulator;
+    },
+    {} as StudyTimeStatsByPeriod,
+  );
+}
+
 export async function getUserProgressDashboard(
   userId: string,
 ): Promise<ProgressDashboardData> {
@@ -142,20 +219,9 @@ export async function getUserProgressDashboard(
     (record) => !record.completed && record.progress > 0,
   ).length;
 
-  const dailyRecords: DailyStudyRecord[] = [];
-  let totalWatchedSeconds = 0;
-
-  for (const record of progressRecords) {
-    const watchedSeconds = watchedSecondsFromProgress({
-      lastPosition: record.lastPosition,
-      totalDuration: record.totalDuration,
-      lessonDuration: record.lesson?.duration,
-      progress: record.progress,
-    });
-
-    totalWatchedSeconds += watchedSeconds;
-    dailyRecords.push({ date: record.updatedAt, seconds: watchedSeconds });
-  }
+  const { dailyRecords, totalWatchedSeconds } = buildDailyRecords(
+    progressRecords,
+  );
 
   const timeline = buildTimeline(dailyRecords, 14);
   const { currentStreak, bestStreak } = calculateStreaks(
