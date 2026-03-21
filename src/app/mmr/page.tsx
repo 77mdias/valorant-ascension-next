@@ -145,7 +145,7 @@ export default function PlayerSearch() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0f1419] text-white pb-20">
+    <div className="min-h-screen bg-background text-foreground pb-20">
       <AnimatePresence mode="wait">
         {!playerData ? (
           <motion.div
@@ -189,11 +189,11 @@ export default function PlayerSearch() {
                       value={searchInput}
                       onChange={(e) => setSearchInput(e.target.value)}
                       onKeyPress={(e) => e.key === "Enter" && handleSearch()}
-                      className="w-full h-10 px-4 rounded-full border border-zinc-800 bg-zinc-900 focus:outline-none focus:ring-2 focus:ring-zinc-700 transition-all text-sm text-white"
+                      className="w-full h-10 rounded-full border border-border/60 bg-card/80 px-4 text-sm text-foreground transition-all focus:border-primary/40 focus:outline-none focus:ring-2 focus:ring-primary/30"
                     />
                     <button 
                       onClick={handleSearch}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-white transition-colors"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors hover:text-foreground"
                     >
                       🔍
                     </button>
@@ -224,8 +224,8 @@ export default function PlayerSearch() {
                       { label: "Level", value: playerData.level },
                       { label: "Region", value: region.toUpperCase() },
                     ].map((stat, i) => (
-                      <div key={i} className="p-6 rounded-2xl border border-zinc-800/50 bg-zinc-950/40">
-                        <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 mb-2">{stat.label}</p>
+                      <div key={i} className="rounded-2xl border border-border/60 bg-card/70 p-6">
+                        <p className="mb-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{stat.label}</p>
                         <p className="text-xl font-bold">{stat.value}</p>
                       </div>
                     ))}
@@ -249,7 +249,7 @@ export default function PlayerSearch() {
                     <span className="text-4xl opacity-20 grayscale">📈</span>
                     <div className="space-y-1">
                        <h3 className="text-lg font-bold">Detailed Stats</h3>
-                       <p className="text-zinc-500">Coming soon to the ascension dashboard.</p>
+                       <p className="text-muted-foreground">Coming soon to the ascension dashboard.</p>
                     </div>
                   </motion.div>
                 )}
@@ -260,9 +260,9 @@ export default function PlayerSearch() {
       </AnimatePresence>
 
       {loading && (
-        <div className="fixed inset-0 bg-[#0f1419]/90 backdrop-blur-sm z-50 flex flex-col items-center justify-center space-y-4">
+        <div className="fixed inset-0 z-50 flex flex-col items-center justify-center space-y-4 bg-background/85 backdrop-blur-sm">
           <LoadingSpinner />
-          <p className="text-sm font-bold uppercase tracking-widest text-zinc-500 animate-pulse">Loading Data...</p>
+          <p className="animate-pulse text-sm font-bold uppercase tracking-widest text-muted-foreground">Loading Data...</p>
         </div>
       )}
     </div>

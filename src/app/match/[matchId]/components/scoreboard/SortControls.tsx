@@ -3,6 +3,7 @@
  * Controls for sorting scoreboard using TailwindCSS
  */
 
+import { ArrowDown } from "lucide-react";
 import type { SortField, SortOrder } from "../../types/match.types";
 
 interface SortControlsProps {
@@ -19,10 +20,10 @@ export default function SortControls({
   onToggleSortOrder,
 }: SortControlsProps) {
   return (
-    <div className="flex flex-col gap-3 p-3 sm:p-5 rounded-xl bg-zinc-950/40 border border-zinc-800/50 backdrop-blur-sm">
+    <div className="flex flex-col gap-3 rounded-xl border border-border/60 bg-card/70 p-3 backdrop-blur-sm sm:p-5">
       <div className="flex flex-col">
-        <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">Ordenação</p>
-        <p className="text-xs text-zinc-400 mt-1 hidden sm:block">Reordene sem perder o foco.</p>
+        <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Ordenação</p>
+        <p className="mt-1 hidden text-xs text-muted-foreground sm:block">Reordene sem perder o foco.</p>
       </div>
 
       <div className="flex gap-2">
@@ -30,7 +31,7 @@ export default function SortControls({
           id="sortBy"
           value={sortBy}
           onChange={(e) => onSortByChange(e.target.value as SortField)}
-          className="flex-1 bg-zinc-900/60 border border-zinc-800/50 text-zinc-300 text-xs rounded-lg px-3 py-2 outline-none focus:ring-1 focus:ring-zinc-700/50 transition-all cursor-pointer appearance-none"
+          className="flex-1 cursor-pointer appearance-none rounded-lg border border-border/60 bg-background/70 px-3 py-2 text-xs text-foreground outline-none transition-all focus:ring-1 focus:ring-primary/30"
         >
           <option value="score">Score (ACS)</option>
           <option value="kills">Kills</option>
@@ -43,10 +44,13 @@ export default function SortControls({
         
         <button
           onClick={onToggleSortOrder}
-          className="px-4 py-2 bg-zinc-800/80 hover:bg-zinc-700 text-white rounded-lg border border-zinc-700/50 transition-all text-sm shadow-lg"
+          className="flex h-9 w-10 items-center justify-center rounded-lg border border-border/60 bg-muted text-foreground shadow-lg transition-all hover:bg-muted/80"
           aria-label={sortOrder === "desc" ? "Ordenar crescente" : "Ordenar decrescente"}
         >
-          {sortOrder === "desc" ? "↓" : "↑"}
+          <ArrowDown
+            className={`h-4 w-4 transition-transform ${sortOrder === "desc" ? "" : "rotate-180"}`}
+            aria-hidden="true"
+          />
         </button>
       </div>
     </div>

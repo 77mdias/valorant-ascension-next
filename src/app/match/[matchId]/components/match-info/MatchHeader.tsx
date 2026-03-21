@@ -40,7 +40,7 @@ export default function MatchHeader({
   const patch = matchDetails.metadata?.game_version || "N/A";
 
   return (
-    <div className="w-full bg-[#0d1117] border border-[#1a2030] rounded-xl overflow-hidden">
+    <div className="w-full overflow-hidden rounded-xl border border-border/60 bg-card/80 text-foreground">
 
       {/* Top accent bar */}
       <div className="flex h-[3px]">
@@ -51,22 +51,22 @@ export default function MatchHeader({
       {/* ── MOBILE (< md) ── */}
       <div className="md:hidden">
         {/* Top bar: Back | Map+Mode | Copy */}
-        <div className="flex items-center justify-between px-4 py-3 border-b border-zinc-800/40">
+        <div className="flex items-center justify-between border-b border-border/50 px-4 py-3">
           <button
             onClick={handleClose}
-            className="h-8 px-3 flex items-center gap-1 border border-zinc-700 rounded-lg text-zinc-300 text-xs font-semibold hover:bg-zinc-800 transition-all"
+            className="flex h-8 items-center gap-1 rounded-lg border border-border/60 px-3 text-xs font-semibold text-muted-foreground transition-all hover:bg-muted hover:text-foreground"
           >
             ← Voltar
           </button>
           <div className="flex items-center gap-2">
-            <span className="text-sm font-black text-white tracking-tight">{mapName}</span>
-            <span className="px-1.5 py-0.5 rounded bg-zinc-900 text-[9px] font-bold uppercase tracking-widest text-zinc-500 border border-zinc-800">
+            <span className="text-sm font-black tracking-tight text-foreground">{mapName}</span>
+            <span className="rounded border border-border/60 bg-background/80 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-widest text-muted-foreground">
               {modeName}
             </span>
           </div>
           <button
             onClick={handleCopyLink}
-            className="h-8 w-8 flex items-center justify-center bg-zinc-100 text-zinc-900 rounded-lg text-sm font-bold hover:bg-white transition-all"
+            className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-sm font-bold text-primary-foreground transition-all hover:opacity-90"
             title="Copiar link"
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -79,9 +79,9 @@ export default function MatchHeader({
         {/* Score hero */}
         <div className="flex items-center justify-center gap-6 py-8">
           <span className="text-xs font-bold uppercase tracking-widest text-emerald-400">Time A</span>
-          <div className="text-6xl font-black tracking-tighter tabular-nums text-white leading-none">
+          <div className="text-6xl font-black leading-none tracking-tighter tabular-nums text-foreground">
             {redTeamScore}
-            <span className="text-zinc-600 mx-2 text-4xl">:</span>
+            <span className="mx-2 text-4xl text-muted-foreground">:</span>
             {blueTeamScore}
           </div>
           <span className="text-xs font-bold uppercase tracking-widest text-rose-400">Time B</span>
@@ -89,15 +89,15 @@ export default function MatchHeader({
 
         {/* Meta chips */}
         <div className="flex items-center justify-center gap-2 pb-4 px-4 flex-wrap">
-          <span className="text-[11px] text-zinc-500 bg-zinc-900/60 px-2.5 py-1 rounded-lg border border-zinc-800/50">
+          <span className="rounded-lg border border-border/60 bg-background/70 px-2.5 py-1 text-[11px] text-muted-foreground">
             {dateStr}
           </span>
-          <span className="text-[11px] text-zinc-500 bg-zinc-900/60 px-2.5 py-1 rounded-lg border border-zinc-800/50">
+          <span className="rounded-lg border border-border/60 bg-background/70 px-2.5 py-1 text-[11px] text-muted-foreground">
             Duração: {duration}
           </span>
           <button
             onClick={handleOpenNewTab}
-            className="text-[11px] text-blue-400/70 bg-zinc-900/60 px-2.5 py-1 rounded-lg border border-zinc-800/50 hover:text-blue-400 transition-colors"
+            className="rounded-lg border border-primary/30 bg-background/70 px-2.5 py-1 text-[11px] text-primary/80 transition-colors hover:text-primary"
           >
             Raw ↗
           </button>
@@ -108,21 +108,21 @@ export default function MatchHeader({
       <div className="hidden md:block py-10 px-6 space-y-10">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
           <div className="space-y-1">
-            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500">Map & Mode</p>
+            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">Map & Mode</p>
             <div className="flex items-center gap-3">
-              <h2 className="text-4xl font-black tracking-tighter text-white">{mapName}</h2>
-              <span className="px-2 py-1 rounded bg-zinc-900 text-[10px] font-bold uppercase tracking-widest text-zinc-500 border border-zinc-800">
+              <h2 className="text-4xl font-black tracking-tighter text-foreground">{mapName}</h2>
+              <span className="rounded border border-border/60 bg-background/80 px-2 py-1 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
                 {modeName}
               </span>
             </div>
           </div>
 
           <div className="flex flex-col items-center space-y-1">
-            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500">Final Score</p>
+            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">Final Score</p>
             <div className="flex items-center gap-6">
               <span className="text-xs font-bold uppercase tracking-widest text-emerald-400">Team A</span>
-              <span className="text-5xl font-black tracking-tighter tabular-nums text-white">
-                {redTeamScore} <span className="text-zinc-600">:</span> {blueTeamScore}
+              <span className="text-5xl font-black tracking-tighter tabular-nums text-foreground">
+                {redTeamScore} <span className="text-muted-foreground">:</span> {blueTeamScore}
               </span>
               <span className="text-xs font-bold uppercase tracking-widest text-rose-400">Team B</span>
             </div>
@@ -130,13 +130,13 @@ export default function MatchHeader({
 
           <div className="flex items-center gap-2">
             <button
-              className="h-10 px-4 rounded-lg text-xs font-bold uppercase tracking-widest border border-zinc-700 hover:bg-zinc-800 transition-all text-zinc-200"
+              className="h-10 rounded-lg border border-border/60 px-4 text-xs font-bold uppercase tracking-widest text-muted-foreground transition-all hover:bg-muted hover:text-foreground"
               onClick={handleClose}
             >
               Back
             </button>
             <button
-              className="h-10 px-4 rounded-lg text-xs font-bold uppercase tracking-widest bg-zinc-100 text-zinc-900 hover:bg-white transition-all shadow-sm"
+              className="h-10 rounded-lg bg-primary px-4 text-xs font-bold uppercase tracking-widest text-primary-foreground shadow-sm transition-all hover:opacity-90"
               onClick={handleCopyLink}
             >
               Copy Link
@@ -144,23 +144,23 @@ export default function MatchHeader({
           </div>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-12 pt-8 border-t border-zinc-800/50">
+        <div className="grid grid-cols-2 gap-12 border-t border-border/60 pt-8 md:grid-cols-4">
           <div className="space-y-1">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">Date</p>
-            <p className="font-bold text-sm text-zinc-200">{dateStr}</p>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Date</p>
+            <p className="text-sm font-bold text-foreground">{dateStr}</p>
           </div>
           <div className="space-y-1">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">Duration</p>
-            <p className="font-bold text-sm text-zinc-200">{duration}</p>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Duration</p>
+            <p className="text-sm font-bold text-foreground">{duration}</p>
           </div>
           <div className="space-y-1">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">Patch</p>
-            <p className="font-bold text-sm text-zinc-200">{patch}</p>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Patch</p>
+            <p className="text-sm font-bold text-foreground">{patch}</p>
           </div>
           <div className="space-y-1">
             <button
               onClick={handleOpenNewTab}
-              className="text-[10px] font-bold uppercase tracking-widest text-blue-400 hover:underline flex items-center gap-1"
+              className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest text-primary hover:underline"
             >
               View raw data ↗
             </button>

@@ -18,10 +18,10 @@ export const MatchHistoryList: React.FC<MatchHistoryListProps> = ({
 }) => {
   if (matches.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-12 px-6 bg-gray-50 dark:bg-neutral-950 rounded-2xl border border-dashed border-gray-200 dark:border-neutral-800 text-center">
+      <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-border/60 bg-card/70 px-6 py-12 text-center">
         <span className="text-4xl mb-4">🎮</span>
         <h3 className="text-lg font-bold">No competitive matches found.</h3>
-        <p className="text-gray-500 max-w-xs mx-auto">
+        <p className="mx-auto max-w-xs text-muted-foreground">
           This player might not have played competitive matches in their last 5 games.
         </p>
       </div>
@@ -33,7 +33,7 @@ export const MatchHistoryList: React.FC<MatchHistoryListProps> = ({
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between pb-2 border-b border-gray-100 dark:border-neutral-900">
+      <div className="flex items-center justify-between border-b border-border/60 pb-2">
         <h3 className="text-xl font-bold tracking-tight">Recent Matches</h3>
         <div className="flex gap-4 text-sm font-bold">
           <span className="text-emerald-600 dark:text-emerald-400">

@@ -34,8 +34,8 @@ function getRankImageUrl(tierId: number): string {
 function StatCell({ label, value, highlight }: { label: string; value: string | number; highlight?: boolean }) {
   return (
     <div className="flex flex-col items-center gap-0.5">
-      <span className="text-[9px] text-zinc-600 uppercase tracking-wider leading-none">{label}</span>
-      <span className={`text-xs font-semibold tabular-nums leading-none ${highlight ? "text-zinc-200" : "text-zinc-400"}`}>{value}</span>
+      <span className="text-[9px] uppercase tracking-wider leading-none text-muted-foreground">{label}</span>
+      <span className={`text-xs font-semibold leading-none tabular-nums ${highlight ? "text-foreground" : "text-muted-foreground"}`}>{value}</span>
     </div>
   );
 }
@@ -61,8 +61,8 @@ export default function PlayerRow({
 
   const winBg = "bg-emerald-500/5 hover:bg-emerald-500/10";
   const lossBg = "bg-rose-500/5 hover:bg-rose-500/10";
-  const defaultBg = index % 2 === 0 ? "bg-zinc-900/20" : "bg-transparent";
-  const hoverBg = "hover:bg-zinc-800/40";
+  const defaultBg = index % 2 === 0 ? "bg-background/40" : "bg-transparent";
+  const hoverBg = "hover:bg-muted/40";
 
   const resultBg = winnerTeamId
     ? isWinner ? winBg : lossBg
@@ -74,13 +74,13 @@ export default function PlayerRow({
   return (
     <>
       {/* ── MOBILE CARD (< md) ── */}
-      <div className={`md:hidden border-b border-zinc-800/50 transition-colors duration-200 ${resultBg} ${isSearchedPlayer ? "border-l-[3px] border-l-[#ec176b] bg-[rgba(236,23,107,0.04)]" : ""}`}>
+      <div className={`md:hidden border-b border-border/50 transition-colors duration-200 ${resultBg} ${isSearchedPlayer ? "border-l-[3px] border-l-primary bg-primary/10" : ""}`}>
         <div
           className="flex items-center gap-3 px-2 py-2 cursor-pointer"
           onClick={() => setExpanded(!expanded)}
         >
           {/* Agent image */}
-          <div className="w-11 h-11 rounded-lg overflow-hidden flex-shrink-0 bg-zinc-800 border border-zinc-700/40">
+          <div className="h-11 w-11 flex-shrink-0 overflow-hidden rounded-lg border border-border/60 bg-background/70">
             <Image
               src={agentUrl}
               alt={player.agent.name}
@@ -92,16 +92,16 @@ export default function PlayerRow({
 
           {/* Player info */}
           <div className="flex-1 min-w-0">
-            <div className="font-semibold text-zinc-100 text-sm truncate leading-tight">
+            <div className="truncate text-sm font-semibold leading-tight text-foreground">
               {player.name}
-              <span className="text-zinc-500 font-normal text-xs ml-0.5">#{player.tag}</span>
+              <span className="ml-0.5 text-xs font-normal text-muted-foreground">#{player.tag}</span>
             </div>
-            <div className="flex items-center gap-1.5 text-[11px] text-zinc-500 mt-0.5">
+            <div className="mt-0.5 flex items-center gap-1.5 text-[11px] text-muted-foreground">
               <Image src={rankUrl} alt={player.tier.name} width={12} height={12} />
               <span className="truncate">{player.tier.name}</span>
               {player.account_level && (
                 <>
-                  <span className="text-zinc-700">·</span>
+                  <span className="text-border">·</span>
                   <span>LVL {player.account_level}</span>
                 </>
               )}
@@ -112,17 +112,17 @@ export default function PlayerRow({
           <div className="flex items-center gap-2 flex-shrink-0">
             <div className="flex items-center">
               <span className="text-emerald-400 text-xs font-bold w-6 text-center tabular-nums">{player.stats.kills}</span>
-              <span className="text-zinc-700 text-[10px]">/</span>
+              <span className="text-[10px] text-border">/</span>
               <span className="text-rose-400 text-xs font-bold w-6 text-center tabular-nums">{player.stats.deaths}</span>
-              <span className="text-zinc-700 text-[10px]">/</span>
-              <span className="text-zinc-400 text-xs font-semibold w-6 text-center tabular-nums">{player.stats.assists}</span>
+              <span className="text-[10px] text-border">/</span>
+              <span className="w-6 text-center text-xs font-semibold tabular-nums text-muted-foreground">{player.stats.assists}</span>
             </div>
             <div className="flex flex-col items-center min-w-[32px]">
-              <span className="text-[9px] text-zinc-600 leading-none">ACS</span>
-              <span className={`text-xs font-bold leading-tight tabular-nums ${stats.acs >= 200 ? "text-[#ec176b]" : "text-zinc-400"}`}>{stats.acs}</span>
+              <span className="text-[9px] leading-none text-muted-foreground">ACS</span>
+              <span className={`text-xs font-bold leading-tight tabular-nums ${stats.acs >= 200 ? "text-primary" : "text-muted-foreground"}`}>{stats.acs}</span>
             </div>
             <svg
-              className={`w-3.5 h-3.5 text-zinc-600 transition-transform duration-200 ${expanded ? "rotate-180" : ""}`}
+              className={`h-3.5 w-3.5 text-muted-foreground transition-transform duration-200 ${expanded ? "rotate-180" : ""}`}
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -136,7 +136,7 @@ export default function PlayerRow({
         {/* Expanded Stats */}
         {expanded && (
           <div className="px-3 pb-3 pt-1">
-            <div className="grid grid-cols-4 gap-y-3 gap-x-2 bg-zinc-900/40 rounded-lg px-3 py-2.5 border border-zinc-800/40">
+            <div className="grid grid-cols-4 gap-x-2 gap-y-3 rounded-lg border border-border/60 bg-background/70 px-3 py-2.5">
               <StatCell label="Score" value={player.stats.score} highlight />
               <StatCell label="K/D" value={stats.kd} highlight={parseFloat(stats.kd) >= 1} />
               <StatCell
@@ -150,7 +150,7 @@ export default function PlayerRow({
               <StatCell label="MK" value={playerMK} />
             </div>
             <button
-              className="mt-2 w-full text-center text-[11px] text-zinc-500 hover:text-[#ec176b] transition-colors py-1"
+              className="mt-2 w-full py-1 text-center text-[11px] text-muted-foreground transition-colors hover:text-primary"
               onClick={(e) => {
                 e.stopPropagation();
                 onPlayerClick(player.name, player.tag);
@@ -164,13 +164,13 @@ export default function PlayerRow({
 
       {/* ── DESKTOP TABLE ROW (≥ md) ── */}
       <div
-        className={`hidden md:flex items-stretch cursor-pointer transition-colors duration-200 border-b border-zinc-800/50 ${resultBg} ${isSearchedPlayer ? "border-l-[3px] border-l-[#ec176b] bg-[rgba(236,23,107,0.04)]" : ""}`}
+        className={`hidden items-stretch cursor-pointer border-b border-border/50 transition-colors duration-200 md:flex ${resultBg} ${isSearchedPlayer ? "border-l-[3px] border-l-primary bg-primary/10" : ""}`}
         onClick={() => onPlayerClick(player.name, player.tag)}
       >
         {/* Sticky Player Info Column */}
-        <div className="flex items-center p-3 w-64 min-w-[16rem] sticky left-0 z-10 bg-inherit backdrop-blur-md border-r border-zinc-800/50">
+        <div className="sticky left-0 z-10 flex w-64 min-w-[16rem] items-center border-r border-border/50 bg-inherit p-3 backdrop-blur-md">
           <div className="flex items-center gap-3 w-full">
-            <div className="w-10 h-10 rounded-md overflow-hidden flex-shrink-0 bg-zinc-800">
+            <div className="h-10 w-10 flex-shrink-0 overflow-hidden rounded-md bg-background/70">
               <Image
                 src={agentUrl}
                 alt={player.agent.name}
@@ -180,16 +180,16 @@ export default function PlayerRow({
               />
             </div>
             <div className="flex flex-col min-w-0">
-              <div className="font-semibold text-zinc-100 text-sm truncate">
+              <div className="truncate text-sm font-semibold text-foreground">
                 {player.name}
-                <span className="text-zinc-500 font-normal ml-0.5">#{player.tag}</span>
+                <span className="ml-0.5 font-normal text-muted-foreground">#{player.tag}</span>
               </div>
-              <div className="flex items-center gap-1.5 text-[11px] text-zinc-400">
+              <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
                 <Image src={rankUrl} alt={player.tier.name} width={12} height={12} />
                 <span className="truncate">{player.tier.name}</span>
                 {player.account_level && (
                   <>
-                    <span className="text-zinc-600">•</span>
+                    <span className="text-border">•</span>
                     <span>LVL {player.account_level}</span>
                   </>
                 )}
@@ -204,27 +204,27 @@ export default function PlayerRow({
         </div>
 
         {/* Score */}
-        <div className="flex items-center justify-center p-3 w-24 min-w-[6rem] font-medium text-zinc-300">
+        <div className="flex w-24 min-w-[6rem] items-center justify-center p-3 font-medium text-foreground">
           {player.stats.score}
         </div>
 
         {/* ACS */}
-        <div className="flex items-center justify-center p-3 w-24 min-w-[6rem] text-zinc-400">
+        <div className="flex w-24 min-w-[6rem] items-center justify-center p-3 text-muted-foreground">
           {stats.acs}
         </div>
 
         {/* Kills */}
-        <div className="flex items-center justify-center p-3 w-16 min-w-[4rem] font-semibold text-zinc-200">
+        <div className="flex w-16 min-w-[4rem] items-center justify-center p-3 font-semibold text-foreground">
           {player.stats.kills}
         </div>
 
         {/* Deaths */}
-        <div className="flex items-center justify-center p-3 w-16 min-w-[4rem] text-zinc-400">
+        <div className="flex w-16 min-w-[4rem] items-center justify-center p-3 text-muted-foreground">
           {player.stats.deaths}
         </div>
 
         {/* Assists */}
-        <div className="flex items-center justify-center p-3 w-16 min-w-[4rem] text-zinc-400">
+        <div className="flex w-16 min-w-[4rem] items-center justify-center p-3 text-muted-foreground">
           {player.stats.assists}
         </div>
 
@@ -234,25 +234,25 @@ export default function PlayerRow({
         </div>
 
         {/* K/D Ratio */}
-        <div className={`flex items-center justify-center p-3 w-20 min-w-[5rem] font-medium ${parseFloat(stats.kd) >= 1 ? "text-emerald-400/80" : "text-zinc-400"}`}>
+        <div className={`flex w-20 min-w-[5rem] items-center justify-center p-3 font-medium ${parseFloat(stats.kd) >= 1 ? "text-emerald-400/80" : "text-muted-foreground"}`}>
           {stats.kd}
         </div>
 
         {/* ADR */}
-        <div className={`flex items-center justify-center p-3 w-20 min-w-[5rem] ${stats.adr >= 150 ? "text-zinc-200 font-medium" : "text-zinc-400"}`}>
+        <div className={`flex w-20 min-w-[5rem] items-center justify-center p-3 ${stats.adr >= 150 ? "font-medium text-foreground" : "text-muted-foreground"}`}>
           {stats.adr}
         </div>
 
         {/* HS% */}
-        <div className="flex items-center justify-center p-3 w-20 min-w-[5rem] text-zinc-400 text-sm">
+        <div className="flex w-20 min-w-[5rem] items-center justify-center p-3 text-sm text-muted-foreground">
           {stats.hsPercentage}%
         </div>
 
         {showAllColumns && (
           <>
-            <div className="flex items-center justify-center p-3 w-16 min-w-[4rem] text-zinc-400 text-sm">{playerFK}</div>
-            <div className="flex items-center justify-center p-3 w-16 min-w-[4rem] text-zinc-400 text-sm">{playerFD}</div>
-            <div className="flex items-center justify-center p-3 w-16 min-w-[4rem] text-zinc-400 text-sm">{playerMK}</div>
+            <div className="flex w-16 min-w-[4rem] items-center justify-center p-3 text-sm text-muted-foreground">{playerFK}</div>
+            <div className="flex w-16 min-w-[4rem] items-center justify-center p-3 text-sm text-muted-foreground">{playerFD}</div>
+            <div className="flex w-16 min-w-[4rem] items-center justify-center p-3 text-sm text-muted-foreground">{playerMK}</div>
           </>
         )}
       </div>

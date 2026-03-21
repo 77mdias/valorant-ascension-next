@@ -16,7 +16,7 @@ export const Tabs: React.FC<TabsProps> = ({ activeTab, setActiveTab }) => {
   ];
 
   return (
-    <div className="flex items-center gap-8 border-b border-zinc-800 w-full mb-8">
+    <div className="mb-8 flex w-full items-center gap-8 border-b border-border/60">
       {tabs.map((tab) => {
         const isActive = activeTab === tab.id;
         return (
@@ -24,14 +24,14 @@ export const Tabs: React.FC<TabsProps> = ({ activeTab, setActiveTab }) => {
             key={tab.id}
             onClick={() => setActiveTab(tab.id as any)}
             className={`relative pb-3 text-sm font-bold uppercase tracking-widest transition-colors ${
-              isActive ? "text-white" : "text-zinc-500 hover:text-zinc-200"
+              isActive ? "text-foreground" : "text-muted-foreground hover:text-foreground"
             }`}
           >
             {tab.label}
             {isActive && (
               <motion.div
                 layoutId="activeTab"
-                className="absolute bottom-0 left-0 right-0 h-0.5 bg-white"
+                className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary"
                 transition={{ type: "spring", stiffness: 300, damping: 30 }}
               />
             )}

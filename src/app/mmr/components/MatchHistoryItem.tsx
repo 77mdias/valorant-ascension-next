@@ -41,7 +41,7 @@ export const MatchHistoryItem: React.FC<MatchHistoryItemProps> = ({
           ? "bg-emerald-500/5 border-emerald-500/20 hover:border-emerald-500/40"
           : isLoss
             ? "bg-rose-500/5 border-rose-500/20 hover:border-rose-500/40"
-            : "bg-zinc-900/30 border-zinc-800 hover:border-zinc-700"
+            : "bg-card/70 border-border/60 hover:border-border"
       }`}
     >
       {/* Result indicator side-bar */}
@@ -62,8 +62,8 @@ export const MatchHistoryItem: React.FC<MatchHistoryItemProps> = ({
           />
         </div>
         <div className="flex flex-col min-w-[100px]">
-          <span className="font-bold text-lg leading-tight text-zinc-100">{match.map}</span>
-          <span className="text-xs font-bold text-zinc-500 uppercase tracking-widest">
+          <span className="text-lg font-bold leading-tight text-foreground">{match.map}</span>
+          <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
             {match.mode}
           </span>
         </div>
@@ -71,43 +71,43 @@ export const MatchHistoryItem: React.FC<MatchHistoryItemProps> = ({
 
       <div className="flex flex-1 items-center justify-between md:justify-around w-full gap-4">
         <div className="flex flex-col items-center">
-          <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-1">Score</span>
-          <span className={`text-lg font-black tracking-tighter ${isWin ? "text-emerald-400" : isLoss ? "text-rose-400" : "text-zinc-500"}`}>
+          <span className="mb-1 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Score</span>
+          <span className={`text-lg font-black tracking-tighter ${isWin ? "text-emerald-400" : isLoss ? "text-rose-400" : "text-muted-foreground"}`}>
             {match.score}
           </span>
         </div>
 
         <div className="flex flex-col items-center">
-          <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-1">K/D/A</span>
+          <span className="mb-1 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">K/D/A</span>
           <span className="font-bold whitespace-nowrap">
-            {match.kills} / <span className="text-zinc-500">{match.deaths}</span> / {match.assists}
+            {match.kills} / <span className="text-muted-foreground">{match.deaths}</span> / {match.assists}
           </span>
         </div>
 
         <div className="hidden sm:flex flex-col items-center">
-          <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-1">HS%</span>
+          <span className="mb-1 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">HS%</span>
           <span className="font-bold">
             {((match.headshots / Math.max(match.kills, 1)) * 100).toFixed(0)}%
           </span>
         </div>
 
         <div className="hidden lg:flex flex-col items-center">
-          <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-1">ADR</span>
+          <span className="mb-1 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">ADR</span>
           <span className="font-bold">
             {calculateADR(match.damage, match.rounds_played)}
           </span>
         </div>
 
         <div className="hidden lg:flex flex-col items-center">
-          <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-1">ACS</span>
+          <span className="mb-1 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">ACS</span>
           <span className="font-bold">
             {calculateACS(match.damage, match.kills, match.rounds_played)}
           </span>
         </div>
 
         <div className="flex flex-col items-end">
-          <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-1">Date</span>
-          <span className="text-sm font-medium text-zinc-500">
+          <span className="mb-1 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Date</span>
+          <span className="text-sm font-medium text-muted-foreground">
             {match.date.toLocaleDateString("pt-BR")}
           </span>
         </div>

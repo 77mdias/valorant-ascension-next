@@ -34,10 +34,10 @@ export default function TeamScoreboard({
   const winnerTeamId: "Red" | "Blue" = won ? team : (team === "Red" ? "Blue" : "Red");
 
   return (
-    <div className="w-full bg-zinc-950/40 rounded-xl overflow-hidden border border-zinc-800/50 shadow-2xl mb-8 transition-all duration-300">
-      <div className="flex items-center justify-between px-4 md:px-6 py-3 md:py-4 bg-zinc-900/30 border-b border-zinc-800/50">
+    <div className="mb-8 w-full overflow-hidden rounded-xl border border-border/60 bg-card/70 shadow-2xl transition-all duration-300">
+      <div className="flex items-center justify-between border-b border-border/60 bg-background/50 px-4 py-3 md:px-6 md:py-4">
         <div className="flex items-center gap-3 md:gap-4">
-          <h3 className="text-base md:text-xl font-bold text-zinc-100 tracking-tight">{teamName}</h3>
+          <h3 className="text-base font-bold tracking-tight text-foreground md:text-xl">{teamName}</h3>
           <div className={`px-2 md:px-3 py-0.5 md:py-1 rounded-full text-[9px] md:text-[10px] font-bold tracking-widest uppercase ${
             won
               ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
@@ -46,31 +46,31 @@ export default function TeamScoreboard({
             {won ? "Winner" : "Loser"}
           </div>
         </div>
-        <div className="text-xl md:text-2xl font-black text-zinc-100 italic">
-          {teamScore} <span className="text-xs not-italic font-medium text-zinc-500 ml-1 uppercase tracking-tighter">rounds</span>
+        <div className="text-xl font-black italic text-foreground md:text-2xl">
+          {teamScore} <span className="ml-1 text-xs font-medium not-italic uppercase tracking-tighter text-muted-foreground">rounds</span>
         </div>
       </div>
 
-      <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-zinc-800 scrollbar-track-transparent">
+      <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent">
         <div className="flex flex-col min-w-full md:w-fit">
           {/* Column Header Row — desktop only */}
-          <div className="hidden md:flex items-stretch bg-zinc-900/50 border-b border-zinc-800/50">
-            <div className="flex items-center p-3 w-64 min-w-[16rem] sticky left-0 z-20 bg-zinc-900 backdrop-blur-md border-r border-zinc-800/50 font-bold text-[10px] uppercase tracking-wider text-zinc-500">
+          <div className="hidden items-stretch border-b border-border/60 bg-background/60 md:flex">
+            <div className="sticky left-0 z-20 flex w-64 min-w-[16rem] items-center border-r border-border/60 bg-background/80 p-3 text-[10px] font-bold uppercase tracking-wider text-muted-foreground backdrop-blur-md">
               Player
             </div>
-            <div className="flex items-center justify-center p-3 w-24 min-w-[6rem] font-bold text-[10px] uppercase tracking-wider text-zinc-500">Rank</div>
-            <div className="flex items-center justify-center p-3 w-24 min-w-[6rem] font-bold text-[10px] uppercase tracking-wider text-zinc-500">Score</div>
-            <div className="flex items-center justify-center p-3 w-24 min-w-[6rem] font-bold text-[10px] uppercase tracking-wider text-zinc-500">ACS</div>
-            <div className="flex items-center justify-center p-3 w-16 min-w-[4rem] font-bold text-[10px] uppercase tracking-wider text-zinc-500">K</div>
-            <div className="flex items-center justify-center p-3 w-16 min-w-[4rem] font-bold text-[10px] uppercase tracking-wider text-zinc-500">D</div>
-            <div className="flex items-center justify-center p-3 w-16 min-w-[4rem] font-bold text-[10px] uppercase tracking-wider text-zinc-500">A</div>
-            <div className="flex items-center justify-center p-3 w-16 min-w-[4rem] font-bold text-[10px] uppercase tracking-wider text-zinc-500">+/-</div>
-            <div className="flex items-center justify-center p-3 w-20 min-w-[5rem] font-bold text-[10px] uppercase tracking-wider text-zinc-500">K/D</div>
-            <div className="flex items-center justify-center p-3 w-20 min-w-[5rem] font-bold text-[10px] uppercase tracking-wider text-zinc-500">ADR</div>
-            <div className="flex items-center justify-center p-3 w-20 min-w-[5rem] font-bold text-[10px] uppercase tracking-wider text-zinc-500">HS%</div>
-            <div className="flex items-center justify-center p-3 w-16 min-w-[4rem] font-bold text-[10px] uppercase tracking-wider text-zinc-500">FK</div>
-            <div className="flex items-center justify-center p-3 w-16 min-w-[4rem] font-bold text-[10px] uppercase tracking-wider text-zinc-500">FD</div>
-            <div className="flex items-center justify-center p-3 w-16 min-w-[4rem] font-bold text-[10px] uppercase tracking-wider text-zinc-500">MK</div>
+            <div className="flex w-24 min-w-[6rem] items-center justify-center p-3 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Rank</div>
+            <div className="flex w-24 min-w-[6rem] items-center justify-center p-3 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Score</div>
+            <div className="flex w-24 min-w-[6rem] items-center justify-center p-3 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">ACS</div>
+            <div className="flex w-16 min-w-[4rem] items-center justify-center p-3 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">K</div>
+            <div className="flex w-16 min-w-[4rem] items-center justify-center p-3 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">D</div>
+            <div className="flex w-16 min-w-[4rem] items-center justify-center p-3 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">A</div>
+            <div className="flex w-16 min-w-[4rem] items-center justify-center p-3 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">+/-</div>
+            <div className="flex w-20 min-w-[5rem] items-center justify-center p-3 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">K/D</div>
+            <div className="flex w-20 min-w-[5rem] items-center justify-center p-3 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">ADR</div>
+            <div className="flex w-20 min-w-[5rem] items-center justify-center p-3 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">HS%</div>
+            <div className="flex w-16 min-w-[4rem] items-center justify-center p-3 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">FK</div>
+            <div className="flex w-16 min-w-[4rem] items-center justify-center p-3 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">FD</div>
+            <div className="flex w-16 min-w-[4rem] items-center justify-center p-3 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">MK</div>
           </div>
 
           {/* Player Rows */}

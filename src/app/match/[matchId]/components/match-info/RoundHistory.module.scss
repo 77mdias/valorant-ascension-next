@@ -1,7 +1,7 @@
 .roundHistory {
   padding: 1rem;
-  background: #0d1117;
-  border: 1px solid #1a2030;
+  background: hsl(var(--card) / 0.78);
+  border: 1px solid hsl(var(--border) / 0.65);
   border-radius: 10px;
 }
 
@@ -14,7 +14,7 @@
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #555;
+  color: hsl(var(--muted-foreground) / 0.85);
   margin-bottom: 0.25rem;
 }
 
@@ -26,16 +26,16 @@
   h4 {
     font-size: 0.9375rem;
     font-weight: 700;
-    color: #fff;
+    color: hsl(var(--foreground));
     margin: 0;
   }
 }
 
 .roundCount {
   font-size: 0.75rem;
-  color: #555;
-  background: #131920;
-  border: 1px solid #1a2030;
+  color: hsl(var(--muted-foreground));
+  background: hsl(var(--background) / 0.7);
+  border: 1px solid hsl(var(--border) / 0.65);
   border-radius: 20px;
   padding: 0.1rem 0.5rem;
 }
@@ -45,7 +45,7 @@
   align-items: center;
   gap: 0.4rem;
   font-size: 0.75rem;
-  color: #666;
+  color: hsl(var(--muted-foreground) / 0.9);
   margin-bottom: 1rem;
 }
 
@@ -56,11 +56,11 @@
   display: inline-block;
 
   &.win {
-    background: #4ade80;
+    background: var(--match-win);
   }
 
   &.loss {
-    background: #f87171;
+    background: var(--match-loss);
   }
 }
 
@@ -84,7 +84,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: #555;
+  color: hsl(var(--muted-foreground) / 0.9);
 }
 
 .halfScore {
@@ -95,15 +95,15 @@
 }
 
 .teamA {
-  color: #4ade80;
+  color: var(--match-win);
 }
 
 .teamB {
-  color: #f87171;
+  color: var(--match-loss);
 }
 
 .divider {
-  color: #333;
+  color: hsl(var(--muted-foreground) / 0.7);
 }
 
 .circles {
@@ -125,13 +125,17 @@
 
   &.win {
     background: rgba(74, 222, 128, 0.15);
-    color: #4ade80;
+    background: color-mix(in srgb, var(--match-win) 18%, transparent);
+    color: var(--match-win);
     border: 1px solid rgba(74, 222, 128, 0.35);
+    border: 1px solid color-mix(in srgb, var(--match-win) 36%, transparent);
   }
 
   &.loss {
     background: rgba(248, 113, 113, 0.12);
-    color: #f87171;
+    background: color-mix(in srgb, var(--match-loss) 15%, transparent);
+    color: var(--match-loss);
     border: 1px solid rgba(248, 113, 113, 0.28);
+    border: 1px solid color-mix(in srgb, var(--match-loss) 32%, transparent);
   }
 }

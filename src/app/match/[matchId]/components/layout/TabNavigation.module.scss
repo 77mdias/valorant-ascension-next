@@ -3,7 +3,7 @@
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
-  border-bottom: 1px solid #1a2030;
+  border-bottom: 1px solid hsl(var(--border) / 0.7);
   margin: 1rem 0 1.5rem;
   gap: 0;
 
@@ -15,11 +15,12 @@
 .tab {
   flex-shrink: 0;
   padding: 0.75rem 1.25rem;
+  appearance: none;
   background: transparent;
   border: none;
   border-bottom: 2px solid transparent;
   margin-bottom: -1px;
-  color: rgba(255, 255, 255, 0.45);
+  color: hsl(var(--muted-foreground) / 0.9);
   font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
@@ -27,17 +28,26 @@
   white-space: nowrap;
 
   &:hover:not(.disabled) {
-    color: rgba(255, 255, 255, 0.8);
+    color: hsl(var(--foreground));
   }
 
   &.active {
-    color: #ffffff;
-    border-bottom-color: #ec176b;
+    color: hsl(var(--foreground));
+    border-bottom-color: hsl(var(--primary));
     font-weight: 700;
   }
 
   &.disabled {
-    opacity: 0.35;
+    color: hsl(var(--muted-foreground) / 0.7);
+    opacity: 1;
     cursor: not-allowed;
+    background: transparent;
+  }
+
+  &:disabled {
+    color: hsl(var(--muted-foreground) / 0.7);
+    -webkit-text-fill-color: hsl(var(--muted-foreground) / 0.7);
+    opacity: 1;
+    background: transparent;
   }
 }
