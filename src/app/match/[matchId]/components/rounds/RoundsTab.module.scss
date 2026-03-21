@@ -4,15 +4,14 @@
     gap: 1.5rem;
 
     .round {
-      background: rgba(20, 25, 35, 0.7);
+      background: hsl(var(--card) / 0.7);
       border-radius: 16px;
       padding: 1.5rem;
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(236, 23, 107, 0.2);
+      border: 1px solid var(--match-accent-border);
       transition: all 0.3s ease;
 
       &:hover {
-        border-color: rgba(236, 23, 107, 0.4);
+        border-color: hsl(var(--primary) / 0.4);
         transform: translateY(-2px);
       }
 
@@ -26,7 +25,7 @@
 
         .roundNumber {
           font-weight: 700;
-          color: rgba(255, 255, 255, 0.9);
+          color: hsl(var(--foreground) / 0.9);
           font-size: 1.1rem;
         }
 
@@ -36,8 +35,8 @@
           border-radius: 8px;
 
           &.redTeam {
-            background: rgba(236, 23, 107, 0.2);
-            color: #ec176b;
+            background: hsl(0 84% 60% / 0.2);
+            color: var(--match-loss);
           }
 
           &.blueTeam {
@@ -47,19 +46,19 @@
         }
 
         .roundType {
-          color: rgba(255, 255, 255, 0.6);
+          color: hsl(var(--muted-foreground) / 0.85);
           font-size: 0.9rem;
         }
       }
 
       .bombInfo {
         padding: 0.75rem;
-        background: rgba(15, 20, 25, 0.6);
+        background: hsl(var(--background) / 0.6);
         border-radius: 8px;
         margin-top: 0.5rem;
 
         span {
-          color: rgba(255, 255, 255, 0.8);
+          color: hsl(var(--foreground) / 0.8);
           font-size: 0.95rem;
         }
       }

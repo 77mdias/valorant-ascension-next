@@ -8,7 +8,7 @@ import type { ProgressLessonSummary } from "@/server/progressActions";
 const ProgressBar = ({ value }: { value: number }) => (
   <div className="h-2 w-full rounded-full bg-muted">
     <div
-      className="h-2 rounded-full bg-gradient-to-r from-primary to-pink-500"
+      className="h-2 rounded-full bg-gradient-to-r from-primary to-secondary"
       style={{ width: `${Math.min(Math.max(value, 0), 100)}%` }}
     />
   </div>

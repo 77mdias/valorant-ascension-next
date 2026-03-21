@@ -4,7 +4,6 @@ import { useState, useEffect, useCallback } from "react";
 import { ChevronLeft, ChevronRight, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import styles from "@/scss/components/CourseCard.module.scss";
 
 const TestimonialCarousel = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -65,9 +64,7 @@ const TestimonialCarousel = () => {
         <div className="mb-12 text-center">
           <h2 className="mb-4 text-3xl font-bold md:text-4xl">
             O que nossos{" "}
-            <span
-              className={`${styles.bgGradient} bg-clip-text text-transparent`}
-            >
+            <span className="text-primary">
               Alunos
             </span>{" "}
             falam
@@ -83,7 +80,7 @@ const TestimonialCarousel = () => {
             variant="ghost"
             size="icon"
             onClick={prevTestimonial}
-            className="hover:shadow-neon absolute left-0 top-1/2 z-10 h-12 w-12 -translate-y-1/2 rounded-full border border-border bg-card/80 backdrop-blur-sm hover:bg-card"
+            className="absolute left-0 top-1/2 z-10 h-12 w-12 -translate-y-1/2 rounded-full border border-border bg-card hover:bg-card/90"
           >
             <ChevronLeft className="h-5 w-5" />
           </Button>
@@ -92,7 +89,7 @@ const TestimonialCarousel = () => {
             variant="ghost"
             size="icon"
             onClick={nextTestimonial}
-            className="hover:shadow-neon absolute right-0 top-1/2 z-10 h-12 w-12 -translate-y-1/2 rounded-full border border-border bg-card/80 backdrop-blur-sm hover:bg-card"
+            className="absolute right-0 top-1/2 z-10 h-12 w-12 -translate-y-1/2 rounded-full border border-border bg-card hover:bg-card/90"
           >
             <ChevronRight className="h-5 w-5" />
           </Button>
@@ -105,12 +102,12 @@ const TestimonialCarousel = () => {
             >
               {testimonials.map((testimonial, index) => (
                 <div key={index} className="w-full flex-shrink-0 px-8">
-                  <div className="hover:shadow-neon space-y-6 rounded-lg border border-border bg-card p-8 text-center shadow-card transition-all duration-300">
+                  <div className="space-y-6 rounded-lg border border-border bg-card p-8 text-center transition-all duration-200">
                     {/* Avatar */}
                     <Avatar className="mx-auto h-20 w-20 border-2 border-primary/20">
                       <AvatarImage src="" />
                       <AvatarFallback
-                        className={`${styles.bgGradient} text-lg font-bold text-primary-foreground`}
+                        className="bg-primary text-lg font-bold text-primary-foreground"
                       >
                         {testimonial.avatar}
                       </AvatarFallback>
@@ -121,7 +118,7 @@ const TestimonialCarousel = () => {
                       {[...Array(testimonial.rating)].map((_, i) => (
                         <Star
                           key={i}
-                          className={`${styles.accentOrange} h-5 w-5`}
+                          className="h-5 w-5 fill-accent text-accent"
                         />
                       ))}
                     </div>

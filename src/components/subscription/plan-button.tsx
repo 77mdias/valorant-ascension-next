@@ -25,7 +25,7 @@ export function PlanButton({ planType, priceId }: PlanButtonProps) {
     return (
       <button
         onClick={() => (window.location.href = "/auth/signin")}
-        className="w-full rounded-lg bg-gray-800 px-6 py-3 font-semibold text-white transition-all duration-300 hover:bg-gray-700"
+        className="w-full rounded-lg bg-muted px-6 py-3 font-semibold text-foreground transition-all duration-300 hover:bg-muted/80"
       >
         Fazer Login para Assinar
       </button>
@@ -43,7 +43,7 @@ export function PlanButton({ planType, priceId }: PlanButtonProps) {
         <button
           onClick={() => createCheckoutSession(priceId, planType)}
           disabled={isLoading}
-          className="w-full rounded-lg bg-gray-800 px-6 py-3 font-semibold text-white transition-all duration-300 hover:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-50"
+          className="w-full rounded-lg bg-muted px-6 py-3 font-semibold text-foreground transition-all duration-300 hover:bg-muted/80 disabled:cursor-not-allowed disabled:opacity-50"
         >
           {isLoading ? (
             <span className="flex items-center justify-center">
@@ -83,7 +83,7 @@ export function PlanButton({ planType, priceId }: PlanButtonProps) {
         <button
           onClick={() => createCheckoutSession(priceId, planType)}
           disabled={isLoading}
-          className="w-full rounded-lg bg-purple-600 px-6 py-3 font-semibold text-white transition-all duration-300 hover:bg-purple-700 disabled:cursor-not-allowed disabled:opacity-50"
+          className="w-full rounded-lg bg-primary px-6 py-3 font-semibold text-white transition-all duration-300 hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
         >
           {isLoading ? (
             <span className="flex items-center justify-center">
@@ -103,7 +103,7 @@ export function PlanButton({ planType, priceId }: PlanButtonProps) {
         <button
           onClick={() => createCheckoutSession(priceId, planType)}
           disabled={isLoading}
-          className="w-full rounded-lg border border-gray-300 bg-white px-6 py-3 font-semibold text-gray-700 transition-all duration-300 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+          className="w-full rounded-lg border border-border bg-white px-6 py-3 font-semibold text-gray-700 transition-all duration-300 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
         >
           {isLoading ? (
             <span className="flex items-center justify-center">
@@ -123,7 +123,7 @@ export function PlanButton({ planType, priceId }: PlanButtonProps) {
     <button
       onClick={() => createCheckoutSession(priceId, planType)}
       disabled={isLoading}
-      className="w-full rounded-lg bg-gray-800 px-6 py-3 font-semibold text-white transition-all duration-300 hover:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-50"
+      className="w-full rounded-lg bg-muted px-6 py-3 font-semibold text-foreground transition-all duration-300 hover:bg-muted/80 disabled:cursor-not-allowed disabled:opacity-50"
     >
       {isLoading ? (
         <span className="flex items-center justify-center">

@@ -1,10 +1,10 @@
 @use "../../../../../scss/utils/responsive" as *;
 
 .scoreboardTable {
-  background: rgba(20, 25, 35, 0.7);
+  background: hsl(var(--card) / 0.7);
   border-radius: 24px;
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(236, 23, 107, 0.2);
+
+  border: 1px solid var(--match-accent-border);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
   margin-bottom: 2rem;
   position: relative;
@@ -15,7 +15,7 @@
   &.winner {
     background: rgba(74, 222, 128, 0.08);
     border: 1px solid rgba(74, 222, 128, 0.25);
-    backdrop-filter: blur(20px);
+  
 
     .playerRow .cell {
       &:first-child {
@@ -44,20 +44,19 @@
 
   // Estilos para time perdedor (vermelho pastel com glass)
   &.loser {
-    background: rgba(236, 23, 107, 0.08);
-    border: 1px solid rgba(236, 23, 107, 0.25);
-    backdrop-filter: blur(20px);
+    background: hsl(0 84% 60% / 0.08);
+    border: 1px solid hsl(0 84% 60% / 0.25);
 
     .playerRow .cell {
-      border-top: 1px solid rgba(236, 23, 107, 0.15);
-      border-bottom: 1px solid rgba(236, 23, 107, 0.15);
+      border-top: 1px solid hsl(var(--primary) / 0.15);
+      border-bottom: 1px solid hsl(var(--primary) / 0.15);
 
       &:first-child {
-        border-left: 1px solid rgba(236, 23, 107, 0.15);
+        border-left: 1px solid hsl(var(--primary) / 0.15);
       }
 
       &:last-child {
-        border-right: 1px solid rgba(236, 23, 107, 0.15);
+        border-right: 1px solid hsl(var(--primary) / 0.15);
       }
     }
 
@@ -65,14 +64,14 @@
       background:
         linear-gradient(
           0deg,
-          rgba(236, 23, 107, 0.12),
-          rgba(236, 23, 107, 0.12)
+          hsl(var(--primary) / 0.12),
+          hsl(var(--primary) / 0.12)
         ),
         var(--cell-bg);
     }
 
     .headerRow .headerCell {
-      border-bottom: 1px solid rgba(236, 23, 107, 0.2);
+      border-bottom: 1px solid var(--match-accent-border);
     }
   }
 
@@ -93,11 +92,11 @@
     }
 
     &::-webkit-scrollbar-thumb {
-      background: rgba(236, 23, 107, 0.4);
+      background: hsl(var(--primary) / 0.4);
       border-radius: 4px;
 
       &:hover {
-        background: rgba(236, 23, 107, 0.6);
+        background: hsl(var(--primary) / 0.6);
       }
     }
   }
@@ -127,13 +126,13 @@
 
   .headerCell {
     padding: 1rem;
-    color: rgba(255, 255, 255, 0.7);
+    color: hsl(var(--muted-foreground));
     font-weight: 600;
     text-transform: uppercase;
     font-size: 0.9rem;
     letter-spacing: 0.5px;
     text-align: center;
-    border-bottom: 1px solid rgba(236, 23, 107, 0.2);
+    border-bottom: 1px solid var(--match-accent-border);
     --cell-bg: var(--column-primary);
     background: var(--cell-bg);
 
@@ -152,8 +151,8 @@
       background:
         linear-gradient(90deg, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.4)),
         var(--cell-bg);
-      backdrop-filter: blur(20px);
-      border-right: 1px solid rgba(236, 23, 107, 0.15);
+    
+      border-right: 1px solid hsl(var(--primary) / 0.15);
     }
 
     &.rankBadgeCol {
@@ -206,8 +205,8 @@
       background:
         linear-gradient(
           0deg,
-          rgba(236, 23, 107, 0.08),
-          rgba(236, 23, 107, 0.08)
+          hsl(var(--primary) / 0.08),
+          hsl(var(--primary) / 0.08)
         ),
         var(--cell-bg);
     }
@@ -216,8 +215,8 @@
   // Células da row
   .cell {
     padding: 1rem;
-    border-top: 1px solid rgba(236, 23, 107, 0.1);
-    border-bottom: 1px solid rgba(236, 23, 107, 0.1);
+    border-top: 1px solid var(--match-accent-subtle);
+    border-bottom: 1px solid var(--match-accent-subtle);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -229,11 +228,11 @@
     }
 
     &:first-child {
-      border-left: 1px solid rgba(236, 23, 107, 0.1);
+      border-left: 1px solid var(--match-accent-subtle);
     }
 
     &:last-child {
-      border-right: 1px solid rgba(236, 23, 107, 0.1);
+      border-right: 1px solid var(--match-accent-subtle);
     }
 
     // Larguras das células (matching headers)
@@ -309,7 +308,7 @@
     background:
       linear-gradient(90deg, rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.45)),
       var(--cell-bg);
-    border-right: 1px solid rgba(236, 23, 107, 0.3) !important;
+    border-right: 1px solid hsl(var(--primary) / 0.3) !important;
   }
 
   // Loser sticky header background
@@ -317,7 +316,7 @@
     background:
       linear-gradient(90deg, rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.45)),
       var(--cell-bg);
-    border-right: 1px solid rgba(236, 23, 107, 0.3);
+    border-right: 1px solid hsl(var(--primary) / 0.3);
   }
 
   // Center align helper
@@ -354,14 +353,14 @@
 
       .playerName {
         font-weight: 600;
-        color: white;
+        color: hsl(var(--foreground));
         font-size: 0.95rem;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
 
         .playerTag {
-          color: rgba(255, 255, 255, 0.6);
+          color: hsl(var(--muted-foreground) / 0.85);
           font-weight: 400;
         }
       }
@@ -377,15 +376,15 @@
         }
 
         .playerRank {
-          color: rgba(255, 255, 255, 0.6);
+          color: hsl(var(--muted-foreground) / 0.85);
         }
 
         .separator {
-          color: rgba(255, 255, 255, 0.4);
+          color: hsl(var(--muted-foreground) / 0.6);
         }
 
         .accountLevel {
-          color: rgba(255, 255, 255, 0.5);
+          color: hsl(var(--muted-foreground) / 0.7);
           font-size: 0.75rem;
         }
       }
@@ -396,7 +395,7 @@
   .trsValue {
     font-weight: 600;
     font-size: 1rem;
-    color: #ec176b;
+    color: hsl(var(--primary));
   }
 
   // Stat value colors
@@ -406,7 +405,7 @@
   }
 
   .negative {
-    color: #ec176b;
+    color: var(--match-loss);
     font-weight: 600;
   }
 }
@@ -418,8 +417,8 @@
 }
 
 .loserScore {
-  background-color: #ec176c15;
-  border-color: rgba(236, 23, 107, 0.25);
+  background-color: hsl(0 84% 60% / 0.08);
+  border-color: hsl(0 84% 60% / 0.25);
 }
 
 .teamHeader {
@@ -445,7 +444,7 @@
     .roundsWon {
       font-size: 1.5rem;
       font-weight: 800;
-      color: #ec176b;
+      color: hsl(var(--primary));
     }
 
     .status {
@@ -463,9 +462,9 @@
       }
 
       &.loser {
-        background: rgba(236, 23, 107, 0.25);
-        color: #ec176b;
-        border: 1px solid rgba(236, 23, 107, 0.3);
+        background: hsl(0 84% 60% / 0.25);
+        color: var(--match-loss);
+        border: 1px solid hsl(0 84% 60% / 0.3);
       }
     }
   }
@@ -480,6 +479,6 @@
 
 .scoreboardTable.loser .teamHeader {
   .roundsWon {
-    color: #ec176b;
+    color: var(--match-loss);
   }
 }

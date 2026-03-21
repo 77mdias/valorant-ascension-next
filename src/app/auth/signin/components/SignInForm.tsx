@@ -76,7 +76,7 @@ export default function SignInForm() {
   };
 
   return (
-    <div className="mb-12 mt-16 flex justify-center bg-[var(--all-black)] px-4">
+    <div className="mb-12 mt-16 flex justify-center bg-background px-4">
       <div className="w-full max-w-md space-y-8">
         <div className="text-center">
           <h2 className="mt-6 text-2xl font-bold md:text-3xl">
@@ -87,7 +87,7 @@ export default function SignInForm() {
               conteúdos exclusivos
             </span>
           </h2>
-          <p className="mt-2 text-sm text-gray-400">
+          <p className="mt-2 text-sm text-muted-foreground">
             Ou{" "}
             <Link
               href={`/auth/signup`}
@@ -151,7 +151,7 @@ export default function SignInForm() {
                 placeholder="Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="border-gray-600 bg-[var(--card-product)] text-white placeholder-gray-400"
+                className="border-border bg-card text-foreground placeholder:text-muted-foreground"
               />
             </div>
 
@@ -168,7 +168,7 @@ export default function SignInForm() {
                 placeholder="Senha"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="border-gray-600 bg-[var(--card-product)] pr-10 text-white placeholder-gray-400"
+                className="border-border bg-card pr-10 text-foreground placeholder:text-muted-foreground"
               />
               <button
                 type="button"
@@ -176,9 +176,9 @@ export default function SignInForm() {
                 onClick={() => setShowPassword(!showPassword)}
               >
                 {showPassword ? (
-                  <EyeOff className="h-4 w-4 text-gray-400" />
+                  <EyeOff className="h-4 w-4 text-muted-foreground" />
                 ) : (
-                  <Eye className="h-4 w-4 text-gray-400" />
+                  <Eye className="h-4 w-4 text-muted-foreground" />
                 )}
               </button>
             </div>

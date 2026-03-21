@@ -66,7 +66,7 @@ const CoursePageLoading = () => {
 
       {/* Loading Indicator */}
       <div className="fixed bottom-8 right-8 z-50">
-        <div className="flex items-center gap-3 rounded-full bg-card/80 px-4 py-2 shadow-lg backdrop-blur-sm">
+        <div className="flex items-center gap-3 rounded-full bg-card/80 px-4 py-2 shadow-lg">
           <LoadingSpinner size="sm" />
           <span className="text-sm text-muted-foreground">
             Carregando cursos...

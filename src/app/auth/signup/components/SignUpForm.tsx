@@ -165,15 +165,15 @@ export default function SignUpForm() {
   };
 
   return (
-    <div className="mb-12 mt-16 flex justify-center bg-[var(--all-black)] px-6">
+    <div className="mb-12 mt-16 flex justify-center bg-background px-6">
       <div className="w-full max-w-md space-y-8">
         <div className="text-center">
-          <h2 className="mt-6 text-3xl font-bold text-white">Crie sua conta</h2>
-          <p className="mt-2 text-sm text-gray-400">
+          <h2 className="mt-6 text-3xl font-bold text-foreground">Crie sua conta</h2>
+          <p className="mt-2 text-sm text-muted-foreground">
             Ou{" "}
             <Link
               href={`/auth/signin`}
-              className={`font-medium text-[var(--text-price)] transition-all duration-300 hover:text-[var(--text-price-secondary)] ${styles.textPrimary}`}
+              className={`font-medium text-primary transition-all duration-300 hover:text-primary/80 ${styles.textPrimary}`}
             >
               faça login em sua conta existente
             </Link>
@@ -201,7 +201,7 @@ export default function SignUpForm() {
                 placeholder="Nickname"
                 value={formData.name}
                 onChange={handleChange}
-                className="border-gray-600 bg-[var(--card-product)] text-white placeholder-gray-400"
+                className="border-border bg-card text-foreground placeholder:text-muted-foreground"
               />
             </div>
 
@@ -218,7 +218,7 @@ export default function SignUpForm() {
                 placeholder="Email"
                 value={formData.email}
                 onChange={handleChange}
-                className="border-gray-600 bg-[var(--card-product)] text-white placeholder-gray-400"
+                className="border-border bg-card text-foreground placeholder:text-muted-foreground"
               />
             </div>
 
@@ -235,7 +235,7 @@ export default function SignUpForm() {
                 placeholder="Senha (requisitos abaixo)"
                 value={formData.password}
                 onChange={handleChange}
-                className="border-gray-600 bg-[var(--card-product)] pr-10 text-white placeholder-gray-400"
+                className="border-border bg-card pr-10 text-foreground placeholder:text-muted-foreground"
               />
               <button
                 type="button"
@@ -243,19 +243,19 @@ export default function SignUpForm() {
                 onClick={() => setShowPassword(!showPassword)}
               >
                 {showPassword ? (
-                  <EyeOff className="h-4 w-4 text-gray-400" />
+                  <EyeOff className="h-4 w-4 text-muted-foreground" />
                 ) : (
-                  <Eye className="h-4 w-4 text-gray-400" />
+                  <Eye className="h-4 w-4 text-muted-foreground" />
                 )}
               </button>
             </div>
 
             {/* Requisitos de senha */}
-            <div className="mt-2 text-xs text-gray-400">
+            <div className="mt-2 text-xs text-muted-foreground">
               <p className="mb-1 font-medium">Sua senha deve conter:</p>
               <div className="grid grid-cols-1 gap-1">
                 <div
-                  className={`flex items-center ${formData.password.length >= 8 ? "text-green-400" : "text-gray-400"}`}
+                  className={`flex items-center ${formData.password.length >= 8 ? "text-green-400" : "text-muted-foreground"}`}
                 >
                   <span className="mr-1">
                     {formData.password.length >= 8 ? "✓" : "○"}
@@ -263,7 +263,7 @@ export default function SignUpForm() {
                   Pelo menos 8 caracteres
                 </div>
                 <div
-                  className={`flex items-center ${/[A-Z]/.test(formData.password) ? "text-green-400" : "text-gray-400"}`}
+                  className={`flex items-center ${/[A-Z]/.test(formData.password) ? "text-green-400" : "text-muted-foreground"}`}
                 >
                   <span className="mr-1">
                     {/[A-Z]/.test(formData.password) ? "✓" : "○"}
@@ -271,7 +271,7 @@ export default function SignUpForm() {
                   Uma letra maiúscula (A-Z)
                 </div>
                 <div
-                  className={`flex items-center ${/[a-z]/.test(formData.password) ? "text-green-400" : "text-gray-400"}`}
+                  className={`flex items-center ${/[a-z]/.test(formData.password) ? "text-green-400" : "text-muted-foreground"}`}
                 >
                   <span className="mr-1">
                     {/[a-z]/.test(formData.password) ? "✓" : "○"}
@@ -279,7 +279,7 @@ export default function SignUpForm() {
                   Uma letra minúscula (a-z)
                 </div>
                 <div
-                  className={`flex items-center ${/\d/.test(formData.password) ? "text-green-400" : "text-gray-400"}`}
+                  className={`flex items-center ${/\d/.test(formData.password) ? "text-green-400" : "text-muted-foreground"}`}
                 >
                   <span className="mr-1">
                     {/\d/.test(formData.password) ? "✓" : "○"}
@@ -287,7 +287,7 @@ export default function SignUpForm() {
                   Um número (0-9)
                 </div>
                 <div
-                  className={`flex items-center ${/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(formData.password) ? "text-green-400" : "text-gray-400"}`}
+                  className={`flex items-center ${/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(formData.password) ? "text-green-400" : "text-muted-foreground"}`}
                 >
                   <span className="mr-1">
                     {/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(
@@ -314,7 +314,7 @@ export default function SignUpForm() {
                 placeholder="Confirmar senha"
                 value={formData.confirmPassword}
                 onChange={handleChange}
-                className="border-gray-600 bg-[var(--card-product)] pr-10 text-white placeholder-gray-400"
+                className="border-border bg-card pr-10 text-foreground placeholder:text-muted-foreground"
               />
               <button
                 type="button"
@@ -322,9 +322,9 @@ export default function SignUpForm() {
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
               >
                 {showConfirmPassword ? (
-                  <EyeOff className="h-4 w-4 text-gray-400" />
+                  <EyeOff className="h-4 w-4 text-muted-foreground" />
                 ) : (
-                  <Eye className="h-4 w-4 text-gray-400" />
+                  <Eye className="h-4 w-4 text-muted-foreground" />
                 )}
               </button>
             </div>
@@ -333,7 +333,7 @@ export default function SignUpForm() {
           <Button
             type="submit"
             disabled={isLoading || isOAuthLoading !== null}
-            className={`w-full text-white hover:bg-[var(--text-price-secondary)] ${styles.buttonAccent}`}
+            className={`w-full text-white hover:bg-primary/80 ${styles.buttonAccent}`}
           >
             {isLoading ? "Criando conta..." : "Criar conta"}
           </Button>
@@ -341,11 +341,11 @@ export default function SignUpForm() {
           <div className="mt-6">
             <div className="relative mt-6">
               <div className="flex justify-center text-sm">
-                <span className="relative z-10 bg-black px-2 text-gray-400">
+                <span className="relative z-10 bg-black px-2 text-muted-foreground">
                   Ou continue com
                 </span>
               </div>
-              <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 border-t border-gray-600" />
+              <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 border-t border-border" />
             </div>
 
             <div className="mt-6 grid grid-cols-2 gap-3">
@@ -354,7 +354,7 @@ export default function SignUpForm() {
                 variant="outline"
                 onClick={() => handleOAuthSignIn("github")}
                 disabled={isLoading || isOAuthLoading === "github"}
-                className={`w-full border-gray-600 text-white transition-all duration-300 hover:border-primary hover:bg-primary/10`}
+                className={`w-full border-border text-foreground transition-all duration-300 hover:border-primary hover:bg-primary/10`}
               >
                 <Github className="mr-2 h-4 w-4" />
                 {isOAuthLoading === "github" ? "Conectando..." : "GitHub"}
@@ -365,7 +365,7 @@ export default function SignUpForm() {
                 variant="outline"
                 onClick={() => handleOAuthSignIn("google")}
                 disabled={isLoading || isOAuthLoading === "google"}
-                className={`w-full border-gray-600 text-white transition-all duration-300 hover:border-primary hover:bg-primary/10`}
+                className={`w-full border-border text-foreground transition-all duration-300 hover:border-primary hover:bg-primary/10`}
               >
                 <Mail className="mr-2 h-4 w-4" />
                 {isOAuthLoading === "google" ? "Conectando..." : "Google"}

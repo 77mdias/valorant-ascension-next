@@ -62,11 +62,11 @@ export default function ProfileHeader({
   };
 
   return (
-    <div className="bg-[var(--card-product)] rounded-lg p-6 sm:p-8 border border-gray-800">
+    <div className="bg-card rounded-lg p-6 sm:p-8 border border-border">
       <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
         {/* Avatar */}
         <div className="relative">
-          <Avatar className="w-24 h-24 sm:w-32 sm:h-32 border-4 border-gray-700">
+          <Avatar className="w-24 h-24 sm:w-32 sm:h-32 border-4 border-border">
             <AvatarImage src={image || undefined} alt={name || nickname || email} />
             <AvatarFallback className="text-2xl font-bold bg-gradient-to-br from-primary to-secondary text-white">
               {getInitials()}
@@ -82,15 +82,15 @@ export default function ProfileHeader({
 
         {/* Informações */}
         <div className="flex-1 text-center sm:text-left">
-          <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">
+          <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">
             {name || nickname || "Sem nome"}
           </h1>
 
           {nickname && name !== nickname && (
-            <p className="text-gray-400 mb-2">@{nickname}</p>
+            <p className="text-muted-foreground mb-2">@{nickname}</p>
           )}
 
-          <p className="text-gray-500 mb-4">{email}</p>
+          <p className="text-muted-foreground mb-4">{email}</p>
 
           {/* Badge de Role */}
           <Badge

@@ -35,16 +35,16 @@ export function PlanCard({
   const isCurrentPlan =
     subscription && PLANOS[type] === subscription.stripePriceId;
 
-  const baseClasses = `group rounded-xl border p-8 backdrop-blur-sm transition-all duration-300 ${
+  const baseClasses = `group rounded-xl border p-8 transition-all duration-300 ${
     isHighlighted
-      ? "relative overflow-hidden border-2 border-purple-500/50 bg-gradient-to-br from-purple-900/20 to-pink-900/20"
-      : "border-gray-800 bg-gray-900/50 hover:bg-gray-900/70"
+      ? "relative overflow-hidden border-2 border-primary/30 bg-gradient-to-br from-primary/10 to-secondary/10"
+      : "border-border bg-card/50 hover:bg-card/70"
   }`;
 
   return (
     <div className={baseClasses}>
       {isHighlighted && (
-        <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-pink-500/10"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-secondary/10"></div>
       )}
       <div
         className={
@@ -63,13 +63,13 @@ export function PlanCard({
 
         <div className="mb-6 text-center">
           <h3 className="mb-2 text-2xl font-bold">{title}</h3>
-          <div className="mb-4 text-4xl font-bold text-white">{price}</div>
-          <div className="text-sm text-gray-400">por mês</div>
+          <div className="mb-4 text-4xl font-bold text-foreground">{price}</div>
+          <div className="text-sm text-muted-foreground">por mês</div>
         </div>
 
         <ul className="mb-8 space-y-4">
           {features.map((feature, index) => (
-            <li key={index} className="flex items-center text-gray-300">
+            <li key={index} className="flex items-center text-muted-foreground">
               <svg
                 className="mr-3 h-5 w-5 text-green-500"
                 fill="currentColor"

@@ -130,16 +130,16 @@ export default function ResetPasswordForm() {
   // Se não há token, mostrar formulário para solicitar reset
   if (!token) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[var(--all-black)] px-4">
+      <div className="flex min-h-screen items-center justify-center bg-background px-4">
         <div className="w-full max-w-md space-y-8">
           <div className="text-center">
-            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[var(--text-price)]">
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary">
               <Mail className="h-6 w-6 text-white" />
             </div>
-            <h2 className="mt-6 text-3xl font-bold text-white">
+            <h2 className="mt-6 text-3xl font-bold text-foreground">
               Esqueceu sua senha?
             </h2>
-            <p className="mt-2 text-sm text-gray-400">
+            <p className="mt-2 text-sm text-muted-foreground">
               Digite seu email e enviaremos um link para redefinir sua senha
             </p>
           </div>
@@ -152,7 +152,7 @@ export default function ResetPasswordForm() {
                 message="Verifique sua caixa de entrada e clique no link para redefinir sua senha. Se não encontrar o email, verifique também a pasta de spam."
               />
               <div className="space-y-4 text-center">
-                <p className="text-sm text-gray-400">
+                <p className="text-sm text-muted-foreground">
                   Não recebeu o email? Verifique se o endereço está correto.
                 </p>
                 <Button
@@ -161,13 +161,13 @@ export default function ResetPasswordForm() {
                     setEmail("");
                     setError("");
                   }}
-                  className="w-full bg-[var(--text-price)] text-white hover:bg-[var(--text-price-secondary)]"
+                  className="w-full bg-primary text-white hover:bg-primary/80"
                 >
                   Tentar novamente
                 </Button>
                 <Link
                   href={`/auth/signin`}
-                  className="flex items-center justify-center text-sm text-[var(--text-price)] hover:text-[var(--text-price-secondary)]"
+                  className="flex items-center justify-center text-sm text-primary hover:text-primary/80"
                 >
                   <ArrowLeft className="mr-2 h-4 w-4" />
                   Voltar para o login
@@ -195,14 +195,14 @@ export default function ResetPasswordForm() {
                   placeholder="Digite seu email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="border-gray-600 bg-[var(--card-product)] text-white placeholder-gray-400"
+                  className="border-border bg-card text-foreground placeholder:text-muted-foreground"
                 />
               </div>
 
               <Button
                 type="submit"
                 disabled={isLoading}
-                className="w-full bg-[var(--text-price)] text-white hover:bg-[var(--text-price-secondary)] disabled:opacity-50"
+                className="w-full bg-primary text-white hover:bg-primary/80 disabled:opacity-50"
               >
                 {isLoading ? "Enviando..." : "Enviar link de reset"}
               </Button>
@@ -210,7 +210,7 @@ export default function ResetPasswordForm() {
               <div className="text-center">
                 <Link
                   href={`/auth/signin`}
-                  className="flex items-center justify-center text-sm text-[var(--text-price)] hover:text-[var(--text-price-secondary)]"
+                  className="flex items-center justify-center text-sm text-primary hover:text-primary/80"
                 >
                   <ArrowLeft className="mr-2 h-4 w-4" />
                   Voltar para o login
@@ -227,16 +227,16 @@ export default function ResetPasswordForm() {
 
   // Se há token, mostrar formulário para definir nova senha
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[var(--all-black)] px-4">
+    <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="w-full max-w-md space-y-8">
         <div className="text-center">
-          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[var(--text-price)]">
+          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary">
             <Lock className="h-6 w-6 text-white" />
           </div>
-          <h2 className="mt-6 text-3xl font-bold text-white">
+          <h2 className="mt-6 text-3xl font-bold text-foreground">
             Redefinir senha
           </h2>
-          <p className="mt-2 text-sm text-gray-400">Digite sua nova senha</p>
+          <p className="mt-2 text-sm text-muted-foreground">Digite sua nova senha</p>
         </div>
 
         {success ? (
@@ -249,7 +249,7 @@ export default function ResetPasswordForm() {
             <div className="text-center">
               <Link
                 href={`/auth/signin`}
-                className="text-[var(--text-price)] hover:text-[var(--text-price-secondary)]"
+                className="text-primary hover:text-primary/80"
               >
                 Ir para o login agora
               </Link>
@@ -277,7 +277,7 @@ export default function ResetPasswordForm() {
                   placeholder="Email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="border-gray-600 bg-[var(--card-product)] text-white placeholder-gray-400"
+                  className="border-border bg-card text-foreground placeholder:text-muted-foreground"
                 />
               </div>
 
@@ -294,7 +294,7 @@ export default function ResetPasswordForm() {
                   placeholder="Nova senha"
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
-                  className="border-gray-600 bg-[var(--card-product)] pr-10 text-white placeholder-gray-400"
+                  className="border-border bg-card pr-10 text-foreground placeholder:text-muted-foreground"
                 />
                 <button
                   type="button"
@@ -302,9 +302,9 @@ export default function ResetPasswordForm() {
                   onClick={() => setShowNewPassword(!showNewPassword)}
                 >
                   {showNewPassword ? (
-                    <EyeOff className="h-4 w-4 text-gray-400" />
+                    <EyeOff className="h-4 w-4 text-muted-foreground" />
                   ) : (
-                    <Eye className="h-4 w-4 text-gray-400" />
+                    <Eye className="h-4 w-4 text-muted-foreground" />
                   )}
                 </button>
               </div>
@@ -322,7 +322,7 @@ export default function ResetPasswordForm() {
                   placeholder="Confirmar nova senha"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="border-gray-600 bg-[var(--card-product)] pr-10 text-white placeholder-gray-400"
+                  className="border-border bg-card pr-10 text-foreground placeholder:text-muted-foreground"
                 />
                 <button
                   type="button"
@@ -330,9 +330,9 @@ export default function ResetPasswordForm() {
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                 >
                   {showConfirmPassword ? (
-                    <EyeOff className="h-4 w-4 text-gray-400" />
+                    <EyeOff className="h-4 w-4 text-muted-foreground" />
                   ) : (
-                    <Eye className="h-4 w-4 text-gray-400" />
+                    <Eye className="h-4 w-4 text-muted-foreground" />
                   )}
                 </button>
               </div>
@@ -341,7 +341,7 @@ export default function ResetPasswordForm() {
             <Button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-[var(--text-price)] text-white hover:bg-[var(--text-price-secondary)] disabled:opacity-50"
+              className="w-full bg-primary text-white hover:bg-primary/80 disabled:opacity-50"
             >
               {isLoading ? "Redefinindo..." : "Redefinir senha"}
             </Button>
@@ -349,7 +349,7 @@ export default function ResetPasswordForm() {
             <div className="text-center">
               <Link
                 href={`/auth/signin`}
-                className="flex items-center justify-center text-sm text-[var(--text-price)] hover:text-[var(--text-price-secondary)]"
+                className="flex items-center justify-center text-sm text-primary hover:text-primary/80"
               >
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Voltar para o login

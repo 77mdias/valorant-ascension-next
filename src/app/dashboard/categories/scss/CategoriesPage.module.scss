@@ -14,7 +14,7 @@
 .title {
   font-size: 1.875rem;
   font-weight: 600;
-  color: #1a202c;
+  color: hsl(var(--foreground));
   margin: 0;
 }
 
@@ -37,7 +37,7 @@
 .emptyCell {
   text-align: center;
   padding: 2rem;
-  color: #718096;
+  color: hsl(var(--muted-foreground));
 }
 
 .categoryName {
@@ -52,9 +52,9 @@
   justify-content: center;
   width: 2rem;
   height: 2rem;
-  background-color: #edf2f7;
+  background-color: hsl(var(--muted));
   border-radius: 0.375rem;
-  color: #2d3748;
+  color: hsl(var(--foreground));
   font-size: 1rem;
 }
 

@@ -55,26 +55,26 @@ export default function PricingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-background text-foreground">
       {/* Hero Section */}
       <section className="relative overflow-hidden pb-20 pt-16">
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-blue-900/20 to-indigo-900/20"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-blue-900/20 to-indigo-900/20"></div>
         <div className="absolute inset-0 bg-[url('https://placehold.co/1920x1080/1a1a1a/333333?text=Valorant+Training')] bg-cover bg-center opacity-30"></div>
 
         <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mt-5 text-center">
             <h1 className="mb-6 text-3xl font-bold leading-tight md:text-6xl">
-              <span className="text-white">Os melhores planos</span>
-              <span className="bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent">
+              <span className="text-foreground">Os melhores planos</span>
+              <span className="bg-primary bg-clip-text text-transparent">
                 {" "}
                 para
               </span>
               <br />
-              <span className="bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent">
+              <span className="bg-primary bg-clip-text text-transparent">
                 você
               </span>
             </h1>
-            <p className="mx-auto mb-10 max-w-3xl text-lg leading-relaxed text-gray-300 md:text-2xl">
+            <p className="mx-auto mb-10 max-w-3xl text-lg leading-relaxed text-muted-foreground md:text-2xl">
               Escolha o plano ideal para você e comece a evoluir no Valorant,
               desde o iniciante até o profissional.
             </p>
@@ -89,7 +89,7 @@ export default function PricingPage() {
 
               <a
                 href="#pricing"
-                className="min-w-[195px] rounded-md border border-primary/30 bg-black px-8 py-2 transition-all duration-300 hover:border-primary hover:bg-primary/10"
+                className="min-w-[195px] rounded-md border border-primary/30 bg-background px-8 py-2 transition-all duration-300 hover:border-primary hover:bg-primary/10"
               >
                 Ver Planos
               </a>
@@ -99,16 +99,16 @@ export default function PricingPage() {
       </section>
 
       {/* Pricing Section */}
-      <section id="pricing" className="bg-gray-900/50 py-20">
+      <section id="pricing" className="bg-card/50 py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mb-16 text-center">
             <h2 className="mb-4 text-3xl font-bold md:text-4xl">
               Planos de{" "}
-              <span className="bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent">
+              <span className="bg-primary bg-clip-text text-transparent">
                 Assinatura
               </span>
             </h2>
-            <p className="mx-auto max-w-2xl text-lg text-gray-400">
+            <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
               Escolha o plano que melhor se adapta ao seu nível de jogo e
               objetivos
             </p>

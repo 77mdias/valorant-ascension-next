@@ -74,22 +74,22 @@ export default function ProfileForm({ currentData }: ProfileFormProps) {
 
   return (
     <>
-      <div className="bg-[var(--card-product)] rounded-lg p-6 border border-gray-800">
-        <h3 className="text-lg font-semibold text-white mb-6">
+      <div className="bg-card rounded-lg p-6 border border-border">
+        <h3 className="text-lg font-semibold text-foreground mb-6">
           Editar Perfil
         </h3>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           {/* Nome */}
           <div className="space-y-2">
-            <Label htmlFor="name" className="text-gray-300">
+            <Label htmlFor="name" className="text-muted-foreground">
               Nome completo
             </Label>
             <Input
               id="name"
               type="text"
               placeholder="Seu nome completo"
-              className="border-gray-600 bg-[var(--all-black)] text-white placeholder-gray-500"
+              className="border-border bg-background text-foreground placeholder:text-muted-foreground"
               {...register("name")}
             />
             {errors.name && (
@@ -99,9 +99,9 @@ export default function ProfileForm({ currentData }: ProfileFormProps) {
 
           {/* Nickname */}
           <div className="space-y-2">
-            <Label htmlFor="nickname" className="text-gray-300">
+            <Label htmlFor="nickname" className="text-muted-foreground">
               Nickname
-              <span className="text-gray-500 text-xs ml-2">
+              <span className="text-muted-foreground text-xs ml-2">
                 (apenas letras, números, _ e -)
               </span>
             </Label>
@@ -109,7 +109,7 @@ export default function ProfileForm({ currentData }: ProfileFormProps) {
               id="nickname"
               type="text"
               placeholder="seu_nickname"
-              className="border-gray-600 bg-[var(--all-black)] text-white placeholder-gray-500"
+              className="border-border bg-background text-foreground placeholder:text-muted-foreground"
               {...register("nickname")}
             />
             {errors.nickname && (
@@ -119,7 +119,7 @@ export default function ProfileForm({ currentData }: ProfileFormProps) {
 
           {/* URL da Imagem */}
           <div className="space-y-2">
-            <Label htmlFor="image" className="text-gray-300">
+            <Label htmlFor="image" className="text-muted-foreground">
               URL da Imagem de Perfil
             </Label>
             <div className="flex gap-2">
@@ -128,12 +128,12 @@ export default function ProfileForm({ currentData }: ProfileFormProps) {
                   id="image"
                   type="url"
                   placeholder="https://exemplo.com/imagem.jpg"
-                  className="border-gray-600 bg-[var(--all-black)] text-white placeholder-gray-500"
+                  className="border-border bg-background text-foreground placeholder:text-muted-foreground"
                   {...register("image")}
                 />
               </div>
               {imageUrl && (
-                <div className="relative w-12 h-12 rounded-lg border border-gray-600 overflow-hidden bg-gray-800 flex items-center justify-center">
+                <div className="relative w-12 h-12 rounded-lg border border-border overflow-hidden bg-muted flex items-center justify-center">
                   {imageUrl ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
@@ -146,14 +146,14 @@ export default function ProfileForm({ currentData }: ProfileFormProps) {
                       }}
                     />
                   ) : null}
-                  <ImageIcon className="w-6 h-6 text-gray-500 hidden" />
+                  <ImageIcon className="w-6 h-6 text-muted-foreground hidden" />
                 </div>
               )}
             </div>
             {errors.image && (
               <p className="text-sm text-red-500">{errors.image.message}</p>
             )}
-            <p className="text-xs text-gray-500">
+            <p className="text-xs text-muted-foreground">
               Cole a URL de uma imagem hospedada online (ex: Imgur, Cloudinary)
             </p>
           </div>
@@ -183,14 +183,14 @@ export default function ProfileForm({ currentData }: ProfileFormProps) {
               variant="outline"
               disabled={isLoading || !isDirty}
               onClick={() => reset()}
-              className="flex-1 border-gray-600 text-gray-300 hover:bg-gray-800"
+              className="flex-1 border-border text-muted-foreground hover:bg-muted"
             >
               Cancelar
             </Button>
           </div>
 
           {!isDirty && (
-            <p className="text-sm text-gray-500 text-center">
+            <p className="text-sm text-muted-foreground text-center">
               Faça alterações nos campos acima para salvar
             </p>
           )}

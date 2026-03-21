@@ -327,15 +327,15 @@ export default function ErrorContent() {
   if (error === "OAuthAccountNotLinked" || error === "AccessDenied") {
     console.log("Renderizando modal de erro OAuth");
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[var(--all-black)] px-4">
+      <div className="flex min-h-screen items-center justify-center bg-background px-4">
         <div className="text-center">
           <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-100">
             <AlertCircle className="h-8 w-8 text-red-600" />
           </div>
-          <h2 className="mb-4 text-3xl font-bold text-white">
+          <h2 className="mb-4 text-3xl font-bold text-foreground">
             Email já cadastrado
           </h2>
-          <p className="mb-8 text-gray-400">
+          <p className="mb-8 text-muted-foreground">
             {loading
               ? "Carregando informações..."
               : "Clique no botão abaixo para ver mais detalhes"}
@@ -343,7 +343,7 @@ export default function ErrorContent() {
           <Button
             onClick={() => setShowModal(true)}
             disabled={loading}
-            className="bg-[var(--button-primary)] text-white hover:bg-[var(--text-price-secondary)] disabled:opacity-50"
+            className="bg-primary text-white hover:bg-primary/80 disabled:opacity-50"
           >
             {loading ? "Carregando..." : "Ver Detalhes"}
           </Button>
@@ -375,22 +375,22 @@ export default function ErrorContent() {
 
   // Renderização padrão para outros erros
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[var(--all-black)] px-4">
+    <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="w-full max-w-md space-y-8">
         <div className="text-center">
           <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-100">
             <AlertCircle className="h-8 w-8 text-red-600" />
           </div>
-          <h2 className="text-3xl font-bold text-white">
+          <h2 className="text-3xl font-bold text-foreground">
             Erro de Autenticação
           </h2>
-          <p className="mt-2 text-sm text-gray-400">{errorData as string}</p>
+          <p className="mt-2 text-sm text-muted-foreground">{errorData as string}</p>
         </div>
 
         <div className="space-y-4">
           <Button
             asChild
-            className="w-full bg-[var(--button-primary)] text-white hover:bg-[var(--text-price-secondary)]"
+            className="w-full bg-primary text-white hover:bg-primary/80"
           >
             <Link
               href={`/auth/signin?callbackUrl=${encodeURIComponent(finalSlug ? `/${finalSlug}` : "/")}`}
@@ -402,7 +402,7 @@ export default function ErrorContent() {
           <Button
             asChild
             variant="outline"
-            className="w-full border-gray-600 bg-transparent text-white hover:bg-gray-700"
+            className="w-full border-border bg-transparent text-foreground hover:bg-muted"
           >
             <Link href={finalSlug ? `/${finalSlug}` : "/"}>
               Voltar ao Início

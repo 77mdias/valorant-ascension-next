@@ -53,7 +53,7 @@ function StudyTimeTooltip({
   }
 
   return (
-    <div className="min-w-40 rounded-xl border border-orange-100/30 bg-slate-950/95 p-3 text-xs shadow-xl backdrop-blur">
+    <div className="min-w-40 rounded-xl border border-orange-100/30 bg-slate-950/95 p-3 text-xs shadow-xl">
       <p className="text-[11px] uppercase tracking-[0.16em] text-orange-200/90">
         {label}
       </p>

@@ -28,7 +28,7 @@ const Hero = () => {
         <HeroBadge>🇧🇷 Academia Brasileira #1 em Valorant</HeroBadge>
 
         <h1 className="mb-6 font-poppins text-5xl font-bold leading-tight md:text-7xl">
-          <span className="bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
             Domine o Valorant
           </span>
           <br />

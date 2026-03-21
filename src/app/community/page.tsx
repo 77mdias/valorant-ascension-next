@@ -123,7 +123,7 @@ const Community = () => {
     <div className={styles.communityContainer}>
       {/* Hero Section */}
       <section className={styles.heroSection}>
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-blue-900/20 to-indigo-900/20"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-primary/10 to-secondary/20"></div>
         <div className="absolute inset-0 bg-[url('https://placehold.co/1920x1080/1a1a1a/333333?text=Valorant+Training')] bg-cover bg-center opacity-30"></div>
 
         <div className={styles.heroContent}>
@@ -174,7 +174,7 @@ const Community = () => {
             {communityFeatures.map((feature, index) => (
               <div key={index} className={styles.featureCard}>
                 <div className={styles.featureIcon}>
-                  <feature.icon className="h-6 w-6 text-white" />
+                  <feature.icon className="h-6 w-6 text-foreground" />
                 </div>
                 <h3 className={styles.featureTitle}>{feature.title}</h3>
                 <p className={styles.featureDescription}>
@@ -229,7 +229,7 @@ const Community = () => {
                     <Badge
                       key={specialty}
                       variant="secondary"
-                      className="border-purple-500/30 bg-purple-500/20 text-xs text-purple-300"
+                      className="border-primary/30 bg-primary/20 text-xs text-primary"
                     >
                       {specialty}
                     </Badge>
@@ -287,7 +287,7 @@ const Community = () => {
                 <Button
                   size="sm"
                   variant="outline"
-                  className="border-purple-500/50 text-purple-400 hover:bg-purple-500/10"
+                  className="border-primary/50 text-primary hover:bg-primary/10"
                   asChild
                 >
                   <Link

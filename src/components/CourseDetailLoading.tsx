@@ -41,7 +41,7 @@ const CourseDetailLoading = () => {
           {/* Sidebar Skeleton */}
           <aside className="hidden lg:block">
             <div className="sticky top-24">
-              <div className="rounded-2xl bg-[#160e1b] p-6">
+              <div className="rounded-2xl bg-card p-6">
                 <div className="mb-4 h-6 w-32 animate-pulse rounded bg-gradient-to-r from-muted to-muted/50"></div>
                 <div className="max-h-[calc(100vh-250px)] space-y-3 overflow-y-auto px-4 py-2">
                   {Array.from({ length: 5 }).map((_, index) => (
@@ -97,7 +97,7 @@ const CourseDetailLoading = () => {
 
       {/* Loading Indicator */}
       <div className="fixed bottom-8 right-8 z-50">
-        <div className="flex items-center gap-3 rounded-full bg-card/80 px-4 py-2 shadow-lg backdrop-blur-sm">
+        <div className="flex items-center gap-3 rounded-full bg-card/80 px-4 py-2 shadow-lg">
           <LoadingSpinner size="sm" />
           <span className="text-sm text-muted-foreground">
             Carregando curso...

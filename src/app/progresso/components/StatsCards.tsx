@@ -23,7 +23,7 @@ type StatsCardsProps = {
 const ProgressBar = ({ value }: { value: number }) => (
   <div className="mt-3 h-2 w-full rounded-full bg-muted">
     <div
-      className="h-2 rounded-full bg-gradient-to-r from-primary to-pink-500 transition-[width]"
+      className="h-2 rounded-full bg-gradient-to-r from-primary to-secondary transition-[width]"
       style={{ width: `${Math.min(Math.max(value, 0), 1) * 100}%` }}
       aria-hidden
     />

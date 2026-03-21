@@ -1,21 +1,22 @@
 "use client";
 
-//IMPORT DE DEPENDÊNCIAS
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "./ui/button";
-import { Menu, X } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { Menu, X, Sun, Moon } from "lucide-react";
+import { useTheme } from "next-themes";
 import Image from "next/image";
 import Link from "next/link";
 
 import MenuNavigation from "./MenuNavigation";
-import styles from "@/scss/components/CourseCard.module.scss";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const router = useRouter();
+  const [mounted, setMounted] = useState(false);
   const { isAuthenticated, user } = useAuth();
+  const { theme, setTheme } = useTheme();
+
+  useEffect(() => setMounted(true), []);
 
   const handleMenuToggle = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -34,7 +35,7 @@ const Header = () => {
           />
           <span className="font-poppins text-xl font-bold italic">
             Ne
-            <span className="font-poppins text-xl font-extrabold italic text-pink-600">
+            <span className="font-poppins text-xl font-extrabold italic text-primary">
               XT
             </span>
           </span>
@@ -48,7 +49,7 @@ const Header = () => {
           >
             Cursos
             <span
-              className={`${styles.bgGradient} absolute -bottom-1 left-0 h-0.5 w-0 transition-all duration-300 group-hover:w-full`}
+              className="absolute -bottom-1 left-0 h-0.5 w-0 bg-primary transition-all duration-300 group-hover:w-full"
             ></span>
           </Link>
           {isAuthenticated && (
@@ -58,7 +59,7 @@ const Header = () => {
             >
               Meu Progresso
               <span
-                className={`${styles.bgGradient} absolute -bottom-1 left-0 h-0.5 w-0 transition-all duration-300 group-hover:w-full`}
+                className="absolute -bottom-1 left-0 h-0.5 w-0 bg-primary transition-all duration-300 group-hover:w-full"
               ></span>
             </Link>
           )}
@@ -68,7 +69,7 @@ const Header = () => {
           >
             Instrutores
             <span
-              className={`${styles.bgGradient} absolute -bottom-1 left-0 h-0.5 w-0 transition-all duration-300 group-hover:w-full`}
+              className="absolute -bottom-1 left-0 h-0.5 w-0 bg-primary transition-all duration-300 group-hover:w-full"
             ></span>
           </a>
           <a
@@ -77,7 +78,7 @@ const Header = () => {
           >
             MMR
             <span
-              className={`${styles.bgGradient} absolute -bottom-1 left-0 h-0.5 w-0 transition-all duration-300 group-hover:w-full`}
+              className="absolute -bottom-1 left-0 h-0.5 w-0 bg-primary transition-all duration-300 group-hover:w-full"
             ></span>
           </a>
           <a
@@ -86,7 +87,7 @@ const Header = () => {
           >
             Comunidade
             <span
-              className={`${styles.bgGradient} absolute -bottom-1 left-0 h-0.5 w-0 transition-all duration-300 group-hover:w-full`}
+              className="absolute -bottom-1 left-0 h-0.5 w-0 bg-primary transition-all duration-300 group-hover:w-full"
             ></span>
           </a>
           <a
@@ -95,7 +96,7 @@ const Header = () => {
           >
             Preços
             <span
-              className={`${styles.bgGradient} absolute -bottom-1 left-0 h-0.5 w-0 transition-all duration-300 group-hover:w-full`}
+              className="absolute -bottom-1 left-0 h-0.5 w-0 bg-primary transition-all duration-300 group-hover:w-full"
             ></span>
           </a>
           {user?.role === "ADMIN" && (
@@ -105,13 +106,22 @@ const Header = () => {
             >
               Dashboard
               <span
-                className={`${styles.bgGradient} absolute -bottom-1 left-0 h-0.5 w-0 transition-all duration-300 group-hover:w-full`}
+                className="absolute -bottom-1 left-0 h-0.5 w-0 bg-primary transition-all duration-300 group-hover:w-full"
               ></span>
             </a>
           )}
         </nav>
 
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-3">
+          {/* Theme Toggle */}
+          <button
+            className="rounded-lg p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            aria-label="Toggle theme"
+          >
+            {mounted && (theme === "dark" ? <Sun size={18} /> : <Moon size={18} />)}
+          </button>
+
           {/* MENU DE LOGIN/PERFIL DESKTOP */}
           <MenuNavigation />
 

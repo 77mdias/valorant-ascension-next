@@ -67,18 +67,18 @@ function ThankYouContent() {
   };
 
   return (
-    <div className="flex justify-center bg-[var(--all-black)] px-4 py-8">
-      <Card className="w-full max-w-md border-gray-600 bg-[var(--card-product)]">
+    <div className="flex justify-center bg-background px-4 py-8">
+      <Card className="w-full max-w-md border-border bg-card">
         <CardHeader className="text-center">
           <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-500/10">
             <CheckCircle className="h-8 w-8 text-green-400" />
           </div>
-          <CardTitle className="text-center text-2xl text-white">
+          <CardTitle className="text-center text-2xl text-foreground">
             {verified
               ? "Email Verificado com Sucesso!"
               : "Conta Criada com Sucesso!"}
           </CardTitle>
-          <CardDescription className="mt-2 text-center text-gray-400">
+          <CardDescription className="mt-2 text-center text-muted-foreground">
             {verified
               ? "Sua conta foi ativada! Agora você pode fazer login e começar a usar nossa plataforma."
               : "Obrigado por se cadastrar em nossa plataforma. Para começar a usar sua conta, verifique seu email."}
@@ -94,7 +94,7 @@ function ThankYouContent() {
                 <p className="text-sm font-medium text-blue-400">
                   Email de verificação enviado
                 </p>
-                <p className="mt-1 text-xs text-gray-400">
+                <p className="mt-1 text-xs text-muted-foreground">
                   Verifique sua caixa de entrada e spam
                 </p>
               </div>
@@ -104,15 +104,15 @@ function ThankYouContent() {
           {/* Email do usuário */}
           {email && (
             <div className="text-center">
-              <p className="text-sm text-gray-400">Email:</p>
-              <p className="font-medium text-white">{email}</p>
+              <p className="text-sm text-muted-foreground">Email:</p>
+              <p className="font-medium text-foreground">{email}</p>
             </div>
           )}
 
           {/* Instruções */}
           <div className="space-y-3">
-            <h4 className="text-sm font-medium text-white">Próximos passos:</h4>
-            <div className="space-y-2 text-sm text-gray-400">
+            <h4 className="text-sm font-medium text-foreground">Próximos passos:</h4>
+            <div className="space-y-2 text-sm text-muted-foreground">
               <div className="flex items-start gap-2">
                 <span className="mt-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-blue-500 text-xs text-white">
                   1
@@ -139,7 +139,7 @@ function ThankYouContent() {
             <Button
               onClick={resendVerificationEmail}
               disabled={isResending || hasResent}
-              className="w-full bg-[var(--button-primary)] text-white hover:bg-[var(--text-price-secondary)]"
+              className="w-full bg-primary text-white hover:bg-primary/80"
             >
               {isResending
                 ? "Reenviando..."
@@ -151,7 +151,7 @@ function ThankYouContent() {
             <Button
               onClick={goToLogin}
               variant="outline"
-              className="w-full border-gray-600 bg-[var(--card-product)] text-white hover:bg-gray-700"
+              className="w-full border-border bg-card text-foreground hover:bg-muted"
             >
               Ir para Login
             </Button>
@@ -161,7 +161,7 @@ function ThankYouContent() {
           <div className="text-center">
             <Link
               href="/"
-              className="inline-flex items-center gap-2 text-sm text-gray-400 transition-colors hover:text-white"
+              className="inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
             >
               <ArrowLeft className="h-4 w-4" />
               Voltar para o inicio
@@ -177,13 +177,13 @@ export default function ThankYouPage() {
   return (
     <Suspense
       fallback={
-        <div className="flex justify-center bg-[var(--all-black)] px-4 py-8">
-          <Card className="w-full max-w-md border-gray-600 bg-[var(--card-product)]">
+        <div className="flex justify-center bg-background px-4 py-8">
+          <Card className="w-full max-w-md border-border bg-card">
             <CardHeader className="text-center">
               <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-500/10">
                 <CheckCircle className="h-8 w-8 text-green-400" />
               </div>
-              <CardTitle className="text-center text-2xl text-white">
+              <CardTitle className="text-center text-2xl text-foreground">
                 Carregando...
               </CardTitle>
             </CardHeader>

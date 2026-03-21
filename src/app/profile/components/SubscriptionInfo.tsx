@@ -37,9 +37,9 @@ export default function SubscriptionInfo({ subscription }: SubscriptionInfoProps
   };
 
   return (
-    <div className="bg-[var(--card-product)] rounded-lg p-6 border border-gray-800">
+    <div className="bg-card rounded-lg p-6 border border-border">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+        <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
           <CreditCard className="w-5 h-5" />
           Assinatura
         </h3>
@@ -51,19 +51,19 @@ export default function SubscriptionInfo({ subscription }: SubscriptionInfoProps
       <div className="space-y-4">
         {/* Plano */}
         <div className="flex justify-between items-center">
-          <span className="text-gray-400">Plano:</span>
-          <span className="text-white font-semibold text-lg bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
+          <span className="text-muted-foreground">Plano:</span>
+          <span className="text-foreground font-semibold text-lg bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
             {planName}
           </span>
         </div>
 
         {/* Período */}
         <div className="flex justify-between items-center">
-          <span className="text-gray-400 flex items-center gap-2">
+          <span className="text-muted-foreground flex items-center gap-2">
             <Calendar className="w-4 h-4" />
             Período atual:
           </span>
-          <span className="text-white text-sm">
+          <span className="text-foreground text-sm">
             {new Date(subscription.currentPeriodStart).toLocaleDateString("pt-BR")} -{" "}
             {new Date(subscription.currentPeriodEnd).toLocaleDateString("pt-BR")}
           </span>
@@ -84,15 +84,15 @@ export default function SubscriptionInfo({ subscription }: SubscriptionInfoProps
           </div>
         ) : (
           <div className="flex justify-between items-center">
-            <span className="text-gray-400">Próxima cobrança:</span>
-            <span className="text-white font-medium">
+            <span className="text-muted-foreground">Próxima cobrança:</span>
+            <span className="text-foreground font-medium">
               {new Date(subscription.currentPeriodEnd).toLocaleDateString("pt-BR")}
             </span>
           </div>
         )}
 
         {/* Link para gerenciar assinatura */}
-        <div className="pt-4 border-t border-gray-700">
+        <div className="pt-4 border-t border-border">
           <a
             href="/subscription/manage"
             className="text-primary hover:text-primary/80 text-sm font-medium transition-colors"

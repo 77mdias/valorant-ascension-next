@@ -38,7 +38,7 @@ const CourseCard = ({
 }: CourseCardProps) => {
   const levelColors = {
     INICIANTE: `bg-cyan-400 text-white`,
-    INTERMEDIARIO: `bg-purple-500 text-white`,
+    INTERMEDIARIO: `bg-primary text-white`,
     AVANCADO: `bg-orange-400 text-white`,
     IMORTAL: `${styles.bgGradientPrimary} text-white`,
   };
@@ -76,7 +76,7 @@ const CourseCard = ({
         <div className="flex flex-col gap-2">
           {/* Icon */}
           <div
-            className={`${styles.bgGradientPrimary} ${styles.shadowNeon} flex h-12 w-12 items-center justify-center rounded-lg p-2.5`}
+            className={`${styles.bgGradientPrimary} flex h-12 w-12 items-center justify-center rounded-lg p-2.5`}
           >
             <IconComponent className="h-6 w-6" />
           </div>

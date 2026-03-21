@@ -6,7 +6,6 @@ import {
   Youtube,
   MessageCircle,
 } from "lucide-react";
-import styles from "@/scss/components/CourseCard.module.scss";
 
 const Footer = () => {
   const socialLinks = [
@@ -32,15 +31,13 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="border-t border-border bg-card/50 backdrop-blur-sm">
+    <footer className="border-t border-border bg-card/80">
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
           {/* Brand */}
           <div className="space-y-4">
             <Link href="/" className="inline-block">
-              <span
-                className={`${styles.bgGradient} bg-clip-text text-2xl font-bold text-transparent`}
-              >
+              <span className="text-2xl font-bold text-primary">
                 NeXT
               </span>
             </Link>
@@ -54,7 +51,7 @@ const Footer = () => {
                   key={index}
                   href={social.href}
                   aria-label={social.label}
-                  className="hover:shadow-neon flex h-10 w-10 items-center justify-center rounded-lg bg-muted transition-all duration-300 hover:bg-primary/20 hover:text-primary"
+                  className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted transition-all duration-200 hover:bg-primary/20 hover:text-primary"
                 >
                   {social.icon}
                 </a>
@@ -97,7 +94,7 @@ const Footer = () => {
               />
               <button
                 type="submit"
-                className="bg-gradient-primary hover:shadow-neon rounded-lg px-6 py-2 font-medium text-primary-foreground transition-all duration-300"
+                className="rounded-lg bg-primary px-6 py-2 font-medium text-primary-foreground transition-all duration-200 hover:opacity-90"
               >
                 Inscrever
               </button>

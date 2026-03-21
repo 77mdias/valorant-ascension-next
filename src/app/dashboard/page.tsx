@@ -36,7 +36,7 @@ export default async function DashboardPage() {
       <h1 className="mb-6 text-3xl font-bold">Visão Geral</h1>
 
       <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-        <Card className="ease border border-gray-700 bg-[#0e121c] transition-all duration-300 hover:scale-105 hover:shadow-[0_0_15px_rgba(250,0,150,0.6)]">
+        <Card className="ease border border-border bg-card transition-all duration-300 hover:scale-105">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
               Usuários
@@ -50,7 +50,7 @@ export default async function DashboardPage() {
           </CardContent>
         </Card>
 
-        <Card className="ease border border-gray-700 bg-[#0e121c] transition-all duration-300 hover:scale-105 hover:shadow-[0_0_15px_rgba(250,0,150,0.6)]">
+        <Card className="ease border border-border bg-card transition-all duration-300 hover:scale-105">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
               Aulas
@@ -64,7 +64,7 @@ export default async function DashboardPage() {
           </CardContent>
         </Card>
 
-        <Card className="ease border border-gray-700 bg-[#0e121c] transition-all duration-300 hover:scale-105 hover:shadow-[0_0_15px_rgba(255,0,150,0.6)]">
+        <Card className="ease border border-border bg-card transition-all duration-300 hover:scale-105">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
               Categorias

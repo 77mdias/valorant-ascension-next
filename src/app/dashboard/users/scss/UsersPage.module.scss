@@ -14,7 +14,7 @@
 .title {
   font-size: 1.875rem;
   font-weight: 600;
-  color: #edf2f7;
+  color: hsl(var(--foreground));
   margin: 0;
 }
 
@@ -37,7 +37,7 @@
 .emptyCell {
   text-align: center;
   padding: 2rem;
-  color: #718096;
+  color: hsl(var(--muted-foreground));
 }
 
 .statusActive {

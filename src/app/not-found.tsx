@@ -12,10 +12,10 @@ export default function NotFound() {
       <div className="mx-auto max-w-md text-center">
         <div className="mb-8">
           <h1 className="mb-4 text-6xl font-bold">404</h1>
-          <h2 className="mb-2 text-2xl font-semibold text-gray-400">
+          <h2 className="mb-2 text-2xl font-semibold text-muted-foreground">
             Página não encontrada
           </h2>
-          <p className="text-gray-600">
+          <p className="text-muted-foreground">
             A página que você está procurando não existe ou foi movida.
           </p>
         </div>

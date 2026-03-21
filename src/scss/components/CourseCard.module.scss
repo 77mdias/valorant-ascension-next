@@ -1,26 +1,11 @@
 .card {
   position: relative;
-
   border-radius: 1rem;
-  background: #111;
+  background: hsl(var(--card));
+  transition: box-shadow 0.2s ease;
 
-  &:before {
-    content: "";
-    position: absolute;
-    inset: -10px;
-    border-radius: inherit;
-    background: radial-gradient(
-      circle,
-      rgba(255, 0, 128, 0.4),
-      transparent 70%
-    );
-    opacity: 0;
-    transition: opacity 0.4s ease;
-    z-index: 0;
-  }
-
-  &:hover:before {
-    opacity: 1;
+  &:hover {
+    box-shadow: var(--shadow-card-hover);
   }
 
   > * {
@@ -30,33 +15,33 @@
 }
 
 .bgAccentCyan {
-  background-color: var(--accent-cyan);
+  background-color: hsl(var(--ciano));
 }
 
 .bgAccentOrange {
-  background-color: var(--accent-orange);
+  background-color: hsl(var(--accent));
 }
 
 .textPrimaryForeground {
-  color: var(--primary-foreground);
+  color: hsl(var(--primary-foreground));
 }
 
 .textSecondaryForeground {
-  color: var(--secondary-foreground);
+  color: hsl(var(--secondary-foreground));
 }
 
 .textBackground {
-  color: var(--background);
+  color: hsl(var(--background));
 }
 
 .bgSecondary {
-  background-color: var(--secondary);
+  background-color: hsl(var(--secondary));
 }
 
 .hoverCard {
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   &:hover {
-    box-shadow: var(--shadow-neon);
+    box-shadow: var(--shadow-card-hover);
     background-color: var(--card-hover);
   }
 }
@@ -88,25 +73,23 @@
 }
 
 .accentOrange {
-  color: hsl(var(--accent-orange));
-  fill: hsl(var(--accent-orange));
+  color: hsl(var(--accent));
+  fill: hsl(var(--accent));
 }
 
 .buttonAccent {
-  border: 1px solid (var(--primary));
-  transition: all 0.6s ease;
+  border: 1px solid hsl(var(--primary));
+  transition: all 0.2s ease;
   &:hover {
-    background-image: var(--gradient-secondary);
-    box-shadow: var(--shadow-neon-lg);
+    background-color: hsl(var(--primary) / 0.1);
   }
 }
 
 .buttonPrimary {
-  transition: all 0.6s ease;
+  transition: all 0.2s ease;
   &:hover {
-    scale: 1.02;
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-neon-lg);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-neon);
   }
 }
 
